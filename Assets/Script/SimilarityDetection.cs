@@ -47,7 +47,8 @@ public class SimilarityDetection : MonoBehaviour
     }
     private void LoadTextures()
     {
-        LoadTextures("Images/Test/img1", "Images/Test/img1-1", "Assets/Resources/Images/Test/img1-2.jpg");
+       // LoadTextures("Images/Test/img1", "Images/Test/img1-1", "Assets/Resources/Images/Test/img1-2.jpg");
+        LoadTextures("Images/Test/colorful1", "Images/Test/colorful2", "Assets/Resources/Images/Test/colorful3.jpg");
     }
 
     private static void SaveTexture(Texture2D t, string s)
@@ -78,32 +79,38 @@ public class SimilarityDetection : MonoBehaviour
             return -1;
         }
 
-        int[,] filter = new int[,] {
-            { 0, 1, 1, 1, 0, },
+        /*    int[,] filter = new int[,] {
+                { 0, 1, 1, 1, 0, },
 
-            { 1, 2, 2, 2, 1, },
+                { 1, 2, 2, 2, 1, },
 
 
-            { 1, 2, 3, 2, 1, },
+                { 1, 2, 3, 2, 1, },
 
-            { 1, 2, 2, 2, 1, },
+                { 1, 2, 2, 2, 1, },
 
-            { 0, 1, 1, 1, 0, },
+                { 0, 1, 1, 1, 0, },
+            };
+
+            */
+        int[,] filter = new int[,] { { 1 } };
+     /*   int[,] filter = new int[,] {
+         {  1, 1, 1,  },
+          { 1, 1, 1,  },
+           {  1, 1, 1  },
+        }; */
+    /*    int[,] filter = new int[,] {
+            { 0, 0, 1, 1, 1, 0, 0, },
+            { 0, 1, 1, 2, 1, 1, 0, },
+            { 1, 1, 2, 3, 2, 1, 1, },
+
+            { 1, 2, 3, 4, 3, 2, 1, },
+
+            { 1, 1, 2, 3, 2, 1, 1, },
+            { 0, 1, 1, 2, 1, 1, 0, },
+            { 0, 0, 1, 1, 1, 0, 0, },
         };
-
-
-
-        //int[,] filter = new int[,] {
-        //    { 0, 0, 1, 1, 1, 0, 0, },
-        //    { 0, 1, 1, 2, 1, 1, 0, },
-        //    { 1, 1, 2, 3, 2, 1, 1, },
-
-        //    { 1, 2, 3, 4, 3, 2, 1, },
-
-        //    { 1, 1, 2, 3, 2, 1, 1, },
-        //    { 0, 1, 1, 2, 1, 1, 0, },
-        //    { 0, 0, 1, 1, 1, 0, 0, },
-        //};
+    */
         //rows and columns of the filter
 
         // Must be nonempty
