@@ -741,7 +741,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 865653640}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.01, y: 0, z: 1.85}
+  m_LocalPosition: {x: -7.01, y: 0, z: 1.8}
   m_LocalScale: {x: 15, y: 4.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -852,7 +852,7 @@ Light:
   m_GameObject: {fileID: 1028798026}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
@@ -1382,6 +1382,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cat Player Rig
       objectReference: {fileID: 0}
+    - target: {fileID: 8275245287495986711, guid: edb266ccf6d7dda49a3d30bfeb6ec40b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: edb266ccf6d7dda49a3d30bfeb6ec40b, type: 3}
 --- !u!1 &1547922812
@@ -1661,7 +1666,7 @@ PrefabInstance:
     - target: {fileID: 5062632531177449446, guid: 4ec9dc1a9171c104881b3a28acc4684f,
         type: 3}
       propertyPath: m_Shadows.m_Type
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5062632531177449446, guid: 4ec9dc1a9171c104881b3a28acc4684f,
         type: 3}
@@ -1747,6 +1752,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Flashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025743, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ec9dc1a9171c104881b3a28acc4684f, type: 3}
