@@ -18,7 +18,7 @@ public class Flashlight : MonoBehaviour
     //Lifecycle Methods
     private void Start()
     {
-        flashlightLight = GetComponent<Light>();
+        // flashlightLight = GetComponent<Light>();
     }
 
     private void Update()
