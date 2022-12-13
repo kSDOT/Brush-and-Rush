@@ -5727,6 +5727,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: easelcanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2087849283013295140, guid: 065280517dfe2fe4bbe2d67f2e660730,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 3063558233696487834, guid: 065280517dfe2fe4bbe2d67f2e660730,
         type: 3}
       propertyPath: m_LocalPosition.x
