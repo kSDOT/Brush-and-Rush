@@ -14,6 +14,10 @@ public class GuardAI : MonoBehaviour
     bool nextLook = false;
     Coroutine LookRoutine;
     int guardCD = 0;
+    public bool allowGameOver = true;
+    float viewDistance = 1000f;
+    float viewAngle = 15f;
+    public Transform player;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +48,15 @@ public class GuardAI : MonoBehaviour
         // Debug.Log("Looking: " + Looking.ToString());
         if(Looking)
         {
+            if(allowGameOver)
+            {
+                if(GameObject.FindObjectOfType<Flashlight>().IsFlashlightOn && PlayerDetection(player))
+                {
+                    // Implement Game Over
+                    Debug.Log("Game Over");
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("Main Menu");
+                }
+            }
             if(LookRoutine == null)
             {
                 LookRoutine = StartCoroutine(LookAround());
@@ -132,11 +145,20 @@ public class GuardAI : MonoBehaviour
         navMeshAgent.isStopped = false;
     }
 
-    void OnTriggerEnter(Collider other)
+    bool PlayerDetection(Transform player)
     {
-        if(other.CompareTag("Player"))
+        if(Vector3.Distance(transform.position, player.position) < viewDistance)
         {
-            // if flashlight on -> game over
+            Vector3 direction = (player.position - transform.position).normalized;
+            float angle = Vector3.Angle(transform.forward, direction);
+            if(angle < viewAngle / 2)
+            {
+                if(!Physics.Linecast(transform.position, player.position))
+                {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 }
