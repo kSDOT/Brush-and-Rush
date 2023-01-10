@@ -19,6 +19,8 @@ namespace BNG {
         public float MinDrawDistance = 0.02f;
         public float ReuseTolerance = 0.001f;
 
+        public Transform LineHolder;
+
         bool IsNewDraw = false;
         Vector3 lastDrawPoint;
         LineRenderer LineRenderer;
@@ -92,8 +94,15 @@ namespace BNG {
                 lastTransform = new GameObject().transform;
                 lastTransform.name = "DrawLine";
                 if (root == null) {
-                    root = new GameObject().transform;
-                    root.name = "MarkerLineHolder";
+                    if (LineHolder != null)
+                    {
+                        root = LineHolder;
+                    }
+                    else
+                    {
+                        root = new GameObject().transform;
+                        root.name = "DrawLines";
+                    }
                 }
                 lastTransform.parent = root;
                 lastTransform.position = endPosition;
