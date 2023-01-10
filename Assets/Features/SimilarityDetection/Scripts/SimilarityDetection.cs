@@ -63,7 +63,9 @@ public class SimilarityDetection : MonoBehaviour
     }
     private (Texture2D, Texture2D) LoadTextures()
     {
-        return LoadTextures("Images/Test/img1", "Images/Test/img1-1");
+        return LoadTextures("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_duplicate.png",
+            "{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_original.png");
+       // return LoadTextures("Images/Test/img1", "Images/Test/img1-1");
         //LoadTextures("Images/Test/colorful1", "Images/Test/colorful2", "Assets/Resources/Images/Test/colorful3.jpg");
     }
 

@@ -546,7 +546,6 @@ GameObject:
   m_Component:
   - component: {fileID: 46825655}
   - component: {fileID: 46825654}
-  - component: {fileID: 46825653}
   - component: {fileID: 46825656}
   m_Layer: 0
   m_Name: ScreenshotCamera
@@ -555,14 +554,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &46825653
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 46825652}
-  m_Enabled: 1
 --- !u!20 &46825654
 Camera:
   m_ObjectHideFlags: 0
@@ -636,6 +627,9 @@ MonoBehaviour:
   resWidth: 2550
   resHeight: 2550
   CameraFlash: {fileID: 478960732}
+  Canvas: {fileID: 1281891396}
+  cur_original: {fileID: 2100000, guid: 95c6305624f959c4588e65afa384f310, type: 2}
+  default_mat: {fileID: 2100000, guid: 9f88b0ebdfac59843a9d90c6f7251acd, type: 2}
 --- !u!1001 &53011298
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8825,6 +8819,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1277614861}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1281891396 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4699646497499717521, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+    type: 3}
+  m_PrefabInstance: {fileID: 6755953915685852676}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1296055497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14170,6 +14170,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1762436359018636539, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f88b0ebdfac59843a9d90c6f7251acd, type: 2}
     - target: {fileID: 6755953915150460138, guid: c569b59bab3ee004ebdeafa1e615c7cb,
         type: 3}
       propertyPath: m_Name
