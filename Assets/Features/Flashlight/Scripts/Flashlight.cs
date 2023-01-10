@@ -12,6 +12,7 @@ public class Flashlight : MonoBehaviour
     [SerializeField] private float batteryDrainRate = 0.1f;
     [SerializeField] private float batteryRechargeRate = 0.1f;
     [SerializeField] private Light flashlightLight;
+    public bool IsFlashlightOn => flashlightLight.enabled;
 
     //Private Variable
 
