@@ -2131,6 +2131,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
+      propertyPath: allowGameOver
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
       propertyPath: waypoints.Array.size
       value: 6
       objectReference: {fileID: 0}

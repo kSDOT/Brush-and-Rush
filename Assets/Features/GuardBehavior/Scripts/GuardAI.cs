@@ -44,8 +44,8 @@ public class GuardAI : MonoBehaviour
             {
                 StopToLook();
             }
-        // Debug.Log("nextLook: " + nextLook.ToString());
-        // Debug.Log("Looking: " + Looking.ToString());
+        //Debug.Log("nextLook: " + nextLook.ToString());
+        //Debug.Log("Looking: " + Looking.ToString());
         if(Looking)
         {
             if(allowGameOver)
@@ -68,8 +68,8 @@ public class GuardAI : MonoBehaviour
 
     void StopToLook()
     {
-        // Debug.Log("remaining: " + navMeshAgent.remainingDistance);
-        // Debug.Log("stopping: " + navMeshAgent.stoppingDistance);
+        //Debug.Log("remaining: " + navMeshAgent.remainingDistance);
+        //Debug.Log("stopping: " + navMeshAgent.stoppingDistance);
 
            if(navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             {
@@ -90,6 +90,7 @@ public class GuardAI : MonoBehaviour
             }
         }
         target = waypoints[waypointIndex].position;
+        Debug.Log(target.ToString());
         navMeshAgent.SetDestination(target);
         
     }
