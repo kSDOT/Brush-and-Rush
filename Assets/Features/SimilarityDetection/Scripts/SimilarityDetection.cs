@@ -6,7 +6,7 @@ using System.IO;
 public class SimilarityDetection : MonoBehaviour
 {
     public double Threshold = 40;
-
+    Texture2D? errorOverlay;
     public static Color abs(Color c1)
     {
         c1.r = Mathf.Abs(c1.r);
@@ -23,19 +23,25 @@ public class SimilarityDetection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures();
+    }
+    public double Evaluate(string img1, string img2)
+    {
+
+        (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
         Texture2D output;
 
         //var t = CompareProx(referenceTexture, inputTexture, out output);
         var score = this.CompareBlur(referenceTexture, inputTexture, out output);
 
-        Texture2D errorOverlay;
+     
         this.CreateOverlay(output, out errorOverlay);
 
         SaveTexture(output, "Assets/Resources/Images/Test/img1-2.png");
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
-    }
 
+        return 100 / Math.Sqrt(score);
+
+    }
     // Update is called once per frame
     void Update()
     {

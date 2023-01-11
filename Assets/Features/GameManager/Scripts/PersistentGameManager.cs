@@ -91,7 +91,7 @@ public class PersistentGameManager : MonoBehaviour
 
         //run similarity detection
         //TODO
-        //score = ???
+        score = this.similarityDetection.Evaluate(CameraScreenshot.ScreenShotName(0,0), CameraScreenshot.ScreenShotName(0,0)+"duplicate.png");
 
         //return to main Menu
         finishToMainMenu();
