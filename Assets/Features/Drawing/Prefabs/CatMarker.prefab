@@ -823,10 +823,11 @@ MonoBehaviour:
   RaycastStart: {fileID: 3672569286943947220}
   DrawingLayers:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 4096
   RaycastLength: 0.01
   MinDrawDistance: 0.02
   ReuseTolerance: 0.001
+  LineHolder: {fileID: 0}
 --- !u!114 &3672569286332368459
 MonoBehaviour:
   m_ObjectHideFlags: 0
