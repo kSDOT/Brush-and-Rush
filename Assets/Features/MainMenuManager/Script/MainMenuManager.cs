@@ -14,6 +14,6 @@ public class MainMenuManager : MonoBehaviour
     //-----Event Methods-----
     public void loadMainLevel()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainLevel");
+        UnityEngine.SceneManagement.SceneManager.LoadScene(mainLevelScene);
     }
 }

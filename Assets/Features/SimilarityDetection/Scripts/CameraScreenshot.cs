@@ -12,6 +12,9 @@ public class CameraScreenshot : MonoBehaviour
     public Material cur_original;
     public Material default_mat;
 
+    [SerializeField]
+    private GameObject canvasPaintHolder;
+
     private bool takeHiResShot = false;
 
     public static string ScreenShotName(int width, int height)
@@ -56,6 +59,10 @@ public class CameraScreenshot : MonoBehaviour
 
             CameraFlash.GetComponent<Light>().enabled = false;
         }
+
+        //hide Canvas Paint Holder
+        canvasPaintHolder.SetActive(false);
+
         //take a second screenshot with the OG picture as texture
         if (takeHiResShot)
         {
