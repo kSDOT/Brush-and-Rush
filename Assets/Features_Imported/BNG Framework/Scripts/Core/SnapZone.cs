@@ -139,9 +139,9 @@ namespace BNG {
                     HeldItem.transform.localScale = Vector3.Lerp(HeldItem.transform.localScale, HeldItem.OriginalScale * _scaleTo, Time.deltaTime * 30f);
 
                     // Make sure this can't be grabbed from the snap zone
-                    if (HeldItem.enabled || (disabledColliders != null && disabledColliders.Count > 0 && disabledColliders[0] != null && disabledColliders[0].enabled)) {
-                        disableGrabbable(HeldItem);
-                    }
+                    // if (HeldItem.enabled || (disabledColliders != null && disabledColliders.Count > 0 && disabledColliders[0] != null && disabledColliders[0].enabled)) {
+                    //     disableGrabbable(HeldItem);
+                    // }
                 }
             }
 
@@ -288,7 +288,7 @@ namespace BNG {
             }
 
             // Disable the grabbable. This is picked up through a Grab Action
-            disableGrabbable(grab);
+            // disableGrabbable(grab);
 
             // Call Grabbable Event from SnapZone
             if (OnSnapEvent != null) {
