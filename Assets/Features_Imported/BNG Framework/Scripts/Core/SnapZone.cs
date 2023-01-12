@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -138,6 +138,7 @@ namespace BNG {
                     // Scale Item while inside zone.                                            
                     HeldItem.transform.localScale = Vector3.Lerp(HeldItem.transform.localScale, HeldItem.OriginalScale * _scaleTo, Time.deltaTime * 30f);
 
+                    // Currently commented for testing purposes.
                     // Make sure this can't be grabbed from the snap zone
                     // if (HeldItem.enabled || (disabledColliders != null && disabledColliders.Count > 0 && disabledColliders[0] != null && disabledColliders[0].enabled)) {
                     //     disableGrabbable(HeldItem);
@@ -286,7 +287,8 @@ namespace BNG {
                 HeldItem.transform.localPosition = Vector3.zero;
                 HeldItem.transform.localEulerAngles = Vector3.zero;
             }
-
+            
+            // Currently uncommented for testing purposes.
             // Disable the grabbable. This is picked up through a Grab Action
             // disableGrabbable(grab);
 

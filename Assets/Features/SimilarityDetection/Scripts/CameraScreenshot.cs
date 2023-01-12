@@ -60,12 +60,12 @@ public class CameraScreenshot : MonoBehaviour
             CameraFlash.GetComponent<Light>().enabled = false;
         }
 
-        //hide Canvas Paint Holder
-        canvasPaintHolder.SetActive(false);
-
         //take a second screenshot with the OG picture as texture
         if (takeHiResShot)
         {
+            //hide Canvas Paint Holder
+            canvasPaintHolder.SetActive(false);
+
             Canvas.GetComponent<Renderer>().material = cur_original;
             CameraFlash.GetComponent<Light>().enabled = true;
 

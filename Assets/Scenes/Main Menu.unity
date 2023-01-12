@@ -832,6 +832,7 @@ Transform:
   m_Children:
   - {fileID: 2294232361333777883}
   - {fileID: 1641562327}
+  - {fileID: 2102140753}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2930,6 +2931,155 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1690017885}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1801642645
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2102140753}
+    m_Modifications:
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1801642650}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleFlashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1801642650}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleFlashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Flashlight, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025737, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: onTriggerDown.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025739, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.249
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062632531791025743, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+        type: 3}
+      propertyPath: m_Name
+      value: Flashlight
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4ec9dc1a9171c104881b3a28acc4684f, type: 3}
+--- !u!4 &1801642646 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5062632531791025742, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1801642645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1801642650 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5062632531791025738, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1801642645}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 055486beff4ab4b4886c4beaffe9f8bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1801642651 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5062632531791025740, guid: 4ec9dc1a9171c104881b3a28acc4684f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1801642645}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cdea428d48e2bb488d33d5f75c39bb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1816365524
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3064,6 +3214,71 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1823185695}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1857542349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1857542350}
+  - component: {fileID: 1857542351}
+  m_Layer: 0
+  m_Name: SnapPoint (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1857542350
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857542349}
+  m_LocalRotation: {x: -0, y: 0.9257684, z: -0, w: 0.37809122}
+  m_LocalPosition: {x: 1.525, y: 0.883, z: 1.93}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2102140753}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1857542351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857542349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55b646e2949ffb74c9ca8c512b4411df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HeldItem: {fileID: 1801642651}
+  StartingItem: {fileID: 1801642651}
+  CanDropItem: 0
+  CanSwapItem: 0
+  CanRemoveItem: 1
+  ScaleItem: 1
+  DisableColliders: 1
+  DuplicateItemOnGrab: 0
+  MaxDropTime: 0.1
+  LastSnapTime: 0
+  OnlyAllowNames: []
+  ExcludeTransformNames: []
+  SoundOnSnap: {fileID: 0}
+  SoundOnUnsnap: {fileID: 0}
+  OnSnapEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDetachEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  ClosestGrabbable: {fileID: 0}
 --- !u!1001 &1868957506
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3568,6 +3783,39 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2101407099}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2102140752
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2102140753}
+  m_Layer: 0
+  m_Name: Flashlight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2102140753
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102140752}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1857542350}
+  - {fileID: 1801642646}
+  m_Father: {fileID: 375631245}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2105865059
 GameObject:
   m_ObjectHideFlags: 0

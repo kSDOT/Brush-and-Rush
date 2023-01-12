@@ -83,9 +83,12 @@ public class SimilarityDetection : MonoBehaviour
 
 
     public (Texture2D, Texture2D) LoadTextures(string path1, string path2) {
+        Debug.Log(path1.ToString());
+        Debug.Log(path2.ToString());
         var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
-        var texture2 = ReadableDuplicate(Resources.Load<Texture2D> (path2));
-   
+        Debug.Log(texture1);
+        var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
+        Debug.Log(texture2);
         return (texture1, texture2);
     }
 
@@ -238,7 +241,7 @@ public class SimilarityDetection : MonoBehaviour
                 {
                     for (int fC = 0; fC < fColumns; fC++)
                     {
-                        //!!! Why is this applying the filter to both imagesß It should compare one pixel of the original to the filtered area of the copy!!!
+                        //!!! Why is this applying the filter to both imagesï¿½ It should compare one pixel of the original to the filtered area of the copy!!!
                         accum1 += filter[fR, fC] * pic1.GetPixel(i + fR, j + fC);
                         accum2 += filter[fR, fC] * pic2.GetPixel(i + fR, j + fC);
 
