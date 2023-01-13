@@ -17,7 +17,7 @@ public class CameraScreenshot : MonoBehaviour
 
     private bool takeHiResShot = false;
 
-    public static string ScreenShotName(int width, int height)
+    public static string ResourcesPath(int width, int height)
     {
         /* //use this for saving multiple screenshots
 
@@ -27,6 +27,11 @@ public class CameraScreenshot : MonoBehaviour
                               System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")); */
 
         //use this for having only one picture that is overwriting itsself
+        return string.Format("Images/screenshots/cur_", Application.dataPath);
+    }
+
+    public static string ScreenShotName(int width, int height)
+    {
         return string.Format("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_", Application.dataPath);
     }
 
