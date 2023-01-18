@@ -3,59 +3,82 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using Unity.VisualScripting;
+using ManagedCuda;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 public class SimilarityDetection : MonoBehaviour
 {
-    int test = 0;
-    public double Threshold = 40;
+    public float Threshold = 0.7f;
     Texture2D? errorOverlay;
-   /// <summary>
-   /// Substracting two colors can yield negative, we want only positive values
-   /// </summary>
-   /// <param name="c1"></param>
-   /// <returns></returns>
-    public static Color abs(Color c1)
-    {
-        c1.r = Mathf.Abs(c1.r);
-        c1.g = Mathf.Abs(c1.g);
-        c1.b = Mathf.Abs(c1.b);
-        c1.a = Mathf.Abs(c1.a);
 
-        return c1;
-    }
-    /// <summary>
-    /// Treats the color as vector, returns l2 norm 
-    /// </summary>
-    /// <param name="c1"></param>
-    /// <returns></returns>
-    public static double getDistance(Color c1)
-    {
-       return Math.Sqrt(c1.r * c1.r + c1.g * c1.g + c1.b * c1.b);
-    }
+    int fRows = 50;
+    int fColumns = 50;
+    int lengthWithWeights = 0;
+
+    public int MaxError = 3611;
+
     /// <summary>
     /// Takes two images and returns the score difference between the two
-    /// Also calculates an erroroverlay and saves it
+    /// Also calculates an erroroverlay and saves it into img-overlay.png
     /// </summary>
     /// <param name="img1"></param>
     /// <param name="img2"></param>
     /// <returns></returns>
     public double Evaluate(string img1, string img2)
     {
+        (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures();
+        CudaDeviceVariable<Color> output;
 
-        (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
-        Texture2D output;
+        int width; int height;
+        var score = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+        this.CreateOverlay(output, out errorOverlay, width, height);
 
-        //var t = CompareProx(referenceTexture, inputTexture, out output);
-        var score = this.CompareBlur(referenceTexture, inputTexture, out output);
+        SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img-overlay.png");
+        output.Dispose();
 
+        return MaxError - score;
 
-        this.CreateOverlay(output, out errorOverlay);
+    }
 
-        SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
+    CudaKernel CudaConvolution;
+    CudaKernel CudaDiff;
+    CudaKernel CudaOverlay;
 
-        return 100 / Math.Sqrt(score);
+    CudaContext ctx;
+    CudaDeviceVariable<int> d_filter;
+    private void Start()
+    {
+        this.ctx = new CudaContext();
+        this.CudaConvolution = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "convolution");
+        this.CudaDiff = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "diff");
+        this.CudaOverlay = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "overlay");
 
+        // Load kernel from file into gpu memory
+        #region LoadKernel
+        String input = File.ReadAllText(Application.dataPath + "\\Features\\SimilarityDetection\\Filter.txt");
+        int i = 0, j = 0;
+        int[,] filter = new int[fRows, fColumns];
+        foreach (var row in input.Split('\n'))
+        {
+            j = 0;
+            foreach (var col in row.Trim().Split(' '))
+            {
+                filter[i, j] = int.Parse(col.Trim());
+                lengthWithWeights += filter[i, j];
+                j++;
+            }
+            i++;
+        }
+
+        d_filter = filter.Cast<int>().ToArray();
+        #endregion
+    }
+
+    private void OnDestroy()
+    {
+        if (this.d_filter!= null) { this.d_filter.Dispose(); }
+        if (this.ctx!= null) { this.ctx.Dispose(); }
     }
     /// <summary>
     /// Test function from editor
@@ -64,38 +87,22 @@ public class SimilarityDetection : MonoBehaviour
     [ContextMenu("Test Images")]
     public double Evaluate()
     {
+
         Debug.Log("Entere Evaluate");
 
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures();
-        Texture2D output;
-        Debug.Log("Loaded Textures");
+        CudaDeviceVariable<Color> output;
+        int width; int height;
+        var score = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+        this.CreateOverlay(output, out errorOverlay, width, height);
 
-        //var t = CompareProx(referenceTexture, inputTexture, out output);
-        var score = this.CompareBlur(referenceTexture, inputTexture, out output);
-        Debug.Log("CompareBlur");
-
-
-        this.CreateOverlay(output, out errorOverlay);
-        Debug.Log("CreateOverlay");
-
-        SaveTexture(output, "Assets/Resources/Images/Test/img1-2.png");
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
+
         Debug.Log("SaveTexture");
 
-        return 100 / Math.Sqrt(score);
-
+        return MaxError - score;
     }
-    
-    //GEORG
-    //TODO:
-    // get picture input. 
-    //Convert picture to greyscale or compare individual color values 
-    //add buffer? right now cuts off outer rows and columns
-    //actually test this code kekW
 
-    // KLEJDI: Maybe dont convert to greyscale, we want to compare color average
-    // 1. Image size is wrong
-    // 2. Change convolution size
 
     /// <summary>
     /// Returns a duplicate of the texture that can be read/written. Original Texture doesn't support this
@@ -118,8 +125,22 @@ public class SimilarityDetection : MonoBehaviour
     {
        // return LoadTextures("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_duplicate.png",
         //    "{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_original.png");
-        return LoadTextures("Images/Test/cur_duplicate", "Images/Test/cur_original");
+        //return LoadTextures("Images/Test/cur_original", "Images/Test/cur_duplicate");
+        return LoadTextures("Images/Test/pure_white", "Images/Test/pure_black");
         //LoadTextures("Images/Test/colorful1", "Images/Test/colorful2", "Assets/Resources/Images/Test/colorful3.jpg");
+    }
+
+    /// <summary>
+    /// Returns a read/write duplicate of the textures
+    /// </summary>
+    /// <param name="path1"></param>
+    /// <param name="path2"></param>
+    /// <returns></returns>
+    public (Texture2D, Texture2D) LoadTextures(string path1, string path2)
+    {
+        var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
+        var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
+        return (texture1, texture2);
     }
 
     /// <summary>
@@ -134,224 +155,104 @@ public class SimilarityDetection : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a read/write duplicate of the textures
-    /// </summary>
-    /// <param name="path1"></param>
-    /// <param name="path2"></param>
-    /// <returns></returns>
-    public (Texture2D, Texture2D) LoadTextures(string path1, string path2) {
-        var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
-        var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
-        return (texture1, texture2);
-    }
-    /// <summary>
-    /// One method of doing the difference detection, using SSD (i think)
+    /// The other method of doing the difference detection, uses Convolution
     /// </summary>
     /// <param name="pic1"></param>
     /// <param name="pic2"></param>
     /// <param name="picDiff">Overlay image consisting of the differences between the two</param>
     /// <returns></returns>
-    double CompareProx(Texture2D pic1, Texture2D pic2, out Texture2D picDiff) {
-        //filter size, higher number = less strict. could be done by percentage of image size
-        int fRows = 13;
-        int fColumns = 13;
-
-        pic1 = BufferImage(pic1, fRows / 2, Color.white);
-        pic2 = BufferImage(pic2, fRows / 2, Color.white);
-
-        int rows = pic1.height; int columns = pic1.width;
-    ;
-        if (pic1.height != pic2.height || pic1.width != pic2.width) {
-            picDiff = null;
-            return -1;
-        }
-
-        // Reduced dimensionality, should be the best imo, but we might need padding
-        Texture2D result1 = new Texture2D(rows - (fRows - 1),  columns - (fColumns - 1));
-        picDiff = new Texture2D((rows - (fRows - 1)), (columns - (fColumns - 1)));
-
-
-        for (int i = 0; i < rows - (fRows - 1); i++) {
-            for (int j = 0; j < columns - (fColumns - 1); j++) {
-                var accum1 = new Color(0.0f, 0.0f, 0.0f);
-                accum1 = pic1.GetPixel(i , j);
-                var accum2 = new Color(0.0f, 0.0f, 0.0f);
-                accum2 = pic2.GetPixel(i, j);
-
-                var diffColor = SimilarityDetection.abs(accum1 - accum2);
-                var diff = ColorSum(SimilarityDetection.abs(accum1 - accum2));
-                // Apply filter
-                for (int fR = 0; fR < fRows; fR++) {                        
-                    for (int fC = 0; fC < fColumns; fC++) {
-                        accum2 = pic2.GetPixel(i + fR, j + fC);
-                        if (diff > ColorSum(SimilarityDetection.abs(accum1 - accum2))) {
-                            diffColor = SimilarityDetection.abs(accum1 - accum2);
-                            diff = ColorSum(SimilarityDetection.abs(accum1 - accum2));
-                        }
-                       
-
-                    }              
-                }
-
-                result1.SetPixel(i, j, diffColor);
-
-            }
-        }
-
-        SimilarityDetection.SaveTexture(result1, "Assets/Resources/Images/Test/img1-temp1.jpg");
-
-
-        double diffAccumulator = 0;
-
-        for (int i = 0; i < columns; i++) 
-        {
-            for(int j = 0; j < rows; j++)
-            {
-                var diff = SimilarityDetection.abs(result1.GetPixel(i, j));
-
-                picDiff.SetPixel(i, j, diff);
-                diffAccumulator += Math.Sqrt(diff.r * diff.r + diff.g * diff.g + diff.b * diff.b);
-            }
-        }
-
-        return diffAccumulator;
-    }
-   /// <summary>
-   /// The other method of doing the difference detection, uses Convolution
-   /// </summary>
-   /// <param name="pic1"></param>
-   /// <param name="pic2"></param>
-   /// <param name="picDiff">Overlay image consisting of the differences between the two</param>
-   /// <returns></returns>
-    double CompareBlur(Texture2D pic1, Texture2D pic2, out Texture2D picDiff)   
+    float CompareBlur(Texture2D pic1, Texture2D pic2, out CudaDeviceVariable<Color> picDiff, out int width, out int height)
     {
 
-     
         if (pic1.height != pic2.height || pic1.width != pic2.width)
         {
-            picDiff = null;
-            return -1;
+            throw new Exception("Non-matching image dimensions");
         }
+        #region FilterCreator
+        //int[,] filter = new int[fRows, fColumns];
+        //for (int i = 0; i < fRows; i++)
+        //{
+        //    for (int j = 0; j < fColumns; j++)
+        //    {
+        //        if ((i > 20 && i < 30) && (j > 20 && j < 30))
+        //        {
+        //            filter[i, j] = 5;
+        //        }
+        //        else if ((i > 10 && i < 40) && (j > 10 && j < 40))
+        //        {
+        //            filter[i, j] = 4;
+        //        }
+        //        else
+        //        {
+        //            filter[i, j] = 2;
+        //        }
+        //    }
+        //}
+        //FileStream filestream = new FileStream(Application.dataPath + "\\Features\\SimilarityDetection\\Filter.txt", FileMode.Create);
+        //var streamwriter = new StreamWriter(filestream);
+        //streamwriter.AutoFlush = true;
+        //Console.SetOut(streamwriter);
+        //Console.SetError(streamwriter);
 
-        int[,] filter = new int[,] {
-            {1, 1, 2, 2, 2, 2, 2,  1, 1, },
-            {1, 2, 2, 3, 3, 3, 2,  2, 1, },
-            {2, 2, 3, 4, 4, 4, 3, 2,  2, },
-            {2, 3, 4, 5, 5, 5, 4, 3,  2, },
+        //var rowCount = fRows;
+        //var colCount = fColumns;
+        //System.Text.StringBuilder output = new System.Text.StringBuilder("");
 
-            {2, 3, 4, 5, 5, 5, 4, 3,  2, },
+        //for (int row = 0; row < rowCount; row++)
+        //{
+        //    for (int col = 0; col < colCount; col++)
+        //    {
+        //        if (col != colCount - 1) { Console.Write(String.Format("{0} ", filter[row, col])); }
+        //        else { Console.Write(String.Format("{0}", filter[row, col])); }
+        //    }
+        //    if (row != rowCount - 1) { Console.WriteLine(); }
 
-            {2, 3, 4, 5, 5, 5, 4, 3,  2, },
-            {2, 2, 3, 4, 4, 4, 3, 2,  2, },
-            {1, 2, 2, 3, 3, 3, 2,  2, 1, },
-            {1, 1, 2, 2, 2, 2, 2,  1, 1, },
-        };
-
-        Debug.Log("First loop");
-
-        //rows and columns of the filter
-
-        // Must be nonempty
-        int fRows = filter.GetLength(0);
-        int fColumns = filter.GetLength(1);
-
-        pic1 = BufferImage(pic1, fRows / 2, Color.white);
-        pic2 = BufferImage(pic2, fColumns / 2, Color.white);
-
-        int rows = pic1.height; int columns = pic1.width;
-        
-        int lengthWithWeights = 0;
-        for (int i = 0; i < fRows; i++)
-        {
-            for(int j = 0; j < fColumns; j++)
-            {
-                lengthWithWeights += filter[i, j];
-            }
-        }
-        Debug.Log("Load textures");
-
-        picDiff = new Texture2D(pic1.height, pic1.width, TextureFormat.RGBAFloat, false);
-
-        Debug.Log("Starting conv");
-
-        Color[] pic1Pixels = pic1.GetPixels();
-        Color[] pic2Pixels = pic2.GetPixels();
-        int loop_rows=  rows - (fRows - 1);
-        int loop_columns= columns - (fColumns - 1);
-        Color accum;
-        Debug.Log("Starting conv loop");
-        for (int i = 0; i < loop_rows ; ++i)
-        {
-            for (int j = 0; j < loop_columns; ++j)
-            {
-
-                accum = new Color(0, 0, 0);
-                // Apply filter
-                for (int fR = 0; fR < fRows; ++fR)
-                {
-                    for (int fC = 0; fC < fColumns; ++fC)
-                    {
-                        accum += filter[fR, fC] * pic1Pixels[(i + fR) * columns + fC  + j];
-                    }
-                }
+        //}
+        //Console.SetOut(null);
+        //Console.SetError(null);
+        #endregion
 
 
-                pic1Pixels[i*columns + j] = accum / lengthWithWeights;
+        // original size before expanding image for convolution
+        int original_width = pic1.width; int original_height = pic1.height;
+        int N_original = original_width * original_height;
 
-                accum = new Color(0, 0, 0);
-                for (int fR = 0; fR < fRows; ++fR)
-                {
-                    for (int fC = 0; fC < fColumns; ++fC)
-                    {
-                        accum += filter[fR, fC] * pic2Pixels[(i + fR) * columns + fC + j];
-                    }
-                }
+        int conv_padding = (int)Math.Ceiling((fRows - 1) / 2.0f);
+        pic1 = BufferImage(pic1, conv_padding, Color.white);
+        pic2 = BufferImage(pic2, conv_padding, Color.white);
 
-                pic2Pixels[i*columns + j] = accum / lengthWithWeights;
-            }
-        }
-        Debug.Log("Ending conv");
+        height = pic1.height; width = pic1.width;
 
-        var v1 = new Texture2D(columns, rows, TextureFormat.RGBAFloat, false);
-        v1.SetPixelData<Color>(pic1Pixels, 0);
-        var v2 = new Texture2D(columns, rows, TextureFormat.RGBAFloat, false);
-        v2.SetPixelData<Color>(pic2Pixels, 0);
+        // Cuda Convolution
+        CudaConvolution.GridDimensions = (N_original + 255) / 256;
+        CudaConvolution.BlockDimensions = 256;
 
-        SimilarityDetection.SaveTexture(v1, "Assets/Resources/Images/Test/img1-temp1.jpg");
-        SimilarityDetection.SaveTexture(v2, "Assets/Resources/Images/Test/img1-temp2.jpg");
+        CudaDeviceVariable<Color> d_pic1Pixels = pic1.GetPixels();
+        CudaDeviceVariable<Color> d_pic2Pixels = pic2.GetPixels();
 
-        Debug.Log("Starting diff");
+        CudaConvolution.Run(d_pic1Pixels.DevicePointer, width, height, d_filter.DevicePointer,
+                            fColumns, fRows, lengthWithWeights);
 
-        double diffAccumulator = 0;
-        int count1 = 0;
-        int count2 = 0;
-        Color[] picDiffPixels = picDiff.GetPixels();
-        for (int i = 0; i < rows; ++i)
-        {
-            for (int j = 0; j < columns; ++j)
-            {
-                Color diff = SimilarityDetection.abs((pic1Pixels[i*columns + j] - pic2Pixels[i * columns + j]));
-                double diffNumber = getDistance(diff);
-                if (diffNumber < this.Threshold)
-                {
-                    count1++;
-                    diff = new Color(0.0f, 0.0f, 0.0f);
-                }
-                else {
-                    count2++;
+        CudaConvolution.Run(d_pic2Pixels.DevicePointer, width, height, d_filter.DevicePointer,
+                          fColumns, fRows, lengthWithWeights);
 
-                    Vector4 temp = diff;
-                    var t1 = Mathf.Lerp((float)this.Threshold, 1.0f, (float)diffNumber);
-                    diff = Vector4.Lerp(Vector4.zero, temp, t1);
-                }
-                picDiffPixels[i * columns + j] = diff;
-                diffAccumulator += getDistance(diff);
-            }
-        }
-        picDiff.SetPixelData<Color>(picDiffPixels, 0);
-        SimilarityDetection.SaveTexture(picDiff, "Assets/Resources/Images/Test/img1-diff.jpg");
+        ctx.Synchronize();
 
-        Debug.Log("Ending diff");
+        // Cuda calculate differences
+        CudaDiff.GridDimensions = (width * height + 255) / 256;
+        CudaDiff.BlockDimensions = 256;
+        float diffAccumulator = 0;
+        CudaDeviceVariable<float> d_output = diffAccumulator;
+
+        CudaDiff.Run(d_pic1Pixels.DevicePointer, d_pic2Pixels.DevicePointer, width, height, Threshold, d_output.DevicePointer);
+
+        ctx.Synchronize();
+
+        diffAccumulator = d_output;
+        picDiff = d_pic1Pixels;
+
+        d_pic2Pixels.Dispose();
+        d_output.Dispose();
 
         return diffAccumulator;
     }
@@ -360,36 +261,19 @@ public class SimilarityDetection : MonoBehaviour
     /// </summary>
     /// <param name="input"></param>
     /// <param name="error"></param>
-    void CreateOverlay(Texture2D input, out Texture2D error)
+    void CreateOverlay(CudaDeviceVariable<Color> input, out Texture2D error, int width, int height)
     {
-        int width = input.width;
-        int height = input.height;
         error  = new Texture2D(width, height, TextureFormat.RGBAFloat, false);
-        Color[] inputPixels = input.GetPixels();
-        Color[] errorPixels = error.GetPixels();
-        
-        for (int i = 0; i < height; ++i)
-        {
-            for (int j = 0; j < width; ++j)
-            {
-                float remappedDistance = (float)SimilarityDetection.getDistance(inputPixels[i*width + j]);
-                if(remappedDistance > 0.01)
-                {
-                    remappedDistance = (remappedDistance - (float)this.Threshold) / (1.0f - (float)this.Threshold);
-                }
-                inputPixels[i * width + j] = new Vector4(1.0f, 0.0f, 0.0f, remappedDistance);
-            }
-        }
-        error.SetPixelData<Color>(inputPixels, 0);
+
+        CudaOverlay.GridDimensions = (width * height + 255) / 256;
+        CudaOverlay.BlockDimensions = 256;
+
+        CudaOverlay.Run(input.DevicePointer, width, height, Threshold);
+
+        ctx.Synchronize();
+        error.SetPixelData<Color>(input, 0);
     }
-    /// <summary>
-    /// Calculates the sum of the inner color values
-    /// </summary>
-    /// <param name="c"></param>
-    /// <returns></returns>
-    float ColorSum(Color c) {
-        return (c.r + c.g + c.b);
-    }
+   
     /// <summary>
     /// Buffer image to enable any filters
     /// </summary>
@@ -397,33 +281,10 @@ public class SimilarityDetection : MonoBehaviour
     /// <param name="pixel">Pixels added on each side of the picture</param>
     /// <param name="color">Color the added color</param>
     /// <returns></returns>
+
     Texture2D BufferImage(Texture2D img, int pixel, Color color) {
-        Debug.Log("Starting buffer");
-
-        Texture2D bufImg = new Texture2D(img.height+pixel*2, img.width+pixel*2, TextureFormat.RGBAFloat, false);
-        Color[] imgPixels = img.GetPixels();
-        Color[] bufImgPixels = bufImg.GetPixels();
-
-        for (int i = 0; i < bufImg.height; i++) {
-            for (int j = 0; j < bufImg.width; j++) {
-                if (i < pixel || j < pixel)
-                {
-                    bufImgPixels[i * bufImg.width + j] = color;
-                }
-                else if (i >= img.height + pixel || j >= img.width + pixel)
-                {
-                    bufImgPixels[i * bufImg.width + j] = color;
-                }
-                else {
-                    bufImgPixels[i * bufImg.width + j] = imgPixels[(i - pixel) * img.width + j-pixel];
-                }
-            }
-        }
-        bufImg.SetPixelData<Color>(bufImgPixels, 0);
-        SimilarityDetection.SaveTexture(bufImg, "Assets/Resources/Images/Test/buffered" + test + ".jpg");
-        test = 1;
-        Debug.Log("Ending buffer");
-
+        Texture2D bufImg = new Texture2D(img.width+ pixel * 2, img.height+ pixel * 2, TextureFormat.RGBAFloat, false);
+        bufImg.SetPixels(0, 0, img.width, img.height, img.GetPixels());
         return bufImg;
     }
 
