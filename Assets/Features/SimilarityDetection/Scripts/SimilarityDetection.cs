@@ -27,7 +27,7 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public double Evaluate(string img1, string img2)
     {
-        (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures();
+        (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
         CudaDeviceVariable<Color> output;
 
         int width; int height;
