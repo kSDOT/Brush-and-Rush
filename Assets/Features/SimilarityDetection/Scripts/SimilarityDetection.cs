@@ -42,19 +42,19 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public double Evaluate(string img1, string img2)
     {
-
+        Debug.Log("Entere Evaluate");
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
         Texture2D output;
-
+        Debug.Log("Loaded Textures");
         //var t = CompareProx(referenceTexture, inputTexture, out output);
         var score = this.CompareBlur(referenceTexture, inputTexture, out output);
-
+        Debug.Log("CompareBlur");
 
         this.CreateOverlay(output, out errorOverlay);
-
+        Debug.Log("CreateOverlay");
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
-
-        return 100 / Math.Sqrt(score);
+        Debug.Log("SaveTexture");
+        return 100 / Math.Max(0.0005, Math.Sqrt(score));
 
     }
     /// <summary>
@@ -82,7 +82,7 @@ public class SimilarityDetection : MonoBehaviour
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
         Debug.Log("SaveTexture");
 
-        return 100 / Math.Sqrt(score);
+        return 100 / Math.Max(0.0005, Math.Sqrt(score));
 
     }
     

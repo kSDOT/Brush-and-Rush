@@ -624,8 +624,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076247951b8b1be4d8c1c768dd61a1ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resWidth: 16
-  resHeight: 16
+  resWidth: 2550
+  resHeight: 2550
   CameraFlash: {fileID: 478960732}
   Canvas: {fileID: 1281891396}
   cur_original: {fileID: 2100000, guid: 95c6305624f959c4588e65afa384f310, type: 2}
