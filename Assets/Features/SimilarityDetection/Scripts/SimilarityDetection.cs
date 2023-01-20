@@ -41,7 +41,9 @@ public class SimilarityDetection : MonoBehaviour
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         output.Dispose();
 
-        return MaxError - score;
+        //return MaxError - score;
+        Mathf.Round(score);
+        return score;
 
     }
 
