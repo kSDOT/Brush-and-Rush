@@ -6,6 +6,7 @@ using System.IO;
 using ManagedCuda;
 using System.Linq;
 using System.Runtime.InteropServices;
+using UnityEditor;
 
 public class SimilarityDetection : MonoBehaviour
 {
@@ -27,14 +28,17 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public double Evaluate(string img1, string img2)
     {
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
         CudaDeviceVariable<Color> output;
-
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         int width; int height;
         var score = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         this.CreateOverlay(output, out errorOverlay, width, height);
-
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img-overlay.png");
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         output.Dispose();
 
         return MaxError - score;

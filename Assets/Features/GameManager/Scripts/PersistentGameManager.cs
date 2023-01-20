@@ -4,6 +4,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor;
 
 public class PersistentGameManager : MonoBehaviour
 {
@@ -88,11 +89,13 @@ public class PersistentGameManager : MonoBehaviour
     {
         //take picture
         cameraScreenshot.TakeHiResShot();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        
 
         //run similarity detection
         //TODO
         score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0,0)+"original", CameraScreenshot.ResourcesPath(0,0)+"duplicate");
-
+        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu
         finishToMainMenu();
     }
