@@ -158,7 +158,7 @@ extern "C" {
 				getDistance(&colors[index], &remappedDistance);
 				// remap from [0.7, 1] to [0, 1]
                 remappedDistance = (remappedDistance - Threshold) / (1.0f - Threshold);
-                colors[index] = Color{1.0f, 0.0f, 0.0f, remappedDistance};
+                colors[index] = Color{1.0f, 0.9f, 0.1f, remappedDistance};
 		}
 
 	}

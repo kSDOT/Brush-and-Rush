@@ -381685,8 +381685,9 @@ extern "C" {
 			
                 float remappedDistance = 0.0f;
 				getDistance(&colors[index], &remappedDistance);
+				
                 remappedDistance = (remappedDistance - Threshold) / (1.0f - Threshold);
-                colors[index] = Color{1.0f, 0.0f, 0.0f, remappedDistance};
+                colors[index] = Color{1.0f, 0.9f, 0.1f, remappedDistance};
 		}
 
 	}

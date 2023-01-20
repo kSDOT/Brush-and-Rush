@@ -288,7 +288,7 @@ $L__BB1_6:
 {
 	.reg .pred 	%p<2>;
 	.reg .f32 	%f<13>;
-	.reg .b32 	%r<10>;
+	.reg .b32 	%r<11>;
 	.reg .b64 	%rd<5>;
 
 
@@ -320,9 +320,10 @@ $L__BB1_6:
 	mov.u32 	%r8, 1065353216;
 	div.rn.f32 	%f12, %f9, %f11;
 	st.global.u32 	[%rd4], %r8;
-	mov.u32 	%r9, 0;
+	mov.u32 	%r9, 1063675494;
 	st.global.u32 	[%rd4+4], %r9;
-	st.global.u32 	[%rd4+8], %r9;
+	mov.u32 	%r10, 1036831949;
+	st.global.u32 	[%rd4+8], %r10;
 	st.global.f32 	[%rd4+12], %f12;
 
 $L__BB2_2:

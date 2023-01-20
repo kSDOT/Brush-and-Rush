@@ -417,13 +417,13 @@ if (__cuda_local_var_381682_7_non_const_index < (columns * rows))
 __cuda_local_var_381686_23_non_const_remappedDistance = (0.0F);
 #line 158 "convolution.cu"
 getDistance((colors + __cuda_local_var_381682_7_non_const_index), (&__cuda_local_var_381686_23_non_const_remappedDistance));
-#line 159 "convolution.cu"
+#line 160 "convolution.cu"
 __cuda_local_var_381686_23_non_const_remappedDistance = ( fdividef((__cuda_local_var_381686_23_non_const_remappedDistance - Threshold) , ((1.0F) - Threshold)));
-#line 160 "convolution.cu"
-{ memset((char *)&__T2, 0,sizeof(__T2)); __T2.r = (1.0F); __T2.g = (0.0F); __T2.b = (0.0F); __T2.a = (0.0F);
-#line 160 "convolution.cu"
-(colors[__cuda_local_var_381682_7_non_const_index]) = (((__T2.a) = __cuda_local_var_381686_23_non_const_remappedDistance) , __T2); }
 #line 161 "convolution.cu"
+{ memset((char *)&__T2, 0,sizeof(__T2)); __T2.r = (1.0F); __T2.g = (0.8999999762F); __T2.b = (0.1000000015F); __T2.a = (0.0F);
+#line 161 "convolution.cu"
+(colors[__cuda_local_var_381682_7_non_const_index]) = (((__T2.a) = __cuda_local_var_381686_23_non_const_remappedDistance) , __T2); }
+#line 162 "convolution.cu"
 } 
-#line 163 "convolution.cu"
+#line 164 "convolution.cu"
 }}

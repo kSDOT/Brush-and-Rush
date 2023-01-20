@@ -97,7 +97,7 @@ public class SimilarityDetection : MonoBehaviour
         this.CreateOverlay(output, out errorOverlay, width, height);
 
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
-
+        output.Dispose();
         Debug.Log("SaveTexture");
 
         return MaxError - score;
@@ -125,8 +125,8 @@ public class SimilarityDetection : MonoBehaviour
     {
        // return LoadTextures("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_duplicate.png",
         //    "{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_original.png");
-        //return LoadTextures("Images/Test/cur_original", "Images/Test/cur_duplicate");
-        return LoadTextures("Images/Test/pure_white", "Images/Test/pure_black");
+        return LoadTextures("Images/Test/cur_original", "Images/Test/cur_duplicate");
+        //return LoadTextures("Images/Test/pure_white", "Images/Test/pure_black");
         //LoadTextures("Images/Test/colorful1", "Images/Test/colorful2", "Assets/Resources/Images/Test/colorful3.jpg");
     }
 

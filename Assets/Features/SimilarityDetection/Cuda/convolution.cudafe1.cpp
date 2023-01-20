@@ -22344,18 +22344,18 @@ if (index < (columns * rows)) {
 float remappedDistance = (0.0F); 
 #line 158
 getDistance(&(colors[index]), &remappedDistance); 
-#line 159
-remappedDistance = ((remappedDistance - Threshold) / ((1.0F) - Threshold)); 
 #line 160
-(colors[index]) = Color{(1.0F), (0.0F), (0.0F), remappedDistance}; 
+remappedDistance = ((remappedDistance - Threshold) / ((1.0F) - Threshold)); 
 #line 161
+(colors[index]) = Color{(1.0F), (0.8999999762F), (0.1000000015F), remappedDistance}; 
+#line 162
 }  
-#line 163
+#line 164
 } 
 #endif
-#line 166 "convolution.cu"
+#line 167 "convolution.cu"
 int main() { return 0; } 
-#line 167
+#line 168
 }
 #line 1 "convolution.cudafe1.stub.c"
 #define _NV_ANON_NAMESPACE _GLOBAL__N__5fad5521_14_convolution_cu_a680572e
