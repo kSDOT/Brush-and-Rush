@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class CameraScreenshot : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class CameraScreenshot : MonoBehaviour
                               Application.dataPath,
                               width, height,
                               System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")); */
-
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //use this for having only one picture that is overwriting itsself
         return string.Format("Images/screenshots/cur_", Application.dataPath);
     }
@@ -38,15 +39,11 @@ public class CameraScreenshot : MonoBehaviour
     public void TakeHiResShot()
     {
         takeHiResShot = true;
-    }
-
-    void LateUpdate()
-    {
         takeHiResShot |= Input.GetKeyDown("k");
         if (takeHiResShot)
         {
             CameraFlash.GetComponent<Light>().enabled = true;
-            
+
             RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
             GetComponent<Camera>().targetTexture = rt;
             Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
@@ -63,6 +60,7 @@ public class CameraScreenshot : MonoBehaviour
             //takeHiResShot = false;
 
             CameraFlash.GetComponent<Light>().enabled = false;
+            //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         }
 
         //take a second screenshot with the OG picture as texture
@@ -91,6 +89,63 @@ public class CameraScreenshot : MonoBehaviour
 
             CameraFlash.GetComponent<Light>().enabled = false;
             Canvas.GetComponent<Renderer>().material = default_mat;
+            //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         }
+    }
+
+    void LateUpdate()
+    {
+        //takeHiResShot |= Input.GetKeyDown("k");
+        //if (takeHiResShot)
+        //{
+        //    CameraFlash.GetComponent<Light>().enabled = true;
+            
+        //    RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
+        //    GetComponent<Camera>().targetTexture = rt;
+        //    Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+        //    GetComponent<Camera>().Render();
+        //    RenderTexture.active = rt;
+        //    screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
+        //    GetComponent<Camera>().targetTexture = null;
+        //    RenderTexture.active = null; // JC: added to avoid errors
+        //    Destroy(rt);
+        //    byte[] bytes = screenShot.EncodeToPNG();
+        //    string filename = ScreenShotName(resWidth, resHeight) + "duplicate.png";
+        //    System.IO.File.WriteAllBytes(filename, bytes);
+        //    Debug.Log(string.Format("Took screenshot to: {0}", filename));
+        //    //takeHiResShot = false;
+
+        //    CameraFlash.GetComponent<Light>().enabled = false;
+        //    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //}
+
+        ////take a second screenshot with the OG picture as texture
+        //if (takeHiResShot)
+        //{
+        //    //hide Canvas Paint Holder
+        //    canvasPaintHolder.SetActive(false);
+
+        //    Canvas.GetComponent<Renderer>().material = cur_original;
+        //    CameraFlash.GetComponent<Light>().enabled = true;
+
+        //    RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
+        //    GetComponent<Camera>().targetTexture = rt;
+        //    Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+        //    GetComponent<Camera>().Render();
+        //    RenderTexture.active = rt;
+        //    screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
+        //    GetComponent<Camera>().targetTexture = null;
+        //    RenderTexture.active = null; // JC: added to avoid errors
+        //    Destroy(rt);
+        //    byte[] bytes = screenShot.EncodeToPNG();
+        //    string filename = ScreenShotName(resWidth, resHeight) + "original.png";
+        //    System.IO.File.WriteAllBytes(filename, bytes);
+        //    Debug.Log(string.Format("Took screenshot to: {0}", filename));
+        //    takeHiResShot = false;
+
+        //    CameraFlash.GetComponent<Light>().enabled = false;
+        //    Canvas.GetComponent<Renderer>().material = default_mat;
+        //    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //}
     }
 }

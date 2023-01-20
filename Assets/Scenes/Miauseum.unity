@@ -624,8 +624,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076247951b8b1be4d8c1c768dd61a1ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resWidth: 2550
-  resHeight: 2550
+  resWidth: 2048
+  resHeight: 2048
   CameraFlash: {fileID: 478960732}
   Canvas: {fileID: 1281891396}
   cur_original: {fileID: 2100000, guid: 95c6305624f959c4588e65afa384f310, type: 2}
@@ -9635,7 +9635,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93697563d2af3014c91c6d77f0d48f6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Threshold: 40
+  Threshold: 0.7
+  MaxError: 3611
 --- !u!1001 &1350202958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9643,11 +9644,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1757969932, guid: c569b59bab3ee004ebdeafa1e615c7cb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1762436359018636539, guid: c569b59bab3ee004ebdeafa1e615c7cb,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 95c6305624f959c4588e65afa384f310, type: 2}
+    - target: {fileID: 1898866380881046641, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3933163552229630349, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6755953915150460138, guid: c569b59bab3ee004ebdeafa1e615c7cb,
         type: 3}
       propertyPath: m_Name
