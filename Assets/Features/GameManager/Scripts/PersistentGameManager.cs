@@ -10,6 +10,7 @@ public class PersistentGameManager : MonoBehaviour
 {
     //------Serialized Variables------
     public static double score = 0;
+    public GameObject canvasFront;
 
     [InfoBox("You can add missing Scenes from the Build Settings menu.", EInfoBoxType.Normal)]
     [SerializeField]
@@ -23,6 +24,10 @@ public class PersistentGameManager : MonoBehaviour
     [SerializeField]
     [Foldout("Main Menu")]
     private TMP_Text scoreboardText;
+
+    //Pictures
+    [SerializeField]
+    private Material[] originalPaintings;
 
     //Level
     [SerializeField]
@@ -52,6 +57,12 @@ public class PersistentGameManager : MonoBehaviour
         }
     }
 
+    void Update() {
+        if (Input.GetKeyDown("j")) {
+            NewRandomPicture();
+        }
+        
+    }
     //-----Methods-----
     private void updateScoreBoard()
     {
@@ -82,7 +93,32 @@ public class PersistentGameManager : MonoBehaviour
     
     public void loadMainLevel()
     {
+       
         UnityEngine.SceneManagement.SceneManager.LoadScene(mainLevelScene);
+        
+    }
+    public void NewRandomPicture() {
+
+        int picSize = originalPaintings.Length;
+        int newOriginal = Random.Range(0, picSize);
+        canvasFront.gameObject.GetComponent<Renderer>().material = originalPaintings[newOriginal];
+        Material temp = new Material(originalPaintings[newOriginal]);
+        SaveObjectToFile(temp, "Assets/Features/SimilarityDetection/Resources/Images/original_pictures/Materials/cur_original.mat"); 
+
+        // Debug.Log("New picture: "+newOriginal);
+    }
+
+    public static void SaveObjectToFile(Object obj, string fileName)
+    {
+
+     
+        
+
+        AssetDatabase.CreateAsset(obj, fileName);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+      //  Debug.Log("File saved to: "+AssetDatabase.GetAssetPath(obj));
     }
 
     public void saveAndEvaluatePicture()

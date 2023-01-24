@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0143449055, g: 0.014955874, b: 0.01806926, a: 1}
+  m_IndirectSpecularColor: {r: 0.014344901, g: 0.0149558615, b: 0.01806924, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8076,6 +8076,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1076056767}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1077517472 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4699646497499717521, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1350202958}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1081590407
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9652,7 +9658,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 95c6305624f959c4588e65afa384f310, type: 2}
+      objectReference: {fileID: 2100000, guid: a2a3727b73d85c741bb296104f2321e4, type: 2}
     - target: {fileID: 1898866380881046641, guid: c569b59bab3ee004ebdeafa1e615c7cb,
         type: 3}
       propertyPath: m_IsActive
@@ -15201,6 +15207,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
+      propertyPath: canvasFront
+      value: 
+      objectReference: {fileID: 1077517472}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
       propertyPath: cameraScreenshot
       value: 
       objectReference: {fileID: 46825656}
@@ -15209,6 +15220,36 @@ PrefabInstance:
       propertyPath: similarityDetection
       value: 
       objectReference: {fileID: 1349428740}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: originalPaintings.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: originalPaintings.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a2a3727b73d85c741bb296104f2321e4, type: 2}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: originalPaintings.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 535a8470ac9dab84a8f9b67c6a52e49b, type: 2}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: originalPaintings.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 44f0a735e464ccb47b243ea0755eea69, type: 2}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: originalPaintings.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: ce216e1c64ca0424f86e63c34746969f, type: 2}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: originalPaintings.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9e7255488e5daf145ba7d5aa74b725e5, type: 2}
     - target: {fileID: 1866747648112240403, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
       propertyPath: m_Name
