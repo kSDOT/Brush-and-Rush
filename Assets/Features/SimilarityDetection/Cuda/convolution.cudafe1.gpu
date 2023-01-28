@@ -384,7 +384,7 @@ lerp_vec(((const struct Color *)(&__cuda_local_var_381666_13_non_const_black)), 
 #line 144 "convolution.cu"
 getDistance((&__cuda_local_var_381643_12_non_const_diff), (&__cuda_local_var_381650_24_non_const_diffNumber));
 #line 145 "convolution.cu"
-(*diffAccumulator) += __cuda_local_var_381650_24_non_const_diffNumber;
+(diffAccumulator[__cuda_local_var_381634_7_non_const_index]) = __cuda_local_var_381650_24_non_const_diffNumber;
 #line 146 "convolution.cu"
 }
 #line 147 "convolution.cu"

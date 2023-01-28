@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using ManagedCuda;
 using System.Linq;
-using System.Runtime.InteropServices;
-using UnityEditor;
 
 public class SimilarityDetection : MonoBehaviour
 {
@@ -17,7 +13,7 @@ public class SimilarityDetection : MonoBehaviour
     int fColumns = 50;
     int lengthWithWeights = 0;
 
-    public int MaxError = 3611;
+    public int MaxError = 6587986;
 
     /// <summary>
     /// Takes two images and returns the score difference between the two
@@ -28,12 +24,21 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public double Evaluate(string img1, string img2)
     {
+        
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
         CudaDeviceVariable<Color> output;
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         int width; int height;
-        var score = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+        var valuesArray = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+
+        // Calculate how much error the duplicate has
+        float score = 0;
+        for (int i = 0; i < valuesArray.Length; i++)
+        {
+            score += valuesArray[i];
+        }
+
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         this.CreateOverlay(output, out errorOverlay, width, height);
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
@@ -41,10 +46,11 @@ public class SimilarityDetection : MonoBehaviour
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         output.Dispose();
 
-        //return MaxError - score;
-        Mathf.Round(score);
-        return score;
+        score = (Mathf.Clamp(MaxError - score, 0, MaxError) / MaxError) //make sure its in [0, 1] range
+                                                                * 100;// expand to [0, 100]
 
+        // make sure its in [0, 100] range, using 2 decimal digits
+        return Mathf.Clamp(Mathf.Round(score * 10.0f) * 0.1f, 0, 100);
     }
 
     CudaKernel CudaConvolution;
@@ -93,20 +99,33 @@ public class SimilarityDetection : MonoBehaviour
     [ContextMenu("Test Images")]
     public double Evaluate()
     {
-
-        Debug.Log("Entere Evaluate");
-
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures();
         CudaDeviceVariable<Color> output;
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         int width; int height;
-        var score = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+        var valuesArray = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
+
+        // Calculate how much error the duplicate has
+        float score = 0;
+        for (int i = 0; i < valuesArray.Length; i++)
+        {
+            score += valuesArray[i];
+        }
+
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         this.CreateOverlay(output, out errorOverlay, width, height);
-
-        SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img1-overlay.png");
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img-overlay.png");
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         output.Dispose();
-        Debug.Log("SaveTexture");
 
-        return MaxError - score;
+        score = (Mathf.Clamp(MaxError - score, 0, MaxError)/MaxError) //make sure its in [0, 1] range
+                                                                * 100;// expand to [0, 100]
+
+        // make sure its in [0, 100] range, using 2 decimal digits
+        return Mathf.Clamp(Mathf.Round(score * 10.0f) * 0.1f, 0, 100);
+
     }
 
 
@@ -131,8 +150,8 @@ public class SimilarityDetection : MonoBehaviour
     {
        // return LoadTextures("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_duplicate.png",
         //    "{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_original.png");
-        return LoadTextures("Images/Test/cur_original", "Images/Test/cur_duplicate");
-        //return LoadTextures("Images/Test/pure_white", "Images/Test/pure_black");
+        //return LoadTextures("Images/Test/cur_original", "Images/Test/cur_duplicate");
+        return LoadTextures("Images/Test/pure_white", "Images/Test/pure_black");
         //LoadTextures("Images/Test/colorful1", "Images/Test/colorful2", "Assets/Resources/Images/Test/colorful3.jpg");
     }
 
@@ -167,7 +186,7 @@ public class SimilarityDetection : MonoBehaviour
     /// <param name="pic2"></param>
     /// <param name="picDiff">Overlay image consisting of the differences between the two</param>
     /// <returns></returns>
-    float CompareBlur(Texture2D pic1, Texture2D pic2, out CudaDeviceVariable<Color> picDiff, out int width, out int height)
+    float[] CompareBlur(Texture2D pic1, Texture2D pic2, out CudaDeviceVariable<Color> picDiff, out int width, out int height)
     {
 
         if (pic1.height != pic2.height || pic1.width != pic2.width)
@@ -247,8 +266,9 @@ public class SimilarityDetection : MonoBehaviour
         // Cuda calculate differences
         CudaDiff.GridDimensions = (width * height + 255) / 256;
         CudaDiff.BlockDimensions = 256;
-        float diffAccumulator = 0;
-        CudaDeviceVariable<float> d_output = diffAccumulator;
+
+        float[] diffAccumulator;
+        CudaDeviceVariable<float> d_output = new CudaDeviceVariable<float>(width*height);
 
         CudaDiff.Run(d_pic1Pixels.DevicePointer, d_pic2Pixels.DevicePointer, width, height, Threshold, d_output.DevicePointer);
 

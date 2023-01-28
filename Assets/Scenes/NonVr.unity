@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Threshold: 0.7
-  MaxError: 3611
+  MaxError: 6587986
 --- !u!4 &565966145
 Transform:
   m_ObjectHideFlags: 0

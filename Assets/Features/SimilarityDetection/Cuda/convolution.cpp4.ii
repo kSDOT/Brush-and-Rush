@@ -322056,7 +322056,7 @@ typedef __int64 fpos_t;
                 	pic1Pixels[index] = diff;
 					
 					getDistance(&diff, &diffNumber);
-                	*diffAccumulator += diffNumber;
+                	diffAccumulator[index] = diffNumber;
 				}
 		}
 

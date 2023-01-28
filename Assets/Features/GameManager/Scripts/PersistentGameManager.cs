@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine.UI;
 using TMPro;
 using UnityEditor;
-
 public class PersistentGameManager : MonoBehaviour
 {
     //------Serialized Variables------

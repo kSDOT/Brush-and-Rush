@@ -22323,7 +22323,7 @@ lerp_vec(&black, &temp, t1, &diff);
 #line 144
 getDistance(&diff, &diffNumber); 
 #line 145
-(*diffAccumulator) += diffNumber; 
+(diffAccumulator[index]) = diffNumber; 
 #line 146
 }  
 #line 147

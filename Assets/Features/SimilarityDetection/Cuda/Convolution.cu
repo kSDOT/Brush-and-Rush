@@ -142,7 +142,7 @@ extern "C" {
                 	pic1Pixels[index] = diff;
 					// Add modified difference
 					getDistance(&diff, &diffNumber);
-                	*diffAccumulator += diffNumber;
+                	diffAccumulator[index] = diffNumber;
 				}
 		}
 
