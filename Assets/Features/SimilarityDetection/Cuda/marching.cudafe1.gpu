@@ -1,0 +1,59 @@
+typedef char __nv_bool;
+#line 193 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\vcruntime.h"
+typedef unsigned long long size_t;
+#include "crt/device_runtime.h"
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#line 12 "marching.cu"
+__global__ __var_used__ extern void carve(int, int, int, int, int, int, float *);
+#include "common_functions.h"
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#line 12 "marching.cu"
+__global__ __var_used__ void carve(
+#line 12 "marching.cu"
+int width, 
+#line 12 "marching.cu"
+int height, 
+#line 12 "marching.cu"
+int depth, 
+#line 12 "marching.cu"
+int x, 
+#line 12 "marching.cu"
+int y, 
+#line 12 "marching.cu"
+int z, 
+#line 12 "marching.cu"
+float *voxels){
+#line 12 "marching.cu"
+{
+#line 13 "marching.cu"
+ int __cuda_local_var_381542_13_non_const_new_x;
+#line 14 "marching.cu"
+ int __cuda_local_var_381543_13_non_const_new_y;
+#line 15 "marching.cu"
+ int __cuda_local_var_381544_13_non_const_new_z;
+#line 13 "marching.cu"
+__cuda_local_var_381542_13_non_const_new_x = ((int)((((unsigned)x) + (threadIdx.x)) - 1U));
+#line 14 "marching.cu"
+__cuda_local_var_381543_13_non_const_new_y = ((int)((((unsigned)y) + (threadIdx.y)) - 1U));
+#line 15 "marching.cu"
+__cuda_local_var_381544_13_non_const_new_z = ((int)((((unsigned)z) + (threadIdx.z)) - 1U));
+#line 17 "marching.cu"
+if ((((((__cuda_local_var_381542_13_non_const_new_x < width) && (__cuda_local_var_381542_13_non_const_new_x > 0)) && (__cuda_local_var_381543_13_non_const_new_y < height)) && (__cuda_local_var_381543_13_non_const_new_y > 0)) && (__cuda_local_var_381544_13_non_const_new_z < depth)) && (__cuda_local_var_381544_13_non_const_new_z > 0))
+#line 17 "marching.cu"
+{
+#line 18 "marching.cu"
+(voxels[((((__cuda_local_var_381544_13_non_const_new_z * width) * height) + (__cuda_local_var_381543_13_non_const_new_y * width)) + __cuda_local_var_381542_13_non_const_new_x)]) = (-1.0F);
+#line 19 "marching.cu"
+} 
+#line 21 "marching.cu"
+}}

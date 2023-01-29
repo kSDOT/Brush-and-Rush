@@ -51,7 +51,7 @@ public class VoxelArray : MonoBehaviour
     /// <summary>
     /// THe voxel data.
     /// </summary>
-    public float[,,] Voxels { get; private set; }
+    public float[,,] Voxels { get; set; }
 
     /// <summary>
     /// Get the voxel data at clamped indices x,y,z.
