@@ -22131,39 +22131,201 @@ int __cdecl rmtmp();
 }__pragma( pack ( pop )) 
 #line 2447
 #pragma warning(pop)
-#line 3 "marching.cu"
+#line 4 "marching.cu"
 class Vector3 { 
-#line 5
-public: float x; 
 #line 6
-float y; 
+public: float x; 
 #line 7
-float z; 
+float y; 
 #line 8
+float z; 
+#line 9
 }; 
-#line 12
+#line 11
 void carve(int width, int height, int depth, int x, int y, int z, float *voxels) ;
 #if 0
-#line 12
+#line 11
 { 
-#line 13
+#line 12
 int new_x = (x + (__device_builtin_variable_threadIdx.x)) - (1); 
-#line 14
+#line 13
 int new_y = (y + (__device_builtin_variable_threadIdx.y)) - (1); 
-#line 15
+#line 14
 int new_z = (z + (__device_builtin_variable_threadIdx.z)) - (1); 
-#line 17
+#line 16
 if ((((((new_x < width) && (new_x > 0)) && (new_y < height)) && (new_y > 0)) && (new_z < depth)) && (new_z > 0)) { 
+#line 17
+(voxels[(((new_x * height) * depth) + (new_y * width)) + new_z]) = (-1); 
 #line 18
-(voxels[(((new_z * width) * height) + (new_y * width)) + new_x]) = (-1); 
-#line 19
 }  
-#line 21
+#line 20
 } 
 #endif
-#line 23 "marching.cu"
-int main() { return 0; } 
+#line 21 "marching.cu"
+Vector3 *normalize_inversed(Vector3 *vec) {int volatile ___ = 1;(void)vec;::exit(___);}
+#if 0
+#line 21
+{ 
+#line 22
+float length = sqrt((pow(vec->x, 2) + pow(vec->y, 2)) + pow(vec->z, 2)); 
+#line 23
+(vec->x) = (((vec->x) / length) * (-1)); 
 #line 24
+(vec->y) = (((vec->y) / length) * (-1)); 
+#line 25
+(vec->z) = (((vec->z) / length) * (-1)); 
+#line 26
+return vec; 
+#line 27
+} 
+#endif
+#line 28 "marching.cu"
+float Lerp(float v0, float v1, float t) {int volatile ___ = 1;(void)v0;(void)v1;(void)t;::exit(___);}
+#if 0
+#line 29
+{ 
+#line 30
+return v0 + ((v1 - v0) * t); 
+#line 31
+} 
+#endif
+#line 33 "marching.cu"
+float BLerp(float v00, float v10, float v01, float v11, float tx, float ty) {int volatile ___ = 1;(void)v00;(void)v10;(void)v01;(void)v11;(void)tx;(void)ty;::exit(___);}
+#if 0
+#line 34
+{ 
+#line 35
+return Lerp(Lerp(v00, v10, tx), Lerp(v01, v11, tx), ty); 
+#line 36
+} 
+#endif
+#line 38 "marching.cu"
+float clamp(float d, float min, float max) {int volatile ___ = 1;(void)d;(void)min;(void)max;::exit(___);}
+#if 0
+#line 38
+{ 
+#line 39
+const float t = (d < min) ? min : d; 
+#line 40
+return (t > max) ? max : t; 
+#line 41
+} 
+#endif
+#line 43 "marching.cu"
+float GetVoxel_int(int x, int y, int z, int Width, int Height, int Depth, float *Voxels) {int volatile ___ = 1;(void)x;(void)y;(void)z;(void)Width;(void)Height;(void)Depth;(void)Voxels;::exit(___);}
+#if 0
+#line 43
+{ 
+#line 44
+x = (clamp(x, 0, Width - 1)); 
+#line 45
+y = (clamp(y, 0, Height - 1)); 
+#line 46
+z = (clamp(z, 0, Depth - 1)); 
+#line 47
+return Voxels[(((x * Height) * Depth) + (y * Width)) + z]; 
+#line 48
+} 
+#endif
+#line 52 "marching.cu"
+float GetVoxel(float u, float v, float w, int Width, int Height, int Depth, float *Voxels) {int volatile ___ = 1;(void)u;(void)v;(void)w;(void)Width;(void)Height;(void)Depth;(void)Voxels;::exit(___);}
+#if 0
+#line 53
+{ 
+#line 54
+float x = u * (Width - 1); 
+#line 55
+float y = v * (Height - 1); 
+#line 56
+float z = w * (Depth - 1); 
+#line 58
+int xi = (int)floor(x); 
+#line 59
+int yi = (int)floor(y); 
+#line 60
+int zi = (int)floor(z); 
+#line 62
+float v000 = GetVoxel_int(xi, yi, zi, Width, Height, Depth, Voxels); 
+#line 63
+float v100 = GetVoxel_int(xi + 1, yi, zi, Width, Height, Depth, Voxels); 
+#line 64
+float v010 = GetVoxel_int(xi, yi + 1, zi, Width, Height, Depth, Voxels); 
+#line 65
+float v110 = GetVoxel_int(xi + 1, yi + 1, zi, Width, Height, Depth, Voxels); 
+#line 67
+float v001 = GetVoxel_int(xi, yi, zi + 1, Width, Height, Depth, Voxels); 
+#line 68
+float v101 = GetVoxel_int(xi + 1, yi, zi + 1, Width, Height, Depth, Voxels); 
+#line 69
+float v011 = GetVoxel_int(xi, yi + 1, zi + 1, Width, Height, Depth, Voxels); 
+#line 70
+float v111 = GetVoxel_int(xi + 1, yi + 1, zi + 1, Width, Height, Depth, Voxels); 
+#line 72
+float tx = clamp(x - xi, 0, 1); 
+#line 73
+float ty = clamp(y - yi, 0, 1); 
+#line 74
+float tz = clamp(z - zi, 0, 1); 
+#line 77
+float v0 = BLerp(v000, v100, v010, v110, tx, ty); 
+#line 78
+float v1 = BLerp(v001, v101, v011, v111, tx, ty); 
+#line 80
+return Lerp(v0, v1, tz); 
+#line 81
+} 
+#endif
+#line 83 "marching.cu"
+void GetNormal(int N, int Width, int Height, int Depth, Vector3 *verts, float *Voxels, Vector3 *output) ;
+#if 0
+#line 84
+{ 
+#line 85
+int index = ((__device_builtin_variable_blockDim.x) * (__device_builtin_variable_blockIdx.x)) + (__device_builtin_variable_threadIdx.x); 
+#line 86
+if (index < N) { 
+#line 87
+float u = ((verts[index]).x) / (Width - (1.0F)); 
+#line 88
+float v = ((verts[index]).y) / (Height - (1.0F)); 
+#line 89
+float w = ((verts[index]).z) / (Depth - (1.0F)); 
+#line 90
+const float h = (0.004999999888F); 
+#line 91
+const float hh = h * (0.5F); 
+#line 92
+const float ih = (1.0F) / h; 
+#line 94
+float dx_p1 = GetVoxel(u + hh, v, w, Width, Height, Depth, Voxels); 
+#line 95
+float dy_p1 = GetVoxel(u, v + hh, w, Width, Height, Depth, Voxels); 
+#line 96
+float dz_p1 = GetVoxel(u, v, w + hh, Width, Height, Depth, Voxels); 
+#line 98
+float dx_m1 = GetVoxel(u - hh, v, w, Width, Height, Depth, Voxels); 
+#line 99
+float dy_m1 = GetVoxel(u, v - hh, w, Width, Height, Depth, Voxels); 
+#line 100
+float dz_m1 = GetVoxel(u, v, w - hh, Width, Height, Depth, Voxels); 
+#line 102
+float dx = (dx_p1 - dx_m1) * ih; 
+#line 103
+float dy = (dy_p1 - dy_m1) * ih; 
+#line 104
+float dz = (dz_p1 - dz_m1) * ih; 
+#line 105
+Vector3 out_temp = Vector3{dx, dy, dz}; 
+#line 106
+(output[index]) = (*normalize_inversed(&out_temp)); 
+#line 107
+}  
+#line 108
+} 
+#endif
+#line 111 "marching.cu"
+int main() { return 0; } 
+#line 112
 }
 #line 1 "marching.cudafe1.stub.c"
 #define _NV_ANON_NAMESPACE _GLOBAL__N__db1d6b41_11_marching_cu_carve

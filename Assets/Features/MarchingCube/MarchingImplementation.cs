@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
 using ManagedCuda;
@@ -13,41 +13,27 @@ namespace MarchingCubesProject
     public class MarchingImplementation : MonoBehaviour
     {
         GameObject MainCamera;
-
+        public Transform ReferenceObjectTransform;
+        public string OutputFileName;
+        public string InputFileName;
         public Material material;
-
-
-        private List<GameObject> meshes = new List<GameObject>();
-
 
         int meshIndex;
 
-        //The size of voxel array.
-        int width = 10;
-        int height = 10;
-        int depth = 10;
+        /// The size of voxel array.
+        public int width = 5;
+        public int height = 5;
+        public int depth = 5;
 
         public float scaleDivision = 10.0f;
 
         VoxelArray voxels;
-        List<Vector3> verts;
-        List<Vector3> normals;
-        List<int> indices;
         MarchingTetrahedron marching;
         [ContextMenu("TEST")]
         void CreateNew()
         {
-
-
-            //Surface is the value that represents the surface of mesh
-            //For example the perlin noise has a range of -1 to 1 so the mid point is where we want the surface to cut through.
-            //The target value does not have to be the mid point it can be any value with in the range.
-            marching.Surface = 0.0f;
-
-            Debug.Log("Befeore entering sample loop");
             voxels = new VoxelArray(width, height, depth);
-            d_Voxels = voxels.Voxels.Cast<float>().ToArray();
-            //Fill voxels with values. Im using perlin noise but any method to create voxels will work.
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -62,77 +48,138 @@ namespace MarchingCubesProject
                     }
                 }
             }
-            Debug.Log("After entering sample loop");
-
-            Debug.Log("Befeore generate");
 
             List<Vector3> verts = new List<Vector3>();
-            List<Vector3> normals = new List<Vector3>();
             List<int> indices = new List<int>();
 
             //The mesh produced is not optimal. There is one vert for each index.
             //Would need to weld vertices for better quality mesh.
             marching.Generate(voxels.Voxels, verts, indices);
 
-            Debug.Log("After generate");
+            d_Voxels = voxels.Voxels.Cast<float>().ToArray();
 
-            Debug.Log("Befeore normals");
+            Vector3[] vertsArray = verts.ToArray();
+            int length = vertsArray.Length;
 
-            for (int i = 0; i < verts.Count; i++)
-            {
-                //Presumes the vertex is in local space where
-                //the min value is 0 and max is width/height/depth.
-                Vector3 p = verts[i];
+            CudaDeviceVariable<Vector3> d_vertecies = vertsArray;
+            CudaDeviceVariable<Vector3> d_normals = new CudaDeviceVariable<Vector3>(length);
 
-                float u = p.x / (width - 1.0f);
-                float v = p.y / (height - 1.0f);
-                float w = p.z / (depth - 1.0f);
+            CudaNormal.BlockDimensions = 512;
+            CudaNormal.GridDimensions = (length + 511) / 512;
 
-                Vector3 n = voxels.GetNormal(u, v, w);
-
-                normals.Add(n);
-            }
-            Debug.Log("after normals");
-
-            Debug.Log("Befeore createmesh");
+            CudaNormal.Run(length, width, height, depth, d_vertecies.DevicePointer, d_Voxels.DevicePointer, d_normals.DevicePointer);
+            ctx.Synchronize();
+            Vector3[] normals = d_normals;
+            d_normals.Dispose();
+            d_vertecies.Dispose();
 
             var position = new Vector3(0, 0, 0);
 
-            CreateMesh(verts, normals, indices, position);
-            Debug.Log("After createmesh");
+            CreateMesh(vertsArray, normals, indices.ToArray(), position);
 
+        }
+
+        [ContextMenu("Save to file")]
+        void SaveToFile() {
+            FileStream filestream = new FileStream(Application.dataPath + "\\" + this.OutputFileName, FileMode.Create);
+            var streamwriter = new StreamWriter(filestream);
+            streamwriter.AutoFlush = true;
+            Console.SetOut(streamwriter);
+            Console.SetError(streamwriter);
+
+            System.Text.StringBuilder output = new System.Text.StringBuilder("");
+
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    for (int dep = 0; dep < this.depth; dep++) {
+
+                        if (dep != this.depth - 1 && col != width - 1) { Console.Write(String.Format("{0} ", voxels[row, col, dep])); }
+                        else { Console.Write(String.Format("{0}", voxels[row, col, dep])); }
+                    }
+                }
+                if (row != height - 1) { Console.WriteLine(); }
+            }
+            streamwriter.Flush();
+            streamwriter.Close();
+            Console.SetOut(null);
+            Console.SetError(null);
+        }
+        void LoadReferenceFromFile(string FileName)
+        {
+            String input = File.ReadAllText(Application.dataPath + "\\" + FileName);
+            int i = 0, j = 0, k = 0;
+            var voxels = new VoxelArray(width, height, depth);
+
+            // Load values from file into voxelarray
+            foreach (var row in input.Split('\n'))
+            {
+                j = 0;
+                foreach (var col in row.Trim().Split(' '))
+                {
+                    voxels[i, j, k] = int.Parse(col.Trim());
+                    k++;
+                    if (k == depth)
+                    {
+                        k = 0;
+                        j++;
+                    }
+                }
+                i++;
+            }
+
+
+            List<Vector3> verts = new List<Vector3>();
+            List<int> indices = new List<int>();
+
+            marching.Generate(voxels.Voxels, verts, indices);
+
+            d_Voxels = voxels.Voxels.Cast<float>().ToArray();
+
+            Vector3[] vertsArray = verts.ToArray();
+            int length = vertsArray.Length;
+
+            CudaDeviceVariable<Vector3> d_vertecies = vertsArray;
+            CudaDeviceVariable<Vector3> d_normals = new CudaDeviceVariable<Vector3>(length);
+
+            CudaNormal.BlockDimensions = 512;
+            CudaNormal.GridDimensions = (length + 511) / 512;
+
+            CudaNormal.Run(length, width, height, depth, d_vertecies.DevicePointer, d_Voxels.DevicePointer, d_normals.DevicePointer);
+            ctx.Synchronize();
+            Vector3[] normals = d_normals;
+            d_normals.Dispose();
+            d_vertecies.Dispose();
+
+            var position = new Vector3(0, 0, 0);
+
+            CreateMesh(vertsArray, normals, indices.ToArray(), position, true);
 
         }
         void UpdateValues()
         {
             List<Vector3> verts = new List<Vector3>();
-            List<Vector3> normals = new List<Vector3>();
             List<int> indices = new List<int>();
-
-            //The mesh produced is not optimal. There is one vert for each index.
-            //Would need to weld vertices for better quality mesh.
             marching.Generate(voxels.Voxels, verts, indices);
 
-            //marching.Generate(voxels.Voxels, verts, indices);
-            for (int i = 0; i < verts.Count; i++)
-            {
-                //Presumes the vertex is in local space where
-                //the min value is 0 and max is width/height/depth.
-                Vector3 p = verts[i];
+            d_Voxels = voxels.Voxels.Cast<float>().ToArray();
+            Vector3[] vertsArray = verts.ToArray();
+            int length = vertsArray.Length;
 
-                float u = p.x / (width - 1.0f);
-                float v = p.y / (height - 1.0f);
-                float w = p.z / (depth - 1.0f);
+            CudaDeviceVariable<Vector3> d_vertecies = vertsArray;
+            CudaDeviceVariable<Vector3> d_normals = new CudaDeviceVariable<Vector3>(length);
 
-                Vector3 n = voxels.GetNormal(u, v, w);
-
-                normals.Add(n);
-            }
-
-
+            CudaNormal.Run(length, width, height, depth, d_vertecies.DevicePointer, d_Voxels.DevicePointer, d_normals.DevicePointer);
             var position = new Vector3(0, 0, 0);
+            ctx.Synchronize();
 
-            CreateMesh(verts, normals, indices, position);
+            Vector3[] normals = d_normals;
+
+            d_normals.Dispose();
+            d_vertecies.Dispose();
+
+            CreateMesh(vertsArray, normals, indices.ToArray(), position);
         }
         public virtual float Sample3D(float x, float y, float z)
         {
@@ -155,44 +202,52 @@ namespace MarchingCubesProject
             }
         }
 
-        private void CreateMesh(List<Vector3> verts, List<Vector3> normals, List<int> indices, Vector3 position)
+        private void CreateMesh(Vector3[] verts, Vector3[] normals, int[] indices, Vector3 position, bool ReferenceMesh=false)
         {
             Mesh mesh = new Mesh();
             mesh.indexFormat = IndexFormat.UInt32;
             mesh.SetVertices(verts);
             mesh.SetTriangles(indices, 0);
 
-            if (normals.Count > 0)
+            if (normals.Length > 0)
                 mesh.SetNormals(normals);
             else
                 mesh.RecalculateNormals();
 
             mesh.RecalculateBounds();
-
-            if (this.meshIndex != 0)
+            GameObject go;
+            if (!ReferenceMesh)
             {
-                Destroy(GameObject.Find("Mesh"+(meshIndex-1)));
+                if (this.meshIndex != 0)
+                {
+                    Destroy(GameObject.Find("Mesh"+(meshIndex-1)));
+                }
+
+                go = new GameObject("Mesh"+this.meshIndex++);
+                go.tag = "Cube";
+                go.transform.localPosition = position;
+                go.transform.parent = transform;
+
             }
-            GameObject go = new GameObject("Mesh"+this.meshIndex++);
-            //go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            go.tag = "Cube";
-            go.transform.parent = transform;
+            else
+            {
+                go = new GameObject("Reference");
+                go.transform.parent = this.ReferenceObjectTransform;
+                
+            }
             go.AddComponent<MeshFilter>();
             go.AddComponent<MeshRenderer>();
             go.GetComponent<Renderer>().material = material;
             go.GetComponent<MeshFilter>().mesh = mesh;
-            go.transform.localPosition = position;
             go.AddComponent<MeshCollider>();
 
-            meshes.Add(go);
         }
        
         CudaKernel CudaCarve;
-        CudaKernel CudaDiff;
-        CudaKernel CudaOverlay;
+        CudaKernel CudaNormal;
         
         CudaContext ctx;
-        CudaDeviceVariable<int> d_filter;
+        CudaDeviceVariable<Vector3> d_normals;
         CudaDeviceVariable<float> d_Voxels;
 
         private void Start()
@@ -210,10 +265,13 @@ namespace MarchingCubesProject
 
             this.ctx = new CudaContext();
             this.CudaCarve = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\Marching.ptx", "carve");
-            //this.CudaDiff = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "diff");
-            //this.CudaOverlay = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "overlay");
+            CudaCarve.BlockDimensions = new ManagedCuda.VectorTypes.dim3(3, 3, 3);
+            CudaCarve.GridDimensions = 1;
+
+            this.CudaNormal = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\Marching.ptx", "GetNormal");
 
             #endregion
+            this.LoadReferenceFromFile(this.OutputFileName);
         }
         private void OnDestroy()
         {
@@ -282,67 +340,27 @@ namespace MarchingCubesProject
 
         private void modify(Vector3 hitRelative)
         {
-            Debug.Log("Hitrelative: " + hitRelative);
-
             int x = Mathf.RoundToInt(hitRelative.x);
             int y = Mathf.RoundToInt(hitRelative.y);
             int z = Mathf.RoundToInt(hitRelative.z);
 
-
-            CudaCarve.BlockDimensions = new ManagedCuda.VectorTypes.dim3(3 ,3 ,3);
-            CudaCarve.GridDimensions = 1;
-
             CudaCarve.Run(width, height, depth, x, y, z, this.d_Voxels.DevicePointer);
-            Buffer.BlockCopy(d_Voxels, 0, voxels.Voxels, 0, width * height * depth);
+
             ctx.Synchronize();
-            //for (int i = -1; i <= 1; i++)
-            //{
-            //    for (int j = -1; j <= 1; j++)
-            //    {
-            //        for (int k = -1; k <= 1; k++)
-            //        {
-
-            //        }
-
-            //    }
-            //}
-            //voxels[x, y, z] = -1;
-            //if(x < width - 1)
-            //{
-            //    voxels[x+1, y, z] = -1;
-            //}
-            //if (x > 0)
-            //{
-            //    voxels[x - 1, y, z] = -1;
-
-            //}
-            //if (y < height - 1)
-            //{
-            //    voxels[x, y+1, z] = -1;
-
-            //}
-            //if (y > 0)
-            //{
-            //    voxels[x, y-1, z] = -1;
-
-            //}
-            //if (z < depth - 1)
-            //{
-            //    voxels[x, y, z+1] = -1;
-
-            //}
-            //if (z > 0)
-            //{
-            //    voxels[x, y, z-1] = -1;
-            //}
-
+            // block copy doesnt work, so have to do element-wise copy :/
+            float[] v = this.d_Voxels;
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    for (int k = 0; k < depth; k++)
+                    {
+                        this.voxels.Voxels[i, j, k] = v[i * (height * depth) + j * depth + k];
+                    }
+                      
+                }
+            }
         }
-
-        private Vector3 AbsDistance(Vector3 vec1, Vector3 vec2)
-        {
-            return new Vector3(Mathf.Abs(vec1.x) - Mathf.Abs(vec2.x), Mathf.Abs(vec1.y) - Mathf.Abs(vec2.y), Mathf.Abs(vec1.z) - Mathf.Abs(vec2.z));
-        }
-
 
     }
 
