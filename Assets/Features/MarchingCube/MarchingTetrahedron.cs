@@ -95,7 +95,7 @@ namespace MarchingCubesProject
         /// <summary>
         /// Winding order of triangles use 2,1,0 or 0,1,2
         /// </summary>
-        protected int[] WindingOrder { get; private set; }
+        protected int[] WindingOrder;
 
 
         public MarchingTetrahedron(float scale = 1.0f, float surface = 0.0f)
@@ -123,8 +123,6 @@ namespace MarchingCubesProject
             int width = voxels.GetLength(0);
             int height = voxels.GetLength(1);
             int depth = voxels.GetLength(2);
-
-            UpdateWindingOrder();
 
             int x, y, z, i;
             int ix, iy, iz;
@@ -223,31 +221,8 @@ namespace MarchingCubesProject
                 {
                     vert = TetrahedronTriangles[flagIndex, 3 * i + j];
                     indexList.Add(idx + WindingOrder[j]);
-                    vertList.Add(EdgeVertex[vert]/10);
+                    vertList.Add(EdgeVertex[vert]/Scale);
                 }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="voxels"></param>
-        /// <param name="verts"></param>
-        /// <param name="indices"></param>
-
-        protected virtual void UpdateWindingOrder()
-        {
-            if (Surface > 0.0f)
-            {
-                WindingOrder[0] = 2;
-                WindingOrder[1] = 1;
-                WindingOrder[2] = 0;
-            }
-            else
-            {
-                WindingOrder[0] = 0;
-                WindingOrder[1] = 1;
-                WindingOrder[2] = 2;
             }
         }
 

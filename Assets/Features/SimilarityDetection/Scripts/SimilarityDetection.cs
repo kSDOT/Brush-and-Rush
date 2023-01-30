@@ -123,7 +123,7 @@ public class SimilarityDetection : MonoBehaviour
         score = (Mathf.Clamp(MaxError - score, 0, MaxError)/MaxError) //make sure its in [0, 1] range
                                                                 * 100;// expand to [0, 100]
 
-        // make sure its in [0, 100] range, using 2 decimal digits
+        // make sure its in [0, 100] range, using 1 decimal digits
         return Mathf.Clamp(Mathf.Round(score * 10.0f) * 0.1f, 0, 100);
 
     }

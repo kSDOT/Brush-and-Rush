@@ -22155,7 +22155,7 @@ int new_z = (z + (__device_builtin_variable_threadIdx.z)) - (1);
 #line 16
 if ((((((new_x < width) && (new_x > 0)) && (new_y < height)) && (new_y > 0)) && (new_z < depth)) && (new_z > 0)) { 
 #line 17
-(voxels[(((new_x * height) * depth) + (new_y * width)) + new_z]) = (-1); 
+(voxels[(((new_x * height) * depth) + (new_y * depth)) + new_z]) = (-1); 
 #line 18
 }  
 #line 20
@@ -22223,7 +22223,7 @@ y = (clamp(y, 0, Height - 1));
 #line 46
 z = (clamp(z, 0, Depth - 1)); 
 #line 47
-return Voxels[(((x * Height) * Depth) + (y * Width)) + z]; 
+return Voxels[(((y * Height) * Depth) + (z * Depth)) + x]; 
 #line 48
 } 
 #endif
@@ -22290,42 +22290,42 @@ float u = ((verts[index]).x) / (Width - (1.0F));
 float v = ((verts[index]).y) / (Height - (1.0F)); 
 #line 89
 float w = ((verts[index]).z) / (Depth - (1.0F)); 
-#line 90
-const float h = (0.004999999888F); 
 #line 91
-const float hh = h * (0.5F); 
+const float h = (0.004999999888F); 
 #line 92
+const float hh = h * (0.5F); 
+#line 93
 const float ih = (1.0F) / h; 
-#line 94
-float dx_p1 = GetVoxel(u + hh, v, w, Width, Height, Depth, Voxels); 
 #line 95
-float dy_p1 = GetVoxel(u, v + hh, w, Width, Height, Depth, Voxels); 
+float dx_p1 = GetVoxel(u + hh, v, w, Width, Height, Depth, Voxels); 
 #line 96
+float dy_p1 = GetVoxel(u, v + hh, w, Width, Height, Depth, Voxels); 
+#line 97
 float dz_p1 = GetVoxel(u, v, w + hh, Width, Height, Depth, Voxels); 
-#line 98
-float dx_m1 = GetVoxel(u - hh, v, w, Width, Height, Depth, Voxels); 
 #line 99
-float dy_m1 = GetVoxel(u, v - hh, w, Width, Height, Depth, Voxels); 
+float dx_m1 = GetVoxel(u - hh, v, w, Width, Height, Depth, Voxels); 
 #line 100
+float dy_m1 = GetVoxel(u, v - hh, w, Width, Height, Depth, Voxels); 
+#line 101
 float dz_m1 = GetVoxel(u, v, w - hh, Width, Height, Depth, Voxels); 
-#line 102
-float dx = (dx_p1 - dx_m1) * ih; 
 #line 103
-float dy = (dy_p1 - dy_m1) * ih; 
+float dx = (dx_p1 - dx_m1) * ih; 
 #line 104
-float dz = (dz_p1 - dz_m1) * ih; 
+float dy = (dy_p1 - dy_m1) * ih; 
 #line 105
-Vector3 out_temp = Vector3{dx, dy, dz}; 
+float dz = (dz_p1 - dz_m1) * ih; 
 #line 106
-(output[index]) = (*normalize_inversed(&out_temp)); 
+Vector3 out_temp = Vector3{dx, dy, dz}; 
 #line 107
+(output[index]) = (*normalize_inversed(&out_temp)); 
+#line 109
 }  
-#line 108
+#line 110
 } 
 #endif
-#line 111 "marching.cu"
+#line 113 "marching.cu"
 int main() { return 0; } 
-#line 112
+#line 114
 }
 #line 1 "marching.cudafe1.stub.c"
 #define _NV_ANON_NAMESPACE _GLOBAL__N__db1d6b41_11_marching_cu_carve

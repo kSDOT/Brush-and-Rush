@@ -385,7 +385,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161410547}
   m_LocalRotation: {x: -0, y: -0.4707801, z: -0, w: 0.8822506}
-  m_LocalPosition: {x: 2.67, y: 4.37, z: 21.81}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -407,10 +407,11 @@ MonoBehaviour:
   ReferenceObjectTransform: {fileID: 1531181134}
   OutputFileName: Features\MarchingCube\TestFile
   InputFileName: 
-  material: {fileID: 2100000, guid: 9f88b0ebdfac59843a9d90c6f7251acd, type: 2}
-  width: 10
-  height: 10
-  depth: 10
+  SculptureMaterial: {fileID: 0}
+  ErrorMaterial: {fileID: 0}
+  width: 42
+  height: 42
+  depth: 42
   scaleDivision: 10
 --- !u!1 &1531181133
 GameObject:
@@ -520,7 +521,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2125956466}
   m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: 3.091, y: 4.918, z: 28.14}
+  m_LocalPosition: {x: 0.545, y: 0.479, z: 9.339}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

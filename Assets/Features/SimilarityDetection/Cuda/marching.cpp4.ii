@@ -321928,7 +321928,7 @@ typedef __int64 fpos_t;
         int new_z = z+threadIdx.z - 1;
 
 		if( new_x < width  && new_x>0 &&  new_y < height  && new_y>0 &&  new_z < depth  && new_z>0){
-            voxels[new_x * height * depth + new_y * width + new_z] = -1;
+            voxels[new_x * height * depth + new_y * depth + new_z] = -1;
 		}
 
 	}
@@ -321958,7 +321958,7 @@ typedef __int64 fpos_t;
         x = clamp(x, 0, Width - 1);
         y = clamp(y, 0, Height - 1);
         z = clamp(z, 0, Depth - 1);
-        return Voxels[x * Height * Depth + y * Width + z];
+        return Voxels[y * Height * Depth + z * Depth + x];
     }
 
 
@@ -321973,14 +321973,14 @@ typedef __int64 fpos_t;
         int yi = (int)floor(y);
         int zi = (int)floor(z);
 
-        float v000 = GetVoxel_int(xi, yi, zi        , Width, Height, Depth, Voxels);
-        float v100 = GetVoxel_int(xi + 1, yi, zi    , Width, Height, Depth, Voxels);
-        float v010 = GetVoxel_int(xi, yi + 1, zi    , Width, Height, Depth, Voxels);
-        float v110 = GetVoxel_int(xi + 1, yi + 1, zi, Width, Height, Depth, Voxels);
+        float v000 = GetVoxel_int(xi    , yi    , zi    , Width, Height, Depth, Voxels);
+        float v100 = GetVoxel_int(xi + 1, yi    , zi    , Width, Height, Depth, Voxels);
+        float v010 = GetVoxel_int(xi    , yi + 1, zi    , Width, Height, Depth, Voxels);
+        float v110 = GetVoxel_int(xi + 1, yi + 1, zi    , Width, Height, Depth, Voxels);
 
-        float v001 = GetVoxel_int(xi, yi, zi + 1        , Width, Height, Depth, Voxels);
-        float v101 = GetVoxel_int(xi + 1, yi, zi + 1    , Width, Height, Depth, Voxels);
-        float v011 = GetVoxel_int(xi, yi + 1, zi + 1    , Width, Height, Depth, Voxels);
+        float v001 = GetVoxel_int(xi    , yi    , zi + 1        , Width, Height, Depth, Voxels);
+        float v101 = GetVoxel_int(xi + 1, yi    , zi + 1    , Width, Height, Depth, Voxels);
+        float v011 = GetVoxel_int(xi    , yi + 1, zi + 1    , Width, Height, Depth, Voxels);
         float v111 = GetVoxel_int(xi + 1, yi + 1, zi + 1, Width, Height, Depth, Voxels);
 
         float tx = clamp(x - xi, 0 ,1);
@@ -322001,23 +322001,25 @@ typedef __int64 fpos_t;
             float u = verts[index].x / (Width - 1.0f);
             float v = verts[index].y / (Height - 1.0f);
             float w = verts[index].z / (Depth - 1.0f);
+
             const float h = 0.005f;
             const float hh = h * 0.5f;
             const float ih = 1.0f / h;
 
-            float dx_p1 = GetVoxel(u + hh, v, w, Width, Height, Depth, Voxels);
-            float dy_p1 = GetVoxel(u, v + hh, w, Width, Height, Depth, Voxels);
-            float dz_p1 = GetVoxel(u, v, w + hh, Width, Height, Depth, Voxels);
+            float dx_p1 = GetVoxel(u + hh, v     , w     , Width, Height, Depth, Voxels);
+            float dy_p1 = GetVoxel(u     , v + hh, w     , Width, Height, Depth, Voxels);
+            float dz_p1 = GetVoxel(u     , v     , w + hh, Width, Height, Depth, Voxels);
 
-            float dx_m1 = GetVoxel(u - hh, v, w, Width, Height, Depth, Voxels);
-            float dy_m1 = GetVoxel(u, v - hh, w, Width, Height, Depth, Voxels);
-            float dz_m1 = GetVoxel(u, v, w - hh, Width, Height, Depth, Voxels);
+            float dx_m1 = GetVoxel(u - hh, v     , w     , Width, Height, Depth, Voxels);
+            float dy_m1 = GetVoxel(u     , v - hh, w     , Width, Height, Depth, Voxels);
+            float dz_m1 = GetVoxel(u     , v     , w - hh, Width, Height, Depth, Voxels);
 
             float dx = (dx_p1 - dx_m1) * ih;
             float dy = (dy_p1 - dy_m1) * ih;
             float dz = (dz_p1 - dz_m1) * ih;
             Vector3 out_temp =  Vector3{dx, dy, dz};
             output[index] = *normalize_inversed(&out_temp);
+            
         }
     }
 

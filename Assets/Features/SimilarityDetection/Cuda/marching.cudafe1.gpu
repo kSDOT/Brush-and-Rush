@@ -206,7 +206,7 @@ y = ((int)(clamp(((float)y), (0.0F), ((float)(Height - 1)))));
 #line 46 "marching.cu"
 z = ((int)(clamp(((float)z), (0.0F), ((float)(Depth - 1)))));
 #line 47 "marching.cu"
-return Voxels[((((x * Height) * Depth) + (y * Width)) + z)];
+return Voxels[((((y * Height) * Depth) + (z * Depth)) + x)];
 #line 48 "marching.cu"
 }}
 #line 52 "marching.cu"
@@ -342,7 +342,7 @@ if ((((((__cuda_local_var_381541_13_non_const_new_x < width) && (__cuda_local_va
 #line 16 "marching.cu"
 {
 #line 17 "marching.cu"
-(voxels[((((__cuda_local_var_381541_13_non_const_new_x * height) * depth) + (__cuda_local_var_381542_13_non_const_new_y * width)) + __cuda_local_var_381543_13_non_const_new_z)]) = (-1.0F);
+(voxels[((((__cuda_local_var_381541_13_non_const_new_x * height) * depth) + (__cuda_local_var_381542_13_non_const_new_y * depth)) + __cuda_local_var_381543_13_non_const_new_z)]) = (-1.0F);
 #line 18 "marching.cu"
 } 
 #line 20 "marching.cu"
@@ -379,71 +379,71 @@ if (__cuda_local_var_381614_7_non_const_index < N)
  float __cuda_local_var_381617_19_non_const_v;
 #line 89 "marching.cu"
  float __cuda_local_var_381618_19_non_const_w;
-#line 90 "marching.cu"
- float __cuda_local_var_381619_25_const_h;
 #line 91 "marching.cu"
- float __cuda_local_var_381620_25_non_const_hh;
+ float __cuda_local_var_381620_25_const_h;
 #line 92 "marching.cu"
- float __cuda_local_var_381621_25_non_const_ih;
-#line 94 "marching.cu"
- float __cuda_local_var_381623_19_non_const_dx_p1;
+ float __cuda_local_var_381621_25_non_const_hh;
+#line 93 "marching.cu"
+ float __cuda_local_var_381622_25_non_const_ih;
 #line 95 "marching.cu"
- float __cuda_local_var_381624_19_non_const_dy_p1;
+ float __cuda_local_var_381624_19_non_const_dx_p1;
 #line 96 "marching.cu"
- float __cuda_local_var_381625_19_non_const_dz_p1;
-#line 98 "marching.cu"
- float __cuda_local_var_381627_19_non_const_dx_m1;
+ float __cuda_local_var_381625_19_non_const_dy_p1;
+#line 97 "marching.cu"
+ float __cuda_local_var_381626_19_non_const_dz_p1;
 #line 99 "marching.cu"
- float __cuda_local_var_381628_19_non_const_dy_m1;
+ float __cuda_local_var_381628_19_non_const_dx_m1;
 #line 100 "marching.cu"
- float __cuda_local_var_381629_19_non_const_dz_m1;
-#line 102 "marching.cu"
- float __cuda_local_var_381631_19_non_const_dx;
+ float __cuda_local_var_381629_19_non_const_dy_m1;
+#line 101 "marching.cu"
+ float __cuda_local_var_381630_19_non_const_dz_m1;
 #line 103 "marching.cu"
- float __cuda_local_var_381632_19_non_const_dy;
+ float __cuda_local_var_381632_19_non_const_dx;
 #line 104 "marching.cu"
- float __cuda_local_var_381633_19_non_const_dz;
+ float __cuda_local_var_381633_19_non_const_dy;
 #line 105 "marching.cu"
- struct Vector3 __cuda_local_var_381634_21_non_const_out_temp;
+ float __cuda_local_var_381634_19_non_const_dz;
+#line 106 "marching.cu"
+ struct Vector3 __cuda_local_var_381635_21_non_const_out_temp;
 #line 87 "marching.cu"
 __cuda_local_var_381616_19_non_const_u = ( fdividef(((verts[__cuda_local_var_381614_7_non_const_index]).x) , (((float)Width) - (1.0F))));
 #line 88 "marching.cu"
 __cuda_local_var_381617_19_non_const_v = ( fdividef(((verts[__cuda_local_var_381614_7_non_const_index]).y) , (((float)Height) - (1.0F))));
 #line 89 "marching.cu"
 __cuda_local_var_381618_19_non_const_w = ( fdividef(((verts[__cuda_local_var_381614_7_non_const_index]).z) , (((float)Depth) - (1.0F))));
-#line 90 "marching.cu"
-__cuda_local_var_381619_25_const_h = (0.004999999888F);
 #line 91 "marching.cu"
-__cuda_local_var_381620_25_non_const_hh = (__cuda_local_var_381619_25_const_h * (0.5F));
+__cuda_local_var_381620_25_const_h = (0.004999999888F);
 #line 92 "marching.cu"
-__cuda_local_var_381621_25_non_const_ih = ((1.0F) / __cuda_local_var_381619_25_const_h);
-#line 94 "marching.cu"
-__cuda_local_var_381623_19_non_const_dx_p1 = (GetVoxel((__cuda_local_var_381616_19_non_const_u + __cuda_local_var_381620_25_non_const_hh), __cuda_local_var_381617_19_non_const_v, __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+__cuda_local_var_381621_25_non_const_hh = (__cuda_local_var_381620_25_const_h * (0.5F));
+#line 93 "marching.cu"
+__cuda_local_var_381622_25_non_const_ih = ((1.0F) / __cuda_local_var_381620_25_const_h);
 #line 95 "marching.cu"
-__cuda_local_var_381624_19_non_const_dy_p1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, (__cuda_local_var_381617_19_non_const_v + __cuda_local_var_381620_25_non_const_hh), __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+__cuda_local_var_381624_19_non_const_dx_p1 = (GetVoxel((__cuda_local_var_381616_19_non_const_u + __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381617_19_non_const_v, __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
 #line 96 "marching.cu"
-__cuda_local_var_381625_19_non_const_dz_p1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, __cuda_local_var_381617_19_non_const_v, (__cuda_local_var_381618_19_non_const_w + __cuda_local_var_381620_25_non_const_hh), Width, Height, Depth, Voxels));
-#line 98 "marching.cu"
-__cuda_local_var_381627_19_non_const_dx_m1 = (GetVoxel((__cuda_local_var_381616_19_non_const_u - __cuda_local_var_381620_25_non_const_hh), __cuda_local_var_381617_19_non_const_v, __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+__cuda_local_var_381625_19_non_const_dy_p1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, (__cuda_local_var_381617_19_non_const_v + __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+#line 97 "marching.cu"
+__cuda_local_var_381626_19_non_const_dz_p1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, __cuda_local_var_381617_19_non_const_v, (__cuda_local_var_381618_19_non_const_w + __cuda_local_var_381621_25_non_const_hh), Width, Height, Depth, Voxels));
 #line 99 "marching.cu"
-__cuda_local_var_381628_19_non_const_dy_m1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, (__cuda_local_var_381617_19_non_const_v - __cuda_local_var_381620_25_non_const_hh), __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+__cuda_local_var_381628_19_non_const_dx_m1 = (GetVoxel((__cuda_local_var_381616_19_non_const_u - __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381617_19_non_const_v, __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
 #line 100 "marching.cu"
-__cuda_local_var_381629_19_non_const_dz_m1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, __cuda_local_var_381617_19_non_const_v, (__cuda_local_var_381618_19_non_const_w - __cuda_local_var_381620_25_non_const_hh), Width, Height, Depth, Voxels));
-#line 102 "marching.cu"
-__cuda_local_var_381631_19_non_const_dx = ((__cuda_local_var_381623_19_non_const_dx_p1 - __cuda_local_var_381627_19_non_const_dx_m1) * __cuda_local_var_381621_25_non_const_ih);
+__cuda_local_var_381629_19_non_const_dy_m1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, (__cuda_local_var_381617_19_non_const_v - __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+#line 101 "marching.cu"
+__cuda_local_var_381630_19_non_const_dz_m1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, __cuda_local_var_381617_19_non_const_v, (__cuda_local_var_381618_19_non_const_w - __cuda_local_var_381621_25_non_const_hh), Width, Height, Depth, Voxels));
 #line 103 "marching.cu"
-__cuda_local_var_381632_19_non_const_dy = ((__cuda_local_var_381624_19_non_const_dy_p1 - __cuda_local_var_381628_19_non_const_dy_m1) * __cuda_local_var_381621_25_non_const_ih);
+__cuda_local_var_381632_19_non_const_dx = ((__cuda_local_var_381624_19_non_const_dx_p1 - __cuda_local_var_381628_19_non_const_dx_m1) * __cuda_local_var_381622_25_non_const_ih);
 #line 104 "marching.cu"
-__cuda_local_var_381633_19_non_const_dz = ((__cuda_local_var_381625_19_non_const_dz_p1 - __cuda_local_var_381629_19_non_const_dz_m1) * __cuda_local_var_381621_25_non_const_ih);
+__cuda_local_var_381633_19_non_const_dy = ((__cuda_local_var_381625_19_non_const_dy_p1 - __cuda_local_var_381629_19_non_const_dy_m1) * __cuda_local_var_381622_25_non_const_ih);
 #line 105 "marching.cu"
-(__cuda_local_var_381634_21_non_const_out_temp.x) = __cuda_local_var_381631_19_non_const_dx;
-#line 105 "marching.cu"
-(__cuda_local_var_381634_21_non_const_out_temp.y) = __cuda_local_var_381632_19_non_const_dy;
-#line 105 "marching.cu"
-(__cuda_local_var_381634_21_non_const_out_temp.z) = __cuda_local_var_381633_19_non_const_dz;
+__cuda_local_var_381634_19_non_const_dz = ((__cuda_local_var_381626_19_non_const_dz_p1 - __cuda_local_var_381630_19_non_const_dz_m1) * __cuda_local_var_381622_25_non_const_ih);
 #line 106 "marching.cu"
-(output[__cuda_local_var_381614_7_non_const_index]) = (*(normalize_inversed((&__cuda_local_var_381634_21_non_const_out_temp))));
+(__cuda_local_var_381635_21_non_const_out_temp.x) = __cuda_local_var_381632_19_non_const_dx;
+#line 106 "marching.cu"
+(__cuda_local_var_381635_21_non_const_out_temp.y) = __cuda_local_var_381633_19_non_const_dy;
+#line 106 "marching.cu"
+(__cuda_local_var_381635_21_non_const_out_temp.z) = __cuda_local_var_381634_19_non_const_dz;
 #line 107 "marching.cu"
+(output[__cuda_local_var_381614_7_non_const_index]) = (*(normalize_inversed((&__cuda_local_var_381635_21_non_const_out_temp))));
+#line 109 "marching.cu"
 } 
-#line 108 "marching.cu"
+#line 110 "marching.cu"
 }}
