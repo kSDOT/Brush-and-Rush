@@ -406,12 +406,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ReferenceObjectTransform: {fileID: 1531181134}
   OutputFileName: Features\MarchingCube\TestFile
-  InputFileName: 
-  SculptureMaterial: {fileID: 0}
-  ErrorMaterial: {fileID: 0}
-  width: 42
-  height: 42
-  depth: 42
+  InputFileName: Features\MarchingCube\TestFile
+  SculptureMaterial: {fileID: 2100000, guid: 86db91c1425480a4c906f21128f355db, type: 2}
+  ErrorMaterial: {fileID: 2100000, guid: e730b305d7178c346b7e34a0f4ae26e7, type: 2}
+  width: 84
+  height: 84
+  depth: 84
   scaleDivision: 10
 --- !u!1 &1531181133
 GameObject:
@@ -423,7 +423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1531181134}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: Reference Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -437,7 +437,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1531181133}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.8382435, y: 12.189527, z: 18.563444}
+  m_LocalPosition: {x: -5.93, y: 0, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

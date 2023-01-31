@@ -13,9 +13,13 @@ namespace MarchingCubesProject
     {
         GameObject MainCamera;
         /// <summary>
-        /// The transform of sculpture we will copy
+        /// The transform parent of sculpture we will copy
         /// </summary>
         public Transform ReferenceObjectTransform;
+        /// <summary>
+        /// Our copied object
+        /// </summary>
+        private GameObject CopiedObject;
         /// <summary>
         /// Used if you want to save a sculpture to file (assets path is prepended)
         /// </summary>
@@ -32,11 +36,6 @@ namespace MarchingCubesProject
         /// Material used for the error overlay
         /// </summary>
         public Material ErrorMaterial;
-
-        /// <summary>
-        /// Used to construct the next voxel
-        /// </summary>
-        int meshIndex;
 
         /// <summary>
         /// Dimensions of the voxel grid
@@ -56,10 +55,15 @@ namespace MarchingCubesProject
         /// Voxel grid (3d) with isovalues
         /// </summary>
         float[,,] voxels;
+
+        /// <summary>
+        /// Voxel grid for reference
+        /// </summary>
+        float[,,] referenceVoxels;
         /// <summary>
         /// Marching Tetrahedron
         /// </summary>
-        MarchingTetrahedron marching;
+        MarchingCubes marching;
         /// <summary>
         /// Constructs a cube
         /// </summary>
@@ -86,12 +90,9 @@ namespace MarchingCubesProject
             List<Vector3> verts = new List<Vector3>();
             List<int> indices = new List<int>();
 
-            //The mesh produced is not optimal. There is one vert for each index.
-            //Would need to weld vertices for better quality mesh.
             marching.Generate(voxels, verts, indices);
-            var position = new Vector3(0, 0, 0);
-            CreateMesh(verts, indices, position, false);
 
+            CreateMesh(verts, indices);
         }
 
         [ContextMenu("Save to file")]
@@ -126,7 +127,7 @@ namespace MarchingCubesProject
         {
             String input = File.ReadAllText(Application.dataPath + "\\" + FileName);
             int i = 0, j = 0, k = 0;
-            var voxels = new float[width, height, depth];
+            this.referenceVoxels = new float[width, height, depth];
 
             // Load values from file into voxelarray
             foreach (var row in input.Split('\n'))
@@ -134,7 +135,7 @@ namespace MarchingCubesProject
                 j = 0;
                 foreach (var col in row.Trim().Split(' '))
                 {
-                    voxels[i, j, k] = int.Parse(col.Trim());
+                    referenceVoxels[i, j, k] = int.Parse(col.Trim());
                     k++;
                     if (k == depth)
                     {
@@ -149,12 +150,10 @@ namespace MarchingCubesProject
             List<Vector3> verts = new List<Vector3>();
             List<int> indices = new List<int>();
 
-            marching.Generate(voxels, verts, indices);
+            marching.Generate(this.referenceVoxels, verts, indices);
 
 
-            var position = new Vector3(0, 0, 0);
-
-          //  CreateMesh(vertsArray, indices.ToArray(), position, true);
+            CreateMeshReference(verts, indices);
 
         }
         /// <summary>
@@ -166,11 +165,15 @@ namespace MarchingCubesProject
             List<int> indices = new List<int>();
             marching.Generate(voxels, verts, indices);
 
-            var position = new Vector3(0, 0, 0);
-            CreateMesh(verts, indices, position, false);
+            CreateMesh(verts, indices);
         }
-
-        double Compare(float[,,] other, GameObject parent)
+        [ContextMenu("Compare")]
+        void Compare()
+        {
+            GameObject parent = new GameObject("Compare");
+            this.Compare(parent);
+        }
+        double Compare(GameObject parent )
         {
             float errorAccumulator = 0;
             for (int x = 0; x < width; x++)
@@ -179,85 +182,122 @@ namespace MarchingCubesProject
                 {
                     for (int z = 0; z < depth; z++)
                     {
-                        this.voxels[x, y, z] = -other[x, y, z] * this.voxels[x, y, z];
+                        this.voxels[x, y, z] = -referenceVoxels[x, y, z] * this.voxels[x, y, z];
                         if (this.voxels[x, y, z] == -1) { 
                             errorAccumulator++;
                         }
                     }
                 }
             }
+            var opaque_material = this.CopiedObject.GetComponent<MeshRenderer>().material.color;
+            opaque_material= new Color(opaque_material.r, opaque_material.g, opaque_material.b, 0.3f);
+            this.CopiedObject.GetComponent<MeshRenderer>().material.color = opaque_material;
+            this.CopiedObject.transform.SetParent(parent.transform);
+            this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
 
             List<Vector3> verts = new List<Vector3>();
             List<int> indices = new List<int>();
             marching.Generate(voxels, verts, indices);
 
-            Vector3[] vertsArray = verts.ToArray();
-            int length = vertsArray.Length;
-
-           // CreateMesh(vertsArray, indices.ToArray(), parent.transform.position, false);
+            CreateMeshResult(verts, indices, parent.transform);
 
             // make sure its in [0, 100] range, using 1 decimal digits
             return Mathf.Clamp(Mathf.Round(errorAccumulator/(width * height * depth)* 10.0f) * 0.1f, 0, 100);
         }
-
-        private void CreateMesh(List<Vector3> verts, List<int> indices, Vector3 position, bool ReferenceMesh=false)
+        /// <summary>
+        /// Creates the mesh given vertices
+        /// </summary>
+        /// <param name="verts"></param>
+        /// <param name="indices"></param>
+        private void CreateMesh(List<Vector3> verts, List<int> indices)
         {
             Mesh mesh = new Mesh();
             mesh.indexFormat = IndexFormat.UInt32;
             mesh.SetVertices(verts);
             mesh.SetTriangles(indices, 0);
+            mesh.RecalculateBounds();
             mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
 
-            //mesh.RecalculateBounds();
+          
+            Destroy(this.CopiedObject);
+            this.CopiedObject = new GameObject("Mesh");
+            this.CopiedObject.tag = "Cube";
+            this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
+            this.CopiedObject.transform.parent = transform;
+
+            this.CopiedObject.AddComponent<MeshFilter>().mesh = mesh;
+            this.CopiedObject.AddComponent<MeshRenderer>();
+            this.CopiedObject.GetComponent<Renderer>().material = SculptureMaterial;
+            this.CopiedObject.AddComponent<MeshCollider>();
+        }
+        /// <summary>
+        /// Creates the reference mesh after loading file (almost same as createmesh)
+        /// </summary>
+        /// <param name="verts"></param>
+        /// <param name="indices"></param>
+        private void CreateMeshReference(List<Vector3> verts, List<int> indices)
+        {
+            Mesh mesh = new Mesh();
+            mesh.indexFormat = IndexFormat.UInt32;
+            mesh.SetVertices(verts);
+            mesh.SetTriangles(indices, 0);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+
             GameObject go;
-            //if (!ReferenceMesh)
-            //{
-            //    if (this.meshIndex != 0)
-            //    {
-            //        Destroy(GameObject.Find("Mesh"+(meshIndex-1)));
-            //    }
+            go = new GameObject("Reference");
+            go.transform.parent = this.ReferenceObjectTransform;
+            go.transform.localPosition = new Vector3(0, 0, 0);
 
-            //    go = new GameObject("Mesh"+this.meshIndex++);
-            //    go.tag = "Cube";
-            //    go.transform.localPosition = position;
-            //    go.transform.parent = transform;
-
-            //}
-            //else
-            //{
-            //    go = new GameObject("Reference");
-            //    go.transform.parent = this.ReferenceObjectTransform;
-
-            //}
-            if (this.meshIndex != 0)
-            {
-                Destroy(GameObject.Find("Mesh" + (meshIndex - 1)));
-            }
-
-            go = new GameObject("Mesh" + this.meshIndex++);
-            go.tag = "Cube";
-            go.transform.localPosition = position;
-            go.transform.parent = transform;
-            go.AddComponent<MeshFilter>();
+            go.AddComponent<MeshFilter>().mesh = mesh;
             go.AddComponent<MeshRenderer>();
             go.GetComponent<Renderer>().material = SculptureMaterial;
-            go.GetComponent<MeshFilter>().mesh = mesh;
             go.AddComponent<MeshCollider>();
 
         }
-       
+        /// <summary>
+        /// Creates the difference mesh, overlayed on top of duplicate mesh (almost same as createmesh)
+        /// </summary>
+        /// <param name="verts"></param>
+        /// <param name="indices"></param>
+        private void CreateMeshResult(List<Vector3> verts, List<int> indices, Transform parentTransform)
+        {
+            Mesh mesh = new Mesh();
+            mesh.indexFormat = IndexFormat.UInt32;
+            mesh.SetVertices(verts);
+            mesh.SetTriangles(indices, 0);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+
+            GameObject go;
+            go = new GameObject("Difference");
+            go.transform.parent = this.CopiedObject.transform;
+            go.transform.localPosition = new Vector3(0, 0, 0);
+
+            go.AddComponent<MeshFilter>().mesh = mesh;
+            go.AddComponent<MeshRenderer>();
+            go.GetComponent<Renderer>().material = ErrorMaterial;
+            go.AddComponent<MeshCollider>();
+
+        }
+
         private void Start()
         {
-            this.meshIndex = 0;
             this.MainCamera = GameObject.Find("Main Camera");
 
-            this.marching = new MarchingTetrahedron(this.scaleDivision);
-            //Surface is the value that represents the surface of mesh
-            //For example the perlin noise has a range of -1 to 1 so the mid point is where we want the surface to cut through.
-            //The target value does not have to be the mid point it can be any value with in the range.
+            this.marching = new(this.scaleDivision);
+            // Surface is the value that represents the surface of mesh
+            // For example the perlin noise has a range of -1 to 1 so the mid point is where we want the surface to cut through.
+            // The target value does not have to be the mid point it can be any value with in the range.
             marching.Surface = 0.0f;
 
-            //this.LoadReferenceFromFile(this.OutputFileName);
+            this.LoadReferenceFromFile(this.OutputFileName);
+            this.CopiedObject = new GameObject();
+            // Create the new default object
+            this.CreateNew();
         }
         private void Update()
         {
