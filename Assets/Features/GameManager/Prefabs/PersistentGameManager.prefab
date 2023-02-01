@@ -44,8 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95935b51b260bb343a6b13b165fca359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasFront: {fileID: 0}
   mainMenuScene: Main Menu
   mainLevelScene: Miauseum
   scoreboardText: {fileID: 0}
+  playerController: {fileID: 0}
+  originalPaintings: []
   cameraScreenshot: {fileID: 0}
   similarityDetection: {fileID: 0}

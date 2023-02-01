@@ -2,10 +2,13 @@ using UnityEngine;
 using NaughtyAttributes;
 using TMPro;
 using UnityEditor;
+using BNG;
+
 public class PersistentGameManager : MonoBehaviour
 {
     //------Serialized Variables------
     public static double score = 0;
+    public static bool teleport;
     public GameObject canvasFront;
 
     [InfoBox("You can add missing Scenes from the Build Settings menu.", EInfoBoxType.Normal)]
@@ -20,6 +23,10 @@ public class PersistentGameManager : MonoBehaviour
     [SerializeField]
     [Foldout("Main Menu")]
     private TMP_Text scoreboardText;
+
+    //Player
+    [SerializeField]
+    private GameObject playerController;
 
     //Pictures
     [SerializeField]
@@ -51,6 +58,8 @@ public class PersistentGameManager : MonoBehaviour
             inMainMenu = false;
             score = 0.0;
         }
+
+        setMovementSystem();
     }
 
     void Update() {
@@ -130,5 +139,38 @@ public class PersistentGameManager : MonoBehaviour
         AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu
         finishToMainMenu();
+    }
+
+    public void toggleMovement()
+    {
+        //Switch teleport
+        teleport = !teleport;
+
+        setMovementSystem();
+    }
+
+    public void toggleMovement(bool shouldTeleport)
+    {
+        teleport = shouldTeleport;
+
+        setMovementSystem();
+    }
+
+    public void setMovementSystem()
+    {
+        PlayerTeleport locomotionTeleport = playerController.GetComponent<PlayerTeleport>();
+        SmoothLocomotion locomotionSmooth = playerController.GetComponent<SmoothLocomotion>();
+
+        //Check which locomotion system to use
+        if (teleport)
+        {
+            locomotionSmooth.enabled = false;
+            locomotionTeleport.enabled = true;
+        }
+        else
+        {
+            locomotionTeleport.enabled = false;
+            locomotionSmooth.enabled = true;
+        }
     }
 }
