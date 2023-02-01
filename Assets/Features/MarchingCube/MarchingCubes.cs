@@ -1,13 +1,23 @@
 /// credits to https://github.com/Scrawk/Marching-Cubes for providing the tetrahedron implementation
-
-using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using Unity.Burst;
+using UnityEngine.Rendering;
 
 namespace MarchingCubesProject
 {
+	[BurstCompile]
     public struct MarchingCubes :IJob
 	{
+		// Assign from job
+
+		public int width;
+		public int height;
+		public int depth;
+		public NativeList<Vector3> verts;
+		public NativeList<int> indices;
+		public NativeArray<float> voxels;
 		/// <summary>
 		/// The surface value in the voxels. Normally set to 0. 
 		/// </summary>
@@ -17,30 +27,34 @@ namespace MarchingCubesProject
 		/// <summary>
 		/// Winding order of triangles use 2,1,0 or 0,1,2
 		/// </summary>
-		private int[] WindingOrder;
+		private NativeArray<int> WindingOrder;
 
-		private Vector3[] EdgeVertex { get; set; }
+		private NativeArray<Vector3> EdgeVertex;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		private float[] Cube { get; set; }
+		private NativeArray<float> Cube;
 
 		private float Scale;
 
-		public MarchingCubes(float scale = 1.0f, float surface = 0.0f)
+		public MarchingCubes(int width, int height, int depth, float scale = 1.0f, float surface = 0.0f) : this()
         {
+			this.width = width;
+			this.height = height;
+			this.depth = depth;
 			Scale = scale;
-            EdgeVertex = new Vector3[12];
-			Cube = new float[8];
-			WindingOrder = new int[] { 0, 1, 2 };
+			EdgeVertex = new(12, Allocator.Persistent);
+
+			Cube = new(8, Allocator.Persistent);
+			WindingOrder = new(new[]{ 0, 1, 2 }, Allocator.Persistent);
 			Surface = surface;
 		}
 
         /// <summary>
         /// MarchCube performs the Marching Cubes algorithm on a single cube
         /// </summary>
-        public void March(float x, float y, float z, float[] cube, IList<Vector3> vertList, IList<int> indexList)
+        public void March(float x, float y, float z, NativeArray<float> cube)
         {
             int i, j, vert, idx;
             int flagIndex = 0;
@@ -63,9 +77,9 @@ namespace MarchingCubesProject
                 {
                     offset = GetOffset(cube[EdgeConnection[i, 0]], cube[EdgeConnection[i, 1]]);
 
-                    EdgeVertex[i].x = x + (VertexOffset[EdgeConnection[i, 0], 0] + offset * EdgeDirection[i, 0]);
-                    EdgeVertex[i].y = y + (VertexOffset[EdgeConnection[i, 0], 1] + offset * EdgeDirection[i, 1]);
-                    EdgeVertex[i].z = z + (VertexOffset[EdgeConnection[i, 0], 2] + offset * EdgeDirection[i, 2]);
+                    EdgeVertex[i] = new Vector3(x + (VertexOffset[EdgeConnection[i, 0], 0] + offset * EdgeDirection[i, 0]),
+										     y + (VertexOffset[EdgeConnection[i, 0], 1] + offset * EdgeDirection[i, 1]),
+										     z + (VertexOffset[EdgeConnection[i, 0], 2] + offset * EdgeDirection[i, 2]));
                 }
             }
 
@@ -74,23 +88,19 @@ namespace MarchingCubesProject
             {
                 if (TriangleConnectionTable[flagIndex, 3 * i] < 0) break;
 
-                idx = vertList.Count;
+                idx = verts.Length;
 
                 for (j = 0; j < 3; j++)
                 {
                     vert = TriangleConnectionTable[flagIndex, 3 * i + j];
-                    indexList.Add(idx + WindingOrder[j]);
-                    vertList.Add(EdgeVertex[vert]/this.Scale);
+                    indices.Add(idx + WindingOrder[j]);
+                    verts.Add(EdgeVertex[vert]/this.Scale);
                 }
             }
         }
 
-		public void Generate(float[,,] voxels, IList<Vector3> verts, IList<int> indices)
+		public void Generate()
 		{
-
-			int width = voxels.GetLength(0);
-			int height = voxels.GetLength(1);
-			int depth = voxels.GetLength(2);
 
 
 			int x, y, z, i;
@@ -108,11 +118,11 @@ namespace MarchingCubesProject
 							iy = y + VertexOffset[i, 1];
 							iz = z + VertexOffset[i, 2];
 
-							Cube[i] = voxels[ix, iy, iz];
+							Cube[i] = voxels[ix * height * depth + iy * depth+ iz];
 						}
 
 						//Perform algorithm
-						March(x, y, z, Cube, verts, indices);
+						March(x, y, z, Cube);
 					}
 				}
 			}
@@ -132,17 +142,30 @@ namespace MarchingCubesProject
 
         public void Execute()
         {
-            throw new System.NotImplementedException();
-        }
+			this.Generate();
+			Mesh mesh = new Mesh();
+
+			int vertexAttributeCount = 4;
+			int vertexCount = 4;
+
+			Mesh.MeshDataArray meshDataArray = Mesh.AllocateWritableMeshData(1);
+			Mesh.MeshData meshData = meshDataArray[0];
+
+			var vertexAttributes = new NativeArray<VertexAttributeDescriptor>(
+				vertexAttributeCount, Allocator.Temp
+			);
+			meshData.SetVertexBufferParams(vertexCount, vertexAttributes);
+			vertexAttributes.Dispose();
+		}
 
 
-        #region tables
-        /// <summary>
-        /// VertexOffset lists the positions, relative to vertex0, 
-        /// of each of the 8 vertices of a cube.
-        /// vertexOffset[8][3]
-        /// </summary>
-        private static readonly int[,] VertexOffset = new int[,]
+		#region tables
+		/// <summary>
+		/// VertexOffset lists the positions, relative to vertex0, 
+		/// of each of the 8 vertices of a cube.
+		/// vertexOffset[8][3]
+		/// </summary>
+		private static readonly int[,] VertexOffset = new int[,]
 		{
 			{0, 0, 0},{1, 0, 0},{1, 1, 0},{0, 1, 0},
 			{0, 0, 1},{1, 0, 1},{1, 1, 1},{0, 1, 1}

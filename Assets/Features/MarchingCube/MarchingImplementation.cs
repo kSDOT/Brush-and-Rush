@@ -4,6 +4,8 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System.Linq;
+using Unity.Collections;
+using Unity.Jobs;
 
 namespace MarchingCubesProject
 {
@@ -54,12 +56,12 @@ namespace MarchingCubesProject
         /// <summary>
         /// Voxel grid (3d) with isovalues
         /// </summary>
-        float[,,] voxels;
+        NativeArray<float> voxels;
 
         /// <summary>
         /// Voxel grid for reference
         /// </summary>
-        float[,,] referenceVoxels;
+        NativeArray<float> referenceVoxels;
         /// <summary>
         /// Marching Tetrahedron
         /// </summary>
@@ -71,7 +73,7 @@ namespace MarchingCubesProject
         void CreateNew()
         {
 
-            voxels = new float[width, height, depth];
+            voxels = new(width * height * depth, Allocator.Persistent);
 
             for (int x = 0; x < width; x++)
             {
@@ -80,19 +82,20 @@ namespace MarchingCubesProject
                     for (int z = 0; z < depth; z++)
                     {
                         if (x == 0 || y == 0 || z == 0 || x == width-1 || y == height-1|| z == depth-1)
-                            voxels[x, y, z] = -1f;
+                            voxels[x*height*depth + y*depth + z] = -1f;
                         else
-                            voxels[x, y, z] = 1f;
+                            voxels[x * height * depth + y * depth + z] = 1f;
                     }
                 }
             }
 
-            List<Vector3> verts = new List<Vector3>();
-            List<int> indices = new List<int>();
 
-            marching.Generate(voxels, verts, indices);
+            marching.verts = new NativeList<Vector3>(100000, Allocator.Persistent);
+            marching.indices= new NativeList<int>(100000, Allocator.Persistent);
+            this.marching.voxels = this.voxels;
+            marching.Generate();
 
-            CreateMesh(verts, indices);
+            CreateMesh(marching.verts, marching.indices);
         }
 
         [ContextMenu("Save to file")]
@@ -110,9 +113,9 @@ namespace MarchingCubesProject
                 {
                     for (int dep = 0; dep < this.depth; dep++) {
 
-                        if (dep != this.depth - 1 || col != width - 1) { Console.Write(String.Format("{0} ", voxels[row, col, dep])); }
+                        if (dep != this.depth - 1 || col != width - 1) { Console.Write(String.Format("{0} ", voxels[row * height*depth + col * depth + dep])); }
                         else { 
-                            Console.Write(String.Format("{0}", voxels[row, col, dep])); 
+                            Console.Write(String.Format("{0}", voxels[row * height * depth + col * depth + dep])); 
                         }
                     }
                 }
@@ -127,7 +130,7 @@ namespace MarchingCubesProject
         {
             String input = File.ReadAllText(Application.dataPath + "\\" + FileName);
             int i = 0, j = 0, k = 0;
-            this.referenceVoxels = new float[width, height, depth];
+            this.referenceVoxels = new (width * height * depth, Allocator.Persistent);
 
             // Load values from file into voxelarray
             foreach (var row in input.Split('\n'))
@@ -135,7 +138,7 @@ namespace MarchingCubesProject
                 j = 0;
                 foreach (var col in row.Trim().Split(' '))
                 {
-                    referenceVoxels[i, j, k] = int.Parse(col.Trim());
+                    referenceVoxels[i * depth * height + j * depth + k] = int.Parse(col.Trim());
                     k++;
                     if (k == depth)
                     {
@@ -146,26 +149,37 @@ namespace MarchingCubesProject
                 i++;
             }
 
+            this.marching.verts = new NativeList<Vector3>(100000, Allocator.Persistent);
+            this.marching.indices = new NativeList<int>(100000, Allocator.Persistent);
+            this.marching.voxels = this.referenceVoxels;
+            this.marching.Generate();
 
-            List<Vector3> verts = new List<Vector3>();
-            List<int> indices = new List<int>();
-
-            marching.Generate(this.referenceVoxels, verts, indices);
-
-
-            CreateMeshReference(verts, indices);
+            this.CreateMeshReference(this.marching.verts, this.marching.indices);
 
         }
+
         /// <summary>
         /// Updates the sculpture with the modified isovalues
         /// </summary>
         void UpdateValues()
         {
-            List<Vector3> verts = new List<Vector3>();
-            List<int> indices = new List<int>();
-            marching.Generate(voxels, verts, indices);
+            Debug.Log("enter update: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-            CreateMesh(verts, indices);
+            var job = new MarchingCubes(width, height, depth, this.scaleDivision)
+            {
+
+                verts = new NativeList<Vector3>(100000, Allocator.Persistent),
+                indices = new NativeList<int>(100000, Allocator.Persistent),
+                voxels = this.voxels
+            };
+
+            JobHandle jobHandle = job.Schedule();
+            jobHandle.Complete();
+            Debug.Log("exit generate: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
+
+            this.CreateMesh(job.verts, job.indices);
+            Debug.Log("exit update: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
+
         }
         [ContextMenu("Compare")]
         void Compare()
@@ -182,8 +196,9 @@ namespace MarchingCubesProject
                 {
                     for (int z = 0; z < depth; z++)
                     {
-                        this.voxels[x, y, z] = -referenceVoxels[x, y, z] * this.voxels[x, y, z];
-                        if (this.voxels[x, y, z] == -1) { 
+                        this.voxels[x * height * depth + y * depth + z] = -referenceVoxels[x * height * depth + y * depth + z] 
+                                                                          * this.voxels[x * height * depth + y * depth + z];
+                        if (this.voxels[x * height * depth + y * depth + z] == -1) { 
                             errorAccumulator++;
                         }
                     }
@@ -195,11 +210,14 @@ namespace MarchingCubesProject
             this.CopiedObject.transform.SetParent(parent.transform);
             this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
 
-            List<Vector3> verts = new List<Vector3>();
-            List<int> indices = new List<int>();
-            marching.Generate(voxels, verts, indices);
+            marching.verts = new NativeList<Vector3>(100000, Allocator.Persistent);
+            marching.indices = new NativeList<int>(100000, Allocator.Persistent);
+            marching.voxels = this.voxels;
 
-            CreateMeshResult(verts, indices, parent.transform);
+            marching.Generate();
+
+            CreateMesh(marching.verts, marching.indices);
+            CreateMeshResult(marching.verts, marching.indices, parent.transform);
 
             // make sure its in [0, 100] range, using 1 decimal digits
             return Mathf.Clamp(Mathf.Round(errorAccumulator/(width * height * depth)* 10.0f) * 0.1f, 0, 100);
@@ -209,12 +227,13 @@ namespace MarchingCubesProject
         /// </summary>
         /// <param name="verts"></param>
         /// <param name="indices"></param>
-        private void CreateMesh(List<Vector3> verts, List<int> indices)
+        private void CreateMesh(NativeList<Vector3> verts, NativeList<int> indices)
         {
+            Debug.Log("enter create mesh: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
             Mesh mesh = new Mesh();
             mesh.indexFormat = IndexFormat.UInt32;
-            mesh.SetVertices(verts);
-            mesh.SetTriangles(indices, 0);
+            mesh.SetVertices(verts.ToArray());
+            mesh.SetTriangles(indices.ToArray(), 0);
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
@@ -223,25 +242,27 @@ namespace MarchingCubesProject
             Destroy(this.CopiedObject);
             this.CopiedObject = new GameObject("Mesh");
             this.CopiedObject.tag = "Cube";
-            this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
             this.CopiedObject.transform.parent = transform;
+            this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
 
             this.CopiedObject.AddComponent<MeshFilter>().mesh = mesh;
             this.CopiedObject.AddComponent<MeshRenderer>();
             this.CopiedObject.GetComponent<Renderer>().material = SculptureMaterial;
             this.CopiedObject.AddComponent<MeshCollider>();
+            Debug.Log("exit create mesh: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
+
         }
         /// <summary>
         /// Creates the reference mesh after loading file (almost same as createmesh)
         /// </summary>
         /// <param name="verts"></param>
         /// <param name="indices"></param>
-        private void CreateMeshReference(List<Vector3> verts, List<int> indices)
+        private void CreateMeshReference(NativeList<Vector3> verts, NativeList<int> indices)
         {
             Mesh mesh = new Mesh();
             mesh.indexFormat = IndexFormat.UInt32;
-            mesh.SetVertices(verts);
-            mesh.SetTriangles(indices, 0);
+            mesh.SetVertices(verts.ToArray());
+            mesh.SetTriangles(indices.ToArray(), 0);
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
@@ -262,12 +283,12 @@ namespace MarchingCubesProject
         /// </summary>
         /// <param name="verts"></param>
         /// <param name="indices"></param>
-        private void CreateMeshResult(List<Vector3> verts, List<int> indices, Transform parentTransform)
+        private void CreateMeshResult(NativeList<Vector3> verts, NativeList<int> indices, Transform parentTransform)
         {
             Mesh mesh = new Mesh();
             mesh.indexFormat = IndexFormat.UInt32;
-            mesh.SetVertices(verts);
-            mesh.SetTriangles(indices, 0);
+            mesh.SetVertices(verts.ToArray());
+            mesh.SetTriangles(indices.ToArray(), 0);
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
@@ -288,10 +309,8 @@ namespace MarchingCubesProject
         {
             this.MainCamera = GameObject.Find("Main Camera");
 
-            this.marching = new(this.scaleDivision);
-            // Surface is the value that represents the surface of mesh
-            // For example the perlin noise has a range of -1 to 1 so the mid point is where we want the surface to cut through.
-            // The target value does not have to be the mid point it can be any value with in the range.
+            this.marching = new(this.width, this.height, this.depth, this.scaleDivision);
+
             marching.Surface = 0.0f;
 
             this.LoadReferenceFromFile(this.OutputFileName);
@@ -366,7 +385,7 @@ namespace MarchingCubesProject
                         int z_2 = z + k;
                         if(x_2 > 0 && x_2 < width && y_2 > 0 && y_2 < height && z_2 > 0 && z_2 < depth)
                         {
-                            voxels[x_2, y_2, z_2] = -1;
+                            voxels[x_2* height * depth + y_2 * depth + z_2] = -1;
                         }    
                     }
 

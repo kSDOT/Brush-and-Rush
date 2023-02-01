@@ -6,6 +6,7 @@ public class PersistentGameManager : MonoBehaviour
 {
     //------Serialized Variables------
     public static double score = 0;
+
     public GameObject canvasFront;
 
     [InfoBox("You can add missing Scenes from the Build Settings menu.", EInfoBoxType.Normal)]
