@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
+using System.Collections;
 
 namespace MarchingCubesProject
 {
@@ -52,28 +53,20 @@ namespace MarchingCubesProject
         /// 10.f -> 1 voxel unit = 0.1 meter
         /// </summary>
         public float scaleDivision = 10.0f;
-
-        /// <summary>
-        /// Voxel grid (3d) with isovalues
-        /// </summary>
-        NativeArray<float> voxels;
-
-        /// <summary>
-        /// Voxel grid for reference
-        /// </summary>
         NativeArray<float> referenceVoxels;
-        /// <summary>
-        /// Marching Tetrahedron
-        /// </summary>
-        MarchingCubes marching;
         /// <summary>
         /// Constructs a cube
         /// </summary>
+        MarchingCubes Marching;
+        enum JobStatus { Free, CreateNew, UpdateValues, Reference };
+        JobStatus Status;
         [ContextMenu("TEST")]
-        void CreateNew()
+        IEnumerator CreateNew()
         {
+            Debug.Log("enter: " + DateTimeOffset.UnixEpoch.Millisecond);
 
-            voxels = new(width * height * depth, Allocator.Persistent);
+            this.Marching.verts.Clear();
+            this.Marching.indices.Clear();
 
             for (int x = 0; x < width; x++)
             {
@@ -82,20 +75,20 @@ namespace MarchingCubesProject
                     for (int z = 0; z < depth; z++)
                     {
                         if (x == 0 || y == 0 || z == 0 || x == width-1 || y == height-1|| z == depth-1)
-                            voxels[x*height*depth + y*depth + z] = -1f;
+                            this.Marching.voxels[x * height * depth + y * depth + z] = -1f;
                         else
-                            voxels[x * height * depth + y * depth + z] = 1f;
+                            this.Marching.voxels[x * height * depth + y * depth + z] = 1f;
                     }
                 }
             }
 
+            var job = this.Marching.Schedule();
+            while (!job.IsCompleted) yield return null;
+            job.Complete();
+            CreateMesh(this.Marching.verts, this.Marching.indices);
+            Debug.Log("finish: "+ DateTimeOffset.UnixEpoch.Millisecond);
+            this.Status = JobStatus.Free;
 
-            marching.verts = new NativeList<Vector3>(100000, Allocator.Persistent);
-            marching.indices= new NativeList<int>(100000, Allocator.Persistent);
-            this.marching.voxels = this.voxels;
-            marching.Generate();
-
-            CreateMesh(marching.verts, marching.indices);
         }
 
         [ContextMenu("Save to file")]
@@ -113,9 +106,9 @@ namespace MarchingCubesProject
                 {
                     for (int dep = 0; dep < this.depth; dep++) {
 
-                        if (dep != this.depth - 1 || col != width - 1) { Console.Write(String.Format("{0} ", voxels[row * height*depth + col * depth + dep])); }
+                        if (dep != this.depth - 1 || col != width - 1) { Console.Write(String.Format("{0} ", this.Marching.voxels[row * height*depth + col * depth + dep])); }
                         else { 
-                            Console.Write(String.Format("{0}", voxels[row * height * depth + col * depth + dep])); 
+                            Console.Write(String.Format("{0}", this.Marching.voxels[row * height * depth + col * depth + dep])); 
                         }
                     }
                 }
@@ -126,19 +119,22 @@ namespace MarchingCubesProject
             Console.SetOut(null);
             Console.SetError(null);
         }
-        void LoadReferenceFromFile(string FileName)
+        IEnumerator LoadReferenceFromFile(string FileName = "")
         {
+            this.referenceVoxels = new(width * height * depth, Allocator.Persistent);
+
+
             String input = File.ReadAllText(Application.dataPath + "\\" + FileName);
             int i = 0, j = 0, k = 0;
-            this.referenceVoxels = new (width * height * depth, Allocator.Persistent);
-
+            this.Marching.verts.Clear();
+            this.Marching.indices.Clear();
             // Load values from file into voxelarray
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
                 foreach (var col in row.Trim().Split(' '))
                 {
-                    referenceVoxels[i * depth * height + j * depth + k] = int.Parse(col.Trim());
+                    this.Marching.voxels[i * depth * height + j * depth + k] = int.Parse(col.Trim());
                     k++;
                     if (k == depth)
                     {
@@ -149,46 +145,52 @@ namespace MarchingCubesProject
                 i++;
             }
 
-            this.marching.verts = new NativeList<Vector3>(100000, Allocator.Persistent);
-            this.marching.indices = new NativeList<int>(100000, Allocator.Persistent);
-            this.marching.voxels = this.referenceVoxels;
-            this.marching.Generate();
+            var job = this.Marching.Schedule();
+            while (!job.IsCompleted) { 
+                yield return null; 
+            }
+            job.Complete();
+            this.CreateMeshReference(this.Marching.verts, this.Marching.indices);
+            NativeArray<float>.Copy(this.Marching.voxels, this.referenceVoxels);
 
-            this.CreateMeshReference(this.marching.verts, this.marching.indices);
+            this.Status = JobStatus.CreateNew;
 
+            StartCoroutine(CreateNew());
         }
 
         /// <summary>
         /// Updates the sculpture with the modified isovalues
         /// </summary>
-        void UpdateValues()
+        IEnumerator UpdateValues()
         {
             Debug.Log("enter update: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-            var job = new MarchingCubes(width, height, depth, this.scaleDivision)
+            this.Marching.verts.Clear();
+            this.Marching.indices.Clear();
+            var job = this.Marching.Schedule();
+            while (!job.IsCompleted)
             {
-
-                verts = new NativeList<Vector3>(100000, Allocator.Persistent),
-                indices = new NativeList<int>(100000, Allocator.Persistent),
-                voxels = this.voxels
-            };
-
-            JobHandle jobHandle = job.Schedule();
-            jobHandle.Complete();
+                yield return null;
+            }
+            job.Complete();
             Debug.Log("exit generate: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-            this.CreateMesh(job.verts, job.indices);
+            this.CreateMesh(this.Marching.verts, this.Marching.indices);
+            this.Status = JobStatus.Free;
             Debug.Log("exit update: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
-
         }
         [ContextMenu("Compare")]
         void Compare()
         {
             GameObject parent = new GameObject("Compare");
-            this.Compare(parent);
+            StartCoroutine(this.Compare(parent));
         }
-        double Compare(GameObject parent )
+        IEnumerator Compare(GameObject parent )
         {
+            while(this.Status != JobStatus.Free) { yield return null; }
+
+            this.Marching.verts.Clear();
+            this.Marching.indices.Clear();
             float errorAccumulator = 0;
             for (int x = 0; x < width; x++)
             {
@@ -196,9 +198,9 @@ namespace MarchingCubesProject
                 {
                     for (int z = 0; z < depth; z++)
                     {
-                        this.voxels[x * height * depth + y * depth + z] = -referenceVoxels[x * height * depth + y * depth + z] 
-                                                                          * this.voxels[x * height * depth + y * depth + z];
-                        if (this.voxels[x * height * depth + y * depth + z] == -1) { 
+                        this.Marching.voxels[x * height * depth + y * depth + z] = -this.referenceVoxels[x * height * depth + y * depth + z] 
+                                                                          * this.Marching.voxels[x * height * depth + y * depth + z];
+                        if (this.Marching.voxels[x * height * depth + y * depth + z] == 1) { 
                             errorAccumulator++;
                         }
                     }
@@ -210,17 +212,12 @@ namespace MarchingCubesProject
             this.CopiedObject.transform.SetParent(parent.transform);
             this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
 
-            marching.verts = new NativeList<Vector3>(100000, Allocator.Persistent);
-            marching.indices = new NativeList<int>(100000, Allocator.Persistent);
-            marching.voxels = this.voxels;
+            Marching.Schedule().Complete();
 
-            marching.Generate();
-
-            CreateMesh(marching.verts, marching.indices);
-            CreateMeshResult(marching.verts, marching.indices, parent.transform);
+            CreateMeshResult(Marching.verts, Marching.indices, parent.transform);
 
             // make sure its in [0, 100] range, using 1 decimal digits
-            return Mathf.Clamp(Mathf.Round(errorAccumulator/(width * height * depth)* 10.0f) * 0.1f, 0, 100);
+            yield return Mathf.Clamp(Mathf.Round(errorAccumulator/(width * height * depth)* 10.0f) * 0.1f, 0, 100);
         }
         /// <summary>
         /// Creates the mesh given vertices
@@ -236,7 +233,7 @@ namespace MarchingCubesProject
             mesh.SetTriangles(indices.ToArray(), 0);
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
-            mesh.RecalculateTangents();
+            //mesh.RecalculateTangents();
 
           
             Destroy(this.CopiedObject);
@@ -309,14 +306,26 @@ namespace MarchingCubesProject
         {
             this.MainCamera = GameObject.Find("Main Camera");
 
-            this.marching = new(this.width, this.height, this.depth, this.scaleDivision);
+            this.Marching = new MarchingCubes
+            {
 
-            marching.Surface = 0.0f;
+                width = this.width,
+                height = this.height,
+                depth = this.depth,
+                Scale = this.scaleDivision,
+                EdgeVertex = new(12, Allocator.Persistent),
 
-            this.LoadReferenceFromFile(this.OutputFileName);
+                Cube = new(8, Allocator.Persistent),
+                WindingOrder = new(new[] { 0, 1, 2 }, Allocator.Persistent),
+                Surface = 0.0f,
+                verts = new NativeList<Vector3>(100000, Allocator.Persistent),
+                indices = new NativeList<int>(100000, Allocator.Persistent),
+                voxels = new(width * height * depth, Allocator.Persistent),
+            };
+            this.Status = JobStatus.Reference;
+            this.StartCoroutine(this.LoadReferenceFromFile(this.InputFileName));
             this.CopiedObject = new GameObject();
-            // Create the new default object
-            this.CreateNew();
+
         }
         private void Update()
         {
@@ -335,6 +344,15 @@ namespace MarchingCubesProject
                     this.MainCamera.transform.position.z);
             }
             #endregion
+            #region UpdateJob
+            //switch (this.Status)
+            //{
+            //    case JobStatus.Free:         break;
+            //    case JobStatus.CreateNew:    this.StartCoroutine(this.CreateNew()); break;
+            //    case JobStatus.UpdateValues: this.StartCoroutine(this.UpdateValues()); break;
+            //    case JobStatus.Reference:    this.StartCoroutine(this.LoadReferenceFromFile()); break;
+            //}
+            #endregion
             RaycastHit hit;
             if (Input.GetMouseButtonDown(0)
                 && Physics.Raycast(this.MainCamera.transform.position, this.MainCamera.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity)
@@ -350,9 +368,13 @@ namespace MarchingCubesProject
 
                 Debug.Log("Original: " + hit.point);
                 Debug.Log("start: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
+                
+                if(this.Status == JobStatus.Free)
+                {
+                    this.Status = JobStatus.UpdateValues;
+                    modify(hitRelative);
+                } 
 
-                modify(hitRelative);
-                UpdateValues();
                 Debug.Log("finished: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
             }
@@ -385,12 +407,14 @@ namespace MarchingCubesProject
                         int z_2 = z + k;
                         if(x_2 > 0 && x_2 < width && y_2 > 0 && y_2 < height && z_2 > 0 && z_2 < depth)
                         {
-                            voxels[x_2* height * depth + y_2 * depth + z_2] = -1;
+                            this.Marching.voxels[x_2* height * depth + y_2 * depth + z_2] = -1;
                         }    
                     }
 
                 }
             }
+
+            StartCoroutine(UpdateValues());
         }
         /// <summary>
         /// Substracts two vectors and gives back the absolute result
@@ -401,6 +425,16 @@ namespace MarchingCubesProject
         private Vector3 AbsDistance(Vector3 vec1, Vector3 vec2)
         {
             return new Vector3(Mathf.Abs(vec1.x - vec2.x), Mathf.Abs(vec1.y - vec2.y), Mathf.Abs(vec1.z - vec2.z));
+        }
+        private void OnDestroy()
+        {
+            this.Marching.WindingOrder.Dispose();
+            this.Marching.verts.Dispose();
+            this.Marching.Cube.Dispose();
+            this.Marching.EdgeVertex.Dispose();
+            this.Marching.indices.Dispose();
+            this.Marching.voxels.Dispose();
+            this.referenceVoxels.Dispose();
         }
 
     }
