@@ -7,18 +7,22 @@ using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using System.Collections;
-
 namespace MarchingCubesProject
 {
 
-
+    [RequireComponent(typeof(LineRenderer))]
     public class MarchingImplementation : MonoBehaviour
     {
-        GameObject MainCamera;
+        LineRenderer laserLine;        
+
         /// <summary>
         /// The transform parent of sculpture we will copy
         /// </summary>
         public Transform ReferenceObjectTransform;
+        /// <summary>
+        /// The transform parent of our duplicate
+        /// </summary>
+        public Transform DuplicateObjectTransform;
         /// <summary>
         /// Used if you want to save a sculpture to file (assets path is prepended)
         /// </summary>
@@ -31,6 +35,10 @@ namespace MarchingCubesProject
         /// Material used for sculptures
         /// </summary>
         public Material SculptureMaterial;
+        /// <summary>
+        /// Material used for sculptures when overlaying
+        /// </summary>
+        public Material SculptureOverlayMaterial;
         /// <summary>
         /// Material used for the error overlay
         /// </summary>
@@ -54,6 +62,9 @@ namespace MarchingCubesProject
         private Mesh meshReference;
         private GameObject[] childObjects;
         float inputTimer;
+        private int chunkNumber;
+        LayerMask mask;
+        public bool createNew = false;
         /// <summary>
         /// Constructs a cube
         /// </summary>
@@ -73,14 +84,13 @@ namespace MarchingCubesProject
                 {
                     for (int z = 0; z < depth; z++)
                     {
-                        if (x == 0 || y == 0 || z == 0 || x == width-1 || y == height-1|| z == depth-1)
+                        if (x == 0 || y == 0 || z == 0 || x == width - 1 || y == height - 1 || z == depth - 1)
                             this.Marching.voxels[x * height * depth + y * depth + z] = -1f;
                         else
                             this.Marching.voxels[x * height * depth + y * depth + z] = 1f;
                     }
                 }
             }
-            this.Marching.meshData = Mesh.AllocateWritableMeshData(1)[0];
             var job = this.Marching.Schedule();
             while (!job.IsCompleted) yield return null;
             job.Complete();
@@ -144,8 +154,9 @@ namespace MarchingCubesProject
             }
 
             var job = this.Marching.Schedule();
-            while (!job.IsCompleted) { 
-                yield return null; 
+            while (!job.IsCompleted)
+            {
+                yield return null;
             }
             job.Complete();
             this.CreateMeshReference(this.Marching.verts, this.Marching.indices);
@@ -154,6 +165,7 @@ namespace MarchingCubesProject
             this.Status = JobStatus.CreateNew;
 
             StartCoroutine(CreateNew());
+            yield return null;
         }
         /// <summary>
         /// Updates the sculpture with the modified isovalues
@@ -174,12 +186,12 @@ namespace MarchingCubesProject
             this.Status = JobStatus.Free;
         }
         [ContextMenu("Compare")]
-        void Compare()
+         void Compare()
         {
             GameObject parent = new GameObject("Compare");
-            StartCoroutine(this.Compare(parent));
+            StartCoroutine(this.Compare(parent, returnValue=>Debug.Log(returnValue)));
         }
-        IEnumerator Compare(GameObject parent )
+        public IEnumerator Compare(GameObject parent, System.Action<float> callback)
         {
             while(this.Status != JobStatus.Free) { yield return null; }
 
@@ -200,18 +212,19 @@ namespace MarchingCubesProject
                     }
                 }
             }
-            //var opaque_material = this.CopiedObject.GetComponent<MeshRenderer>().material.color;
-            //opaque_material= new Color(opaque_material.r, opaque_material.g, opaque_material.b, 0.3f);
-            //this.CopiedObject.GetComponent<MeshRenderer>().material.color = opaque_material;
-            //this.CopiedObject.transform.SetParent(parent.transform);
-            //this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
+            foreach(var child in this.childObjects)
+            {
+                child.transform.SetParent(parent.transform);
+                child.transform.localPosition = new Vector3(0, 0, 0);
+                child.GetComponent<MeshRenderer>().material = this.SculptureOverlayMaterial;
+            }
 
             Marching.Schedule().Complete();
 
             CreateMeshResult(Marching.verts, Marching.indices, parent.transform);
 
             // make sure its in [0, 100] range, using 1 decimal digits
-            yield return Mathf.Clamp(Mathf.Round(errorAccumulator/(width * height * depth)* 10.0f) * 0.1f, 0, 100);
+            callback.Invoke(Mathf.Clamp(Mathf.Round(errorAccumulator/(width * height * depth)* 10.0f) * 0.1f, 0, 100));
         }
         /// <summary>
         /// Creates the mesh given vertices
@@ -220,9 +233,11 @@ namespace MarchingCubesProject
         /// <param name="indices"></param>
         IEnumerator CreateMesh(NativeList<Vector3> verts, NativeList<int> indices)
         {
+            int timePerFrame = 0;
+            DateTimeOffset t1 = DateTime.Now;
             var vertsArray = verts.ToArray();
             var indicesArray = indices.ToArray();
-            int chunkSize = vertsArray.Length / 10;
+            int chunkSize = vertsArray.Length / this.chunkNumber;
             while(chunkSize%3!= 0)
             {
                 chunkSize++;
@@ -233,36 +248,38 @@ namespace MarchingCubesProject
                 this.meshes[i].SetTriangles(indicesArray[(i * chunkSize)..((i + 1) * chunkSize)], 0);
                 this.meshes[i].RecalculateNormals();
 
-
                 Destroy(this.childObjects[i]);
                 this.childObjects[i] = new GameObject("");
-                this.childObjects[i].tag = "Cube";
-                this.childObjects[i].transform.parent = transform;
+                this.childObjects[i].layer = 13;
+                this.childObjects[i].transform.parent = this.DuplicateObjectTransform;
                 this.childObjects[i].transform.localPosition = new Vector3(0, 0, 0);
 
-                 this.childObjects[i].AddComponent<MeshFilter>().mesh = this.meshes[i];
-                 this.childObjects[i].AddComponent<MeshRenderer>();
+                this.childObjects[i].AddComponent<MeshFilter>().mesh = this.meshes[i];
+                this.childObjects[i].AddComponent<MeshRenderer>();
                 this.childObjects[i].GetComponent<Renderer>().material = SculptureMaterial;
                 this.childObjects[i].AddComponent<MeshCollider>();
-                yield return null;
+                timePerFrame += (DateTime.Now - t1).Milliseconds;
+                if (timePerFrame >= 20)
+                {
+                    yield return 0;
+                }
             }
-
+            // Remainder
             this.meshes[i].SetVertices(vertsArray);
             this.meshes[i].SetTriangles(indicesArray[(i * chunkSize)..], 0);
             this.meshes[i].RecalculateNormals();
 
-
             Destroy(this.childObjects[i]);
             this.childObjects[i] = new GameObject("");
-            this.childObjects[i].tag = "Cube";
-            this.childObjects[i].transform.parent = transform;
+            this.childObjects[i].layer = 13;
+            this.childObjects[i].transform.parent = this.DuplicateObjectTransform;
             this.childObjects[i].transform.localPosition = new Vector3(0, 0, 0);
 
             this.childObjects[i].AddComponent<MeshFilter>().mesh = this.meshes[i];
             this.childObjects[i].AddComponent<MeshRenderer>();
             this.childObjects[i].GetComponent<Renderer>().material = SculptureMaterial;
             this.childObjects[i].AddComponent<MeshCollider>();
-
+            yield return null;
         }
         /// <summary>
         /// Creates the reference mesh after loading file (almost same as createmesh)
@@ -300,7 +317,7 @@ namespace MarchingCubesProject
 
             GameObject go;
             go = new GameObject("Difference");
-            //go.transform.parent = this.CopiedObject.transform;
+            go.transform.parent = parentTransform;
             go.transform.localPosition = new Vector3(0, 0, 0);
 
             go.AddComponent<MeshFilter>().mesh = meshResult;
@@ -312,11 +329,13 @@ namespace MarchingCubesProject
 
         private void Start()
         {
-            this.MainCamera = GameObject.Find("Main Camera");
-            inputTimer = 0;
+            this.laserLine = this.GetComponent<LineRenderer>();
+            this.inputTimer = 0;
+            this.chunkNumber = 10;
+            this.mask = LayerMask.GetMask("Sculpture");
+
             this.Marching = new MarchingCubes
             {
-
                 width = this.width,
                 height = this.height,
                 depth = this.depth,
@@ -326,77 +345,77 @@ namespace MarchingCubesProject
                 Cube = new(8, Allocator.Persistent),
                 WindingOrder = new(new[] { 0, 1, 2 }, Allocator.Persistent),
                 Surface = 0.0f,
-                verts = new NativeList<Vector3>(100000, Allocator.Persistent),
-                indices = new NativeList<int>(100000, Allocator.Persistent),
+                verts = new NativeList<Vector3>(1000, Allocator.Persistent),
+                indices = new NativeList<int>(1000, Allocator.Persistent),
                 voxels = new(width * height * depth, Allocator.Persistent),
             };
-            this.meshes = new Mesh[10];
-            for (int i = 0; i < this.meshes.Length; ++i) { 
-               this.meshes[i]= new Mesh();
-               this.meshes[i].MarkDynamic();
-               this.meshes[i].indexFormat = IndexFormat.UInt32;
+            this.meshes = new Mesh[chunkNumber];
+            for (int i = 0; i < this.meshes.Length; ++i)
+            {
+                this.meshes[i] = new Mesh();
+                this.meshes[i].MarkDynamic();
+                this.meshes[i].indexFormat = IndexFormat.UInt32;
             }
             this.meshReference = new Mesh();
             this.meshReference.MarkDynamic();
             this.meshReference.indexFormat = IndexFormat.UInt32;
 
-            this.childObjects = new GameObject[10];
+            this.childObjects = new GameObject[chunkNumber];
             for (int i = 0; i < this.childObjects.Length; ++i)
             {
-                this.childObjects[i] = new GameObject("child"+i);
-                this.childObjects[i].transform.parent = this.transform;
+                this.childObjects[i] = new GameObject("");
+                this.childObjects[i].transform.parent = this.DuplicateObjectTransform;
                 this.childObjects[i].transform.position = Vector3.zero;
                 this.childObjects[i].transform.localRotation = Quaternion.identity;
             }
-            this.Status = JobStatus.Reference;
-            this.StartCoroutine(this.LoadReferenceFromFile(this.InputFileName));
+            if (!this.createNew)
+            {
+                this.Status = JobStatus.Reference;
+                this.StartCoroutine(this.LoadReferenceFromFile(this.InputFileName));
+            }
+            else
+            {
+                this.Status = JobStatus.CreateNew;
 
+                StartCoroutine(CreateNew());
+            }
+
+        }
+        bool isDown = false;
+        public void TriggerDown()
+        {
+            isDown = true;
+        }  
+        
+        public void TriggerUp()
+        {
+
+            isDown = false;
         }
         private void Update()
         {
+            this.laserLine.SetPosition(0, this.transform.position + new Vector3(0.0f, 0.0f, 0.05f));
             inputTimer += Time.deltaTime;
-            // todo: replace with controller
-            #region CameraControll
-            if (Input.GetKeyDown("w")) { 
-                this.MainCamera.transform.position = 
-                    new Vector3(this.MainCamera.transform.position.x, this.MainCamera.transform.position.y + 0.1f,
-                    this.MainCamera.transform.position.z
-                    );
-            }
-            else if (Input.GetKeyDown("d"))
-            {
-                this.MainCamera.transform.position =
-                    new Vector3(this.MainCamera.transform.position.x + 0.1f, this.MainCamera.transform.position.y,
-                    this.MainCamera.transform.position.z);
-            }
-            #endregion
-            #region UpdateJob
-            //switch (this.Status)
-            //{
-            //    case JobStatus.Free:         break;
-            //    case JobStatus.CreateNew:    this.StartCoroutine(this.CreateNew()); break;
-            //    case JobStatus.UpdateValues: this.StartCoroutine(this.UpdateValues()); break;
-            //    case JobStatus.Reference:    this.StartCoroutine(this.LoadReferenceFromFile()); break;
-            //}
-            #endregion
             RaycastHit hit;
-            if (Input.GetMouseButtonDown(0)
-                && Physics.Raycast(this.MainCamera.transform.position, this.MainCamera.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity)
-                && hit.collider.gameObject.CompareTag("Cube"))
+            if (this.isDown
+                && Physics.Raycast(this.transform.position, this.transform.forward, out hit, Mathf.Infinity, mask)
+                //&& hit.collider.gameObject.CompareTag("Cube")
+                )
             {
+                this.laserLine.SetPosition(1, hit.point);
                 MeshCollider meshCollider = hit.collider as MeshCollider;
 
                 if (meshCollider == null || meshCollider.sharedMesh == null)
                     return;
 
-                Debug.DrawRay(this.MainCamera.transform.position, this.MainCamera.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-                var hitRelative = AbsDistance(hit.point, this.transform.position) * scaleDivision;
+                var hitRelative = AbsDistance(hit.point, this.DuplicateObjectTransform.position) * scaleDivision;
 
                 
-                if(this.Status == JobStatus.Free && this.inputTimer >= 0.3f)
+                if(this.Status == JobStatus.Free && this.inputTimer > 0.1f)
                 {
+
                     this.inputTimer = 0.0f;
-                    Debug.Log("enter: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
+
                     this.Status = JobStatus.UpdateValues;
                     modify(hitRelative);
                 } 
@@ -405,9 +424,9 @@ namespace MarchingCubesProject
             }
             else
             {
-                Debug.DrawRay(this.MainCamera.transform.position, this.MainCamera.transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+                this.laserLine.SetPosition(1, this.transform.position + this.transform.forward * 20);
             }
-          
+
         }
         /// <summary>
         /// Modifies isovalues in a 3x3x3 cube around the hitpoint, setting them all to -1
@@ -430,6 +449,7 @@ namespace MarchingCubesProject
                         int z_2 = z + k;
                         if(x_2 > 0 && x_2 < width && y_2 > 0 && y_2 < height && z_2 > 0 && z_2 < depth)
                         {
+
                             this.Marching.voxels[x_2* height * depth + y_2 * depth + z_2] = -1;
                         }    
                     }

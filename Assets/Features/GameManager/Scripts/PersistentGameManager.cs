@@ -2,6 +2,8 @@ using UnityEngine;
 using NaughtyAttributes;
 using TMPro;
 using UnityEditor;
+using MarchingCubesProject;
+
 public class PersistentGameManager : MonoBehaviour
 {
     //------Serialized Variables------
@@ -33,7 +35,9 @@ public class PersistentGameManager : MonoBehaviour
     [SerializeField]
     [Foldout("Main Level")]
     private SimilarityDetection similarityDetection;
-
+    [SerializeField]
+    [Foldout("Main Level")]
+    private MarchingImplementation sculpture;
     //-----Private Variables-----
     private static bool gameWasCompleted = false;
     private static bool inMainMenu = true;
@@ -128,6 +132,17 @@ public class PersistentGameManager : MonoBehaviour
         //run similarity detection
         //TODO
         score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0,0)+"original", CameraScreenshot.ResourcesPath(0,0)+"duplicate");
+        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //return to main Menu
+        finishToMainMenu();
+    }
+
+    public void evaluateSculpture()
+    {
+        //run similarity detection
+        //TODO
+        GameObject parent = new GameObject("Sculpture");
+        StartCoroutine(this.sculpture.Compare(parent, returnValue => score = returnValue));
         AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu
         finishToMainMenu();

@@ -408,6 +408,8 @@ MonoBehaviour:
   OutputFileName: Features\MarchingCube\TestFile
   InputFileName: Features\MarchingCube\TestFile
   SculptureMaterial: {fileID: 2100000, guid: 86db91c1425480a4c906f21128f355db, type: 2}
+  SculptureOverlayMaterial: {fileID: 2100000, guid: 95dbdc5bfdcec8c408e65bc0ce0dbcf5,
+    type: 2}
   ErrorMaterial: {fileID: 2100000, guid: e730b305d7178c346b7e34a0f4ae26e7, type: 2}
   width: 84
   height: 84

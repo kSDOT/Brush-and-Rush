@@ -28,7 +28,6 @@ namespace MarchingCubesProject
 		public NativeList<Vector3> verts;
 		public NativeList<int> indices;
 		public NativeArray<float> voxels;
-		public Mesh.MeshData meshData;
 		/// <summary>
 		/// The surface value in the voxels. Normally set to 0. 
 		/// </summary>
