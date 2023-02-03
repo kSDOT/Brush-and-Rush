@@ -20,10 +20,6 @@ namespace MarchingCubesProject
         /// </summary>
         public Transform ReferenceObjectTransform;
         /// <summary>
-        /// Our copied object
-        /// </summary>
-        private GameObject CopiedObject;
-        /// <summary>
         /// Used if you want to save a sculpture to file (assets path is prepended)
         /// </summary>
         public string OutputFileName;
@@ -54,6 +50,10 @@ namespace MarchingCubesProject
         /// </summary>
         public float scaleDivision = 10.0f;
         NativeArray<float> referenceVoxels;
+        private Mesh[] meshes;
+        private Mesh meshReference;
+        private GameObject[] childObjects;
+        float inputTimer;
         /// <summary>
         /// Constructs a cube
         /// </summary>
@@ -63,7 +63,6 @@ namespace MarchingCubesProject
         [ContextMenu("TEST")]
         IEnumerator CreateNew()
         {
-            Debug.Log("enter: " + DateTimeOffset.UnixEpoch.Millisecond);
 
             this.Marching.verts.Clear();
             this.Marching.indices.Clear();
@@ -81,12 +80,11 @@ namespace MarchingCubesProject
                     }
                 }
             }
-
+            this.Marching.meshData = Mesh.AllocateWritableMeshData(1)[0];
             var job = this.Marching.Schedule();
             while (!job.IsCompleted) yield return null;
             job.Complete();
-            CreateMesh(this.Marching.verts, this.Marching.indices);
-            Debug.Log("finish: "+ DateTimeOffset.UnixEpoch.Millisecond);
+            StartCoroutine(CreateMesh(this.Marching.verts, this.Marching.indices));
             this.Status = JobStatus.Free;
 
         }
@@ -157,13 +155,11 @@ namespace MarchingCubesProject
 
             StartCoroutine(CreateNew());
         }
-
         /// <summary>
         /// Updates the sculpture with the modified isovalues
         /// </summary>
         IEnumerator UpdateValues()
         {
-            Debug.Log("enter update: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
             this.Marching.verts.Clear();
             this.Marching.indices.Clear();
@@ -173,11 +169,9 @@ namespace MarchingCubesProject
                 yield return null;
             }
             job.Complete();
-            Debug.Log("exit generate: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-            this.CreateMesh(this.Marching.verts, this.Marching.indices);
+            StartCoroutine(this.CreateMesh(this.Marching.verts, this.Marching.indices));
             this.Status = JobStatus.Free;
-            Debug.Log("exit update: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
         }
         [ContextMenu("Compare")]
         void Compare()
@@ -206,11 +200,11 @@ namespace MarchingCubesProject
                     }
                 }
             }
-            var opaque_material = this.CopiedObject.GetComponent<MeshRenderer>().material.color;
-            opaque_material= new Color(opaque_material.r, opaque_material.g, opaque_material.b, 0.3f);
-            this.CopiedObject.GetComponent<MeshRenderer>().material.color = opaque_material;
-            this.CopiedObject.transform.SetParent(parent.transform);
-            this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
+            //var opaque_material = this.CopiedObject.GetComponent<MeshRenderer>().material.color;
+            //opaque_material= new Color(opaque_material.r, opaque_material.g, opaque_material.b, 0.3f);
+            //this.CopiedObject.GetComponent<MeshRenderer>().material.color = opaque_material;
+            //this.CopiedObject.transform.SetParent(parent.transform);
+            //this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
 
             Marching.Schedule().Complete();
 
@@ -224,29 +218,50 @@ namespace MarchingCubesProject
         /// </summary>
         /// <param name="verts"></param>
         /// <param name="indices"></param>
-        private void CreateMesh(NativeList<Vector3> verts, NativeList<int> indices)
+        IEnumerator CreateMesh(NativeList<Vector3> verts, NativeList<int> indices)
         {
-            Debug.Log("enter create mesh: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
-            Mesh mesh = new Mesh();
-            mesh.indexFormat = IndexFormat.UInt32;
-            mesh.SetVertices(verts.ToArray());
-            mesh.SetTriangles(indices.ToArray(), 0);
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            //mesh.RecalculateTangents();
+            var vertsArray = verts.ToArray();
+            var indicesArray = indices.ToArray();
+            int chunkSize = vertsArray.Length / 10;
+            while(chunkSize%3!= 0)
+            {
+                chunkSize++;
+            }
+            int i = 0;
+            for (; i < this.meshes.Length - 1; i++) {
+                this.meshes[i].SetVertices(vertsArray);
+                this.meshes[i].SetTriangles(indicesArray[(i * chunkSize)..((i + 1) * chunkSize)], 0);
+                this.meshes[i].RecalculateNormals();
 
-          
-            Destroy(this.CopiedObject);
-            this.CopiedObject = new GameObject("Mesh");
-            this.CopiedObject.tag = "Cube";
-            this.CopiedObject.transform.parent = transform;
-            this.CopiedObject.transform.localPosition = new Vector3(0, 0, 0);
 
-            this.CopiedObject.AddComponent<MeshFilter>().mesh = mesh;
-            this.CopiedObject.AddComponent<MeshRenderer>();
-            this.CopiedObject.GetComponent<Renderer>().material = SculptureMaterial;
-            this.CopiedObject.AddComponent<MeshCollider>();
-            Debug.Log("exit create mesh: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
+                Destroy(this.childObjects[i]);
+                this.childObjects[i] = new GameObject("");
+                this.childObjects[i].tag = "Cube";
+                this.childObjects[i].transform.parent = transform;
+                this.childObjects[i].transform.localPosition = new Vector3(0, 0, 0);
+
+                 this.childObjects[i].AddComponent<MeshFilter>().mesh = this.meshes[i];
+                 this.childObjects[i].AddComponent<MeshRenderer>();
+                this.childObjects[i].GetComponent<Renderer>().material = SculptureMaterial;
+                this.childObjects[i].AddComponent<MeshCollider>();
+                yield return null;
+            }
+
+            this.meshes[i].SetVertices(vertsArray);
+            this.meshes[i].SetTriangles(indicesArray[(i * chunkSize)..], 0);
+            this.meshes[i].RecalculateNormals();
+
+
+            Destroy(this.childObjects[i]);
+            this.childObjects[i] = new GameObject("");
+            this.childObjects[i].tag = "Cube";
+            this.childObjects[i].transform.parent = transform;
+            this.childObjects[i].transform.localPosition = new Vector3(0, 0, 0);
+
+            this.childObjects[i].AddComponent<MeshFilter>().mesh = this.meshes[i];
+            this.childObjects[i].AddComponent<MeshRenderer>();
+            this.childObjects[i].GetComponent<Renderer>().material = SculptureMaterial;
+            this.childObjects[i].AddComponent<MeshCollider>();
 
         }
         /// <summary>
@@ -256,20 +271,16 @@ namespace MarchingCubesProject
         /// <param name="indices"></param>
         private void CreateMeshReference(NativeList<Vector3> verts, NativeList<int> indices)
         {
-            Mesh mesh = new Mesh();
-            mesh.indexFormat = IndexFormat.UInt32;
-            mesh.SetVertices(verts.ToArray());
-            mesh.SetTriangles(indices.ToArray(), 0);
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.RecalculateTangents();
+            this.meshReference.SetVertices(verts.ToArray());
+            this.meshReference.SetTriangles(indices.ToArray(), 0);
+            this.meshReference.RecalculateNormals();
 
             GameObject go;
             go = new GameObject("Reference");
             go.transform.parent = this.ReferenceObjectTransform;
             go.transform.localPosition = new Vector3(0, 0, 0);
 
-            go.AddComponent<MeshFilter>().mesh = mesh;
+            go.AddComponent<MeshFilter>().mesh = meshReference;
             go.AddComponent<MeshRenderer>();
             go.GetComponent<Renderer>().material = SculptureMaterial;
             go.AddComponent<MeshCollider>();
@@ -282,20 +293,17 @@ namespace MarchingCubesProject
         /// <param name="indices"></param>
         private void CreateMeshResult(NativeList<Vector3> verts, NativeList<int> indices, Transform parentTransform)
         {
-            Mesh mesh = new Mesh();
-            mesh.indexFormat = IndexFormat.UInt32;
-            mesh.SetVertices(verts.ToArray());
-            mesh.SetTriangles(indices.ToArray(), 0);
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.RecalculateTangents();
+            Mesh meshResult = new Mesh(); 
+            meshResult.SetVertices(verts.ToArray());
+            meshResult.SetTriangles(indices.ToArray(), 0);
+            meshResult.RecalculateNormals();
 
             GameObject go;
             go = new GameObject("Difference");
-            go.transform.parent = this.CopiedObject.transform;
+            //go.transform.parent = this.CopiedObject.transform;
             go.transform.localPosition = new Vector3(0, 0, 0);
 
-            go.AddComponent<MeshFilter>().mesh = mesh;
+            go.AddComponent<MeshFilter>().mesh = meshResult;
             go.AddComponent<MeshRenderer>();
             go.GetComponent<Renderer>().material = ErrorMaterial;
             go.AddComponent<MeshCollider>();
@@ -305,7 +313,7 @@ namespace MarchingCubesProject
         private void Start()
         {
             this.MainCamera = GameObject.Find("Main Camera");
-
+            inputTimer = 0;
             this.Marching = new MarchingCubes
             {
 
@@ -322,13 +330,31 @@ namespace MarchingCubesProject
                 indices = new NativeList<int>(100000, Allocator.Persistent),
                 voxels = new(width * height * depth, Allocator.Persistent),
             };
+            this.meshes = new Mesh[10];
+            for (int i = 0; i < this.meshes.Length; ++i) { 
+               this.meshes[i]= new Mesh();
+               this.meshes[i].MarkDynamic();
+               this.meshes[i].indexFormat = IndexFormat.UInt32;
+            }
+            this.meshReference = new Mesh();
+            this.meshReference.MarkDynamic();
+            this.meshReference.indexFormat = IndexFormat.UInt32;
+
+            this.childObjects = new GameObject[10];
+            for (int i = 0; i < this.childObjects.Length; ++i)
+            {
+                this.childObjects[i] = new GameObject("child"+i);
+                this.childObjects[i].transform.parent = this.transform;
+                this.childObjects[i].transform.position = Vector3.zero;
+                this.childObjects[i].transform.localRotation = Quaternion.identity;
+            }
             this.Status = JobStatus.Reference;
             this.StartCoroutine(this.LoadReferenceFromFile(this.InputFileName));
-            this.CopiedObject = new GameObject();
 
         }
         private void Update()
         {
+            inputTimer += Time.deltaTime;
             // todo: replace with controller
             #region CameraControll
             if (Input.GetKeyDown("w")) { 
@@ -366,22 +392,20 @@ namespace MarchingCubesProject
                 Debug.DrawRay(this.MainCamera.transform.position, this.MainCamera.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
                 var hitRelative = AbsDistance(hit.point, this.transform.position) * scaleDivision;
 
-                Debug.Log("Original: " + hit.point);
-                Debug.Log("start: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
                 
-                if(this.Status == JobStatus.Free)
+                if(this.Status == JobStatus.Free && this.inputTimer >= 0.3f)
                 {
+                    this.inputTimer = 0.0f;
+                    Debug.Log("enter: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
                     this.Status = JobStatus.UpdateValues;
                     modify(hitRelative);
                 } 
 
-                Debug.Log("finished: " + DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
             }
             else
             {
                 Debug.DrawRay(this.MainCamera.transform.position, this.MainCamera.transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-                Debug.Log("Did not Hit");
             }
           
         }
@@ -394,7 +418,6 @@ namespace MarchingCubesProject
             int x = Mathf.RoundToInt(hitRelative.x);
             int y = Mathf.RoundToInt(hitRelative.y);
             int z = Mathf.RoundToInt(hitRelative.z);
-            Debug.Log("hit: " + new Vector3(x, y, z));
 
             for (int i = -1; i <= 1; ++i)
             {

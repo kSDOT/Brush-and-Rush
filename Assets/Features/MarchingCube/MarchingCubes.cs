@@ -3,10 +3,20 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using Unity.Burst;
+using System.Runtime.InteropServices;
 using UnityEngine.Rendering;
 
 namespace MarchingCubesProject
 {
+	[StructLayout(LayoutKind.Sequential)]
+	public struct VertexData
+	{
+		public Vector3 Position;
+		public Vector3 Normal;
+		public Vector2 Uv;
+	}
+
+
 	[BurstCompile]
     public struct MarchingCubes :IJob
 	{
@@ -18,6 +28,7 @@ namespace MarchingCubesProject
 		public NativeList<Vector3> verts;
 		public NativeList<int> indices;
 		public NativeArray<float> voxels;
+		public Mesh.MeshData meshData;
 		/// <summary>
 		/// The surface value in the voxels. Normally set to 0. 
 		/// </summary>
@@ -130,17 +141,6 @@ namespace MarchingCubesProject
         public void Execute()
         {
 			this.Generate();
-			//int vertexAttributeCount = 4;
-			//int vertexCount = 4;
-
-			//Mesh.MeshDataArray meshDataArray = Mesh.AllocateWritableMeshData(1);
-			//Mesh.MeshData meshData = meshDataArray[0];
-
-			//var vertexAttributes = new NativeArray<VertexAttributeDescriptor>(
-			//	vertexAttributeCount, Allocator.Temp
-			//);
-			//meshData.SetVertexBufferParams(vertexCount, vertexAttributes);
-			//vertexAttributes.Dispose();
 		}
 
 
