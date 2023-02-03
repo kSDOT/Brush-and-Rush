@@ -5,12 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Main Menu.unity
     guid: ddf14436068b91e429f0a8885ce38a6e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Miauseum.unity
     guid: 62ffb9fbb0fd8c94087c4ef95b487bfd
+  - enabled: 0
+    path: Assets/Scenes/Sculpting.unity
+    guid: 3848ceed417e2074a97367a624617388
+  - enabled: 1
+    path: Assets/Scenes/NonVr.unity
+    guid: befd6e8482300a74ca2ccf82d22e902e
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 58a531e248d4a2f4aaed0c612c791652,
       type: 2}

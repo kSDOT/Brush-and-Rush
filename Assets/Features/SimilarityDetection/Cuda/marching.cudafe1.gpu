@@ -1,0 +1,449 @@
+typedef char __nv_bool;
+#line 4 "marching.cu"
+struct Vector3;
+#line 54 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+struct _ZSt11conditionalILb0EfdE;
+#line 54 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+struct _ZSt11conditionalILb0EedE;
+#line 193 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\vcruntime.h"
+typedef unsigned long long size_t;
+#include "crt/device_runtime.h"
+#line 4 "marching.cu"
+struct Vector3 {
+#line 6 "marching.cu"
+float x;
+#line 7 "marching.cu"
+float y;
+#line 8 "marching.cu"
+float z;};
+#line 60 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+typedef double _ZNSt11conditionalILb0EfdE4typeE;
+#line 60 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+typedef _ZNSt11conditionalILb0EfdE4typeE _ZNSt11conditionalILb0EedE4typeE;
+#line 64 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+typedef _ZNSt11conditionalILb0EedE4typeE _ZSt13conditional_tILb0EedE;
+#line 559 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+typedef _ZSt13conditional_tILb0EedE _ZSt20_Common_float_type_tIfiE;
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+typedef _ZSt20_Common_float_type_tIfiE _ZZ3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_E7_Common;
+#pragma pack(8)
+#line 54 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+struct _ZSt11conditionalILb0EfdE {char __nv_no_debug_dummy_end_padding_0;};
+#pragma pack()
+#pragma pack(8)
+#line 54 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+struct _ZSt11conditionalILb0EedE {char __nv_no_debug_dummy_end_padding_0;};
+#pragma pack()
+#line 64 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\xtr1common"
+typedef _ZNSt11conditionalILb0EfdE4typeE _ZSt13conditional_tILb0EfdE;
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#line 480 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt\\corecrt_math.h"
+ __device_builtin__ ___device__(extern  __no_sc__) double pow(double, double);
+#endif
+#if !defined(__CUDABE__)
+#line 483 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt\\corecrt_math.h"
+ __device_builtin__ ___device__(extern  __no_sc__) double sqrt(double);
+#endif
+#if !defined(__CUDABE__)
+#line 677 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt\\corecrt_math.h"
+ __device_builtin__ ___device__(extern  __no_sc__) float floorf(float);
+#endif
+#line 124 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+___device__(static  __no_sc__) float _Z5floorf(float);
+#line 21 "marching.cu"
+___device__(static  __no_sc__) struct Vector3 *normalize_inversed(struct Vector3 *);
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+___device__(static  __no_sc__) _ZSt20_Common_float_type_tIfiE _Z3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_(float, int);
+#line 28 "marching.cu"
+___device__(static  __no_sc__) float Lerp(float, float, float);
+#line 33 "marching.cu"
+___device__(static  __no_sc__) float BLerp(float, float, float, float, float, float);
+#line 38 "marching.cu"
+___device__(static  __no_sc__) float clamp(float, float, float);
+#line 43 "marching.cu"
+___device__(static  __no_sc__) float GetVoxel_int(int, int, int, int, int, int, float *);
+#line 52 "marching.cu"
+___device__(static  __no_sc__) float GetVoxel(float, float, float, int, int, int, float *);
+#line 11 "marching.cu"
+__global__ __var_used__ extern void carve(int, int, int, int, int, int, float *);
+#line 83 "marching.cu"
+__global__ __var_used__ extern void GetNormal(int, int, int, int, struct Vector3 *, float *, struct Vector3 *);
+#include "common_functions.h"
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#line 124 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+___device__(static  __no_sc__) __inline__ float _Z5floorf(
+#line 124 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+float _Xx){
+#line 124 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+{
+#line 130 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+return floorf(_Xx);
+#line 132 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+}}
+#line 21 "marching.cu"
+___device__(static  __no_sc__) struct Vector3 *normalize_inversed(
+#line 21 "marching.cu"
+struct Vector3 *vec){
+#line 21 "marching.cu"
+{
+#line 22 "marching.cu"
+ float __cuda_local_var_381551_15_non_const_length;
+#line 22 "marching.cu"
+__cuda_local_var_381551_15_non_const_length = ((float)(sqrt((((_Z3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_((vec->x), 2)) + (_Z3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_((vec->y), 2))) + (_Z3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_((vec->z), 2))))));
+#line 23 "marching.cu"
+(vec->x) = (( fdividef((vec->x) , __cuda_local_var_381551_15_non_const_length)) * (-1.0F));
+#line 24 "marching.cu"
+(vec->y) = (( fdividef((vec->y) , __cuda_local_var_381551_15_non_const_length)) * (-1.0F));
+#line 25 "marching.cu"
+(vec->z) = (( fdividef((vec->z) , __cuda_local_var_381551_15_non_const_length)) * (-1.0F));
+#line 26 "marching.cu"
+return vec;
+#line 27 "marching.cu"
+}}
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+___device__(static  __no_sc__) _ZSt20_Common_float_type_tIfiE _Z3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_(
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+float _Left, 
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+int _Right){
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+{
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+return pow(((_ZZ3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_E7_Common)_Left), ((_ZZ3powIfiLi0EENSt11conditionalIXooL_ZSt9is_same_vEL_ZSt9is_same_vEEeNS0_IXaaL_ZSt9is_same_vEL_ZSt9is_same_vEEfdE4typeEE4typeET_T0_E7_Common)_Right));
+#line 669 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+}}
+#line 28 "marching.cu"
+___device__(static  __no_sc__) float Lerp(
+#line 28 "marching.cu"
+float v0, 
+#line 28 "marching.cu"
+float v1, 
+#line 28 "marching.cu"
+float t){
+#line 29 "marching.cu"
+{
+#line 30 "marching.cu"
+return v0 + ((v1 - v0) * t);
+#line 31 "marching.cu"
+}}
+#line 33 "marching.cu"
+___device__(static  __no_sc__) float BLerp(
+#line 33 "marching.cu"
+float v00, 
+#line 33 "marching.cu"
+float v10, 
+#line 33 "marching.cu"
+float v01, 
+#line 33 "marching.cu"
+float v11, 
+#line 33 "marching.cu"
+float tx, 
+#line 33 "marching.cu"
+float ty){
+#line 34 "marching.cu"
+{
+#line 35 "marching.cu"
+return Lerp((Lerp(v00, v10, tx)), (Lerp(v01, v11, tx)), ty);
+#line 36 "marching.cu"
+}}
+#line 38 "marching.cu"
+___device__(static  __no_sc__) float clamp(
+#line 38 "marching.cu"
+float d, 
+#line 38 "marching.cu"
+float min, 
+#line 38 "marching.cu"
+float max){
+#line 38 "marching.cu"
+{
+#line 39 "marching.cu"
+ float __cuda_local_var_381568_21_non_const_t;
+#line 39 "marching.cu"
+__cuda_local_var_381568_21_non_const_t = ((d < min) ? min : d);
+#line 40 "marching.cu"
+return (__cuda_local_var_381568_21_non_const_t > max) ? max : __cuda_local_var_381568_21_non_const_t;
+#line 41 "marching.cu"
+}}
+#line 43 "marching.cu"
+___device__(static  __no_sc__) float GetVoxel_int(
+#line 43 "marching.cu"
+int x, 
+#line 43 "marching.cu"
+int y, 
+#line 43 "marching.cu"
+int z, 
+#line 43 "marching.cu"
+int Width, 
+#line 43 "marching.cu"
+int Height, 
+#line 43 "marching.cu"
+int Depth, 
+#line 43 "marching.cu"
+float *Voxels){
+#line 43 "marching.cu"
+{
+#line 44 "marching.cu"
+x = ((int)(clamp(((float)x), (0.0F), ((float)(Width - 1)))));
+#line 45 "marching.cu"
+y = ((int)(clamp(((float)y), (0.0F), ((float)(Height - 1)))));
+#line 46 "marching.cu"
+z = ((int)(clamp(((float)z), (0.0F), ((float)(Depth - 1)))));
+#line 47 "marching.cu"
+return Voxels[((((y * Height) * Depth) + (z * Depth)) + x)];
+#line 48 "marching.cu"
+}}
+#line 52 "marching.cu"
+___device__(static  __no_sc__) float GetVoxel(
+#line 52 "marching.cu"
+float u, 
+#line 52 "marching.cu"
+float v, 
+#line 52 "marching.cu"
+float w, 
+#line 52 "marching.cu"
+int Width, 
+#line 52 "marching.cu"
+int Height, 
+#line 52 "marching.cu"
+int Depth, 
+#line 52 "marching.cu"
+float *Voxels){
+#line 53 "marching.cu"
+{
+#line 54 "marching.cu"
+ float __cuda_local_var_381583_15_non_const_x;
+#line 55 "marching.cu"
+ float __cuda_local_var_381584_15_non_const_y;
+#line 56 "marching.cu"
+ float __cuda_local_var_381585_15_non_const_z;
+#line 58 "marching.cu"
+ int __cuda_local_var_381587_13_non_const_xi;
+#line 59 "marching.cu"
+ int __cuda_local_var_381588_13_non_const_yi;
+#line 60 "marching.cu"
+ int __cuda_local_var_381589_13_non_const_zi;
+#line 62 "marching.cu"
+ float __cuda_local_var_381591_15_non_const_v000;
+#line 63 "marching.cu"
+ float __cuda_local_var_381592_15_non_const_v100;
+#line 64 "marching.cu"
+ float __cuda_local_var_381593_15_non_const_v010;
+#line 65 "marching.cu"
+ float __cuda_local_var_381594_15_non_const_v110;
+#line 67 "marching.cu"
+ float __cuda_local_var_381596_15_non_const_v001;
+#line 68 "marching.cu"
+ float __cuda_local_var_381597_15_non_const_v101;
+#line 69 "marching.cu"
+ float __cuda_local_var_381598_15_non_const_v011;
+#line 70 "marching.cu"
+ float __cuda_local_var_381599_15_non_const_v111;
+#line 72 "marching.cu"
+ float __cuda_local_var_381601_15_non_const_tx;
+#line 73 "marching.cu"
+ float __cuda_local_var_381602_15_non_const_ty;
+#line 74 "marching.cu"
+ float __cuda_local_var_381603_15_non_const_tz;
+#line 77 "marching.cu"
+ float __cuda_local_var_381606_15_non_const_v0;
+#line 78 "marching.cu"
+ float __cuda_local_var_381607_15_non_const_v1;
+#line 54 "marching.cu"
+__cuda_local_var_381583_15_non_const_x = (u * ((float)(Width - 1)));
+#line 55 "marching.cu"
+__cuda_local_var_381584_15_non_const_y = (v * ((float)(Height - 1)));
+#line 56 "marching.cu"
+__cuda_local_var_381585_15_non_const_z = (w * ((float)(Depth - 1)));
+#line 58 "marching.cu"
+__cuda_local_var_381587_13_non_const_xi = ((int)(_Z5floorf(__cuda_local_var_381583_15_non_const_x)));
+#line 59 "marching.cu"
+__cuda_local_var_381588_13_non_const_yi = ((int)(_Z5floorf(__cuda_local_var_381584_15_non_const_y)));
+#line 60 "marching.cu"
+__cuda_local_var_381589_13_non_const_zi = ((int)(_Z5floorf(__cuda_local_var_381585_15_non_const_z)));
+#line 62 "marching.cu"
+__cuda_local_var_381591_15_non_const_v000 = (GetVoxel_int(__cuda_local_var_381587_13_non_const_xi, __cuda_local_var_381588_13_non_const_yi, __cuda_local_var_381589_13_non_const_zi, Width, Height, Depth, Voxels));
+#line 63 "marching.cu"
+__cuda_local_var_381592_15_non_const_v100 = (GetVoxel_int((__cuda_local_var_381587_13_non_const_xi + 1), __cuda_local_var_381588_13_non_const_yi, __cuda_local_var_381589_13_non_const_zi, Width, Height, Depth, Voxels));
+#line 64 "marching.cu"
+__cuda_local_var_381593_15_non_const_v010 = (GetVoxel_int(__cuda_local_var_381587_13_non_const_xi, (__cuda_local_var_381588_13_non_const_yi + 1), __cuda_local_var_381589_13_non_const_zi, Width, Height, Depth, Voxels));
+#line 65 "marching.cu"
+__cuda_local_var_381594_15_non_const_v110 = (GetVoxel_int((__cuda_local_var_381587_13_non_const_xi + 1), (__cuda_local_var_381588_13_non_const_yi + 1), __cuda_local_var_381589_13_non_const_zi, Width, Height, Depth, Voxels));
+#line 67 "marching.cu"
+__cuda_local_var_381596_15_non_const_v001 = (GetVoxel_int(__cuda_local_var_381587_13_non_const_xi, __cuda_local_var_381588_13_non_const_yi, (__cuda_local_var_381589_13_non_const_zi + 1), Width, Height, Depth, Voxels));
+#line 68 "marching.cu"
+__cuda_local_var_381597_15_non_const_v101 = (GetVoxel_int((__cuda_local_var_381587_13_non_const_xi + 1), __cuda_local_var_381588_13_non_const_yi, (__cuda_local_var_381589_13_non_const_zi + 1), Width, Height, Depth, Voxels));
+#line 69 "marching.cu"
+__cuda_local_var_381598_15_non_const_v011 = (GetVoxel_int(__cuda_local_var_381587_13_non_const_xi, (__cuda_local_var_381588_13_non_const_yi + 1), (__cuda_local_var_381589_13_non_const_zi + 1), Width, Height, Depth, Voxels));
+#line 70 "marching.cu"
+__cuda_local_var_381599_15_non_const_v111 = (GetVoxel_int((__cuda_local_var_381587_13_non_const_xi + 1), (__cuda_local_var_381588_13_non_const_yi + 1), (__cuda_local_var_381589_13_non_const_zi + 1), Width, Height, Depth, Voxels));
+#line 72 "marching.cu"
+__cuda_local_var_381601_15_non_const_tx = (clamp((__cuda_local_var_381583_15_non_const_x - ((float)__cuda_local_var_381587_13_non_const_xi)), (0.0F), (1.0F)));
+#line 73 "marching.cu"
+__cuda_local_var_381602_15_non_const_ty = (clamp((__cuda_local_var_381584_15_non_const_y - ((float)__cuda_local_var_381588_13_non_const_yi)), (0.0F), (1.0F)));
+#line 74 "marching.cu"
+__cuda_local_var_381603_15_non_const_tz = (clamp((__cuda_local_var_381585_15_non_const_z - ((float)__cuda_local_var_381589_13_non_const_zi)), (0.0F), (1.0F)));
+#line 77 "marching.cu"
+__cuda_local_var_381606_15_non_const_v0 = (BLerp(__cuda_local_var_381591_15_non_const_v000, __cuda_local_var_381592_15_non_const_v100, __cuda_local_var_381593_15_non_const_v010, __cuda_local_var_381594_15_non_const_v110, __cuda_local_var_381601_15_non_const_tx, __cuda_local_var_381602_15_non_const_ty));
+#line 78 "marching.cu"
+__cuda_local_var_381607_15_non_const_v1 = (BLerp(__cuda_local_var_381596_15_non_const_v001, __cuda_local_var_381597_15_non_const_v101, __cuda_local_var_381598_15_non_const_v011, __cuda_local_var_381599_15_non_const_v111, __cuda_local_var_381601_15_non_const_tx, __cuda_local_var_381602_15_non_const_ty));
+#line 80 "marching.cu"
+return Lerp(__cuda_local_var_381606_15_non_const_v0, __cuda_local_var_381607_15_non_const_v1, __cuda_local_var_381603_15_non_const_tz);
+#line 81 "marching.cu"
+}}
+#line 11 "marching.cu"
+__global__ __var_used__ void carve(
+#line 11 "marching.cu"
+int width, 
+#line 11 "marching.cu"
+int height, 
+#line 11 "marching.cu"
+int depth, 
+#line 11 "marching.cu"
+int x, 
+#line 11 "marching.cu"
+int y, 
+#line 11 "marching.cu"
+int z, 
+#line 11 "marching.cu"
+float *voxels){
+#line 11 "marching.cu"
+{
+#line 12 "marching.cu"
+ int __cuda_local_var_381541_13_non_const_new_x;
+#line 13 "marching.cu"
+ int __cuda_local_var_381542_13_non_const_new_y;
+#line 14 "marching.cu"
+ int __cuda_local_var_381543_13_non_const_new_z;
+#line 12 "marching.cu"
+__cuda_local_var_381541_13_non_const_new_x = ((int)((((unsigned)x) + (threadIdx.x)) - 1U));
+#line 13 "marching.cu"
+__cuda_local_var_381542_13_non_const_new_y = ((int)((((unsigned)y) + (threadIdx.y)) - 1U));
+#line 14 "marching.cu"
+__cuda_local_var_381543_13_non_const_new_z = ((int)((((unsigned)z) + (threadIdx.z)) - 1U));
+#line 16 "marching.cu"
+if ((((((__cuda_local_var_381541_13_non_const_new_x < width) && (__cuda_local_var_381541_13_non_const_new_x > 0)) && (__cuda_local_var_381542_13_non_const_new_y < height)) && (__cuda_local_var_381542_13_non_const_new_y > 0)) && (__cuda_local_var_381543_13_non_const_new_z < depth)) && (__cuda_local_var_381543_13_non_const_new_z > 0))
+#line 16 "marching.cu"
+{
+#line 17 "marching.cu"
+(voxels[((((__cuda_local_var_381541_13_non_const_new_x * height) * depth) + (__cuda_local_var_381542_13_non_const_new_y * depth)) + __cuda_local_var_381543_13_non_const_new_z)]) = (-1.0F);
+#line 18 "marching.cu"
+} 
+#line 20 "marching.cu"
+}}
+#line 83 "marching.cu"
+__global__ __var_used__ void GetNormal(
+#line 83 "marching.cu"
+int N, 
+#line 83 "marching.cu"
+int Width, 
+#line 83 "marching.cu"
+int Height, 
+#line 83 "marching.cu"
+int Depth, 
+#line 83 "marching.cu"
+struct Vector3 *verts, 
+#line 83 "marching.cu"
+float *Voxels, 
+#line 83 "marching.cu"
+struct Vector3 *output){
+#line 84 "marching.cu"
+{
+#line 85 "marching.cu"
+ int __cuda_local_var_381614_7_non_const_index;
+#line 85 "marching.cu"
+__cuda_local_var_381614_7_non_const_index = ((int)(((blockDim.x) * (blockIdx.x)) + (threadIdx.x)));
+#line 86 "marching.cu"
+if (__cuda_local_var_381614_7_non_const_index < N)
+#line 86 "marching.cu"
+{
+#line 87 "marching.cu"
+ float __cuda_local_var_381616_19_non_const_u;
+#line 88 "marching.cu"
+ float __cuda_local_var_381617_19_non_const_v;
+#line 89 "marching.cu"
+ float __cuda_local_var_381618_19_non_const_w;
+#line 91 "marching.cu"
+ float __cuda_local_var_381620_25_const_h;
+#line 92 "marching.cu"
+ float __cuda_local_var_381621_25_non_const_hh;
+#line 93 "marching.cu"
+ float __cuda_local_var_381622_25_non_const_ih;
+#line 95 "marching.cu"
+ float __cuda_local_var_381624_19_non_const_dx_p1;
+#line 96 "marching.cu"
+ float __cuda_local_var_381625_19_non_const_dy_p1;
+#line 97 "marching.cu"
+ float __cuda_local_var_381626_19_non_const_dz_p1;
+#line 99 "marching.cu"
+ float __cuda_local_var_381628_19_non_const_dx_m1;
+#line 100 "marching.cu"
+ float __cuda_local_var_381629_19_non_const_dy_m1;
+#line 101 "marching.cu"
+ float __cuda_local_var_381630_19_non_const_dz_m1;
+#line 103 "marching.cu"
+ float __cuda_local_var_381632_19_non_const_dx;
+#line 104 "marching.cu"
+ float __cuda_local_var_381633_19_non_const_dy;
+#line 105 "marching.cu"
+ float __cuda_local_var_381634_19_non_const_dz;
+#line 106 "marching.cu"
+ struct Vector3 __cuda_local_var_381635_21_non_const_out_temp;
+#line 87 "marching.cu"
+__cuda_local_var_381616_19_non_const_u = ( fdividef(((verts[__cuda_local_var_381614_7_non_const_index]).x) , (((float)Width) - (1.0F))));
+#line 88 "marching.cu"
+__cuda_local_var_381617_19_non_const_v = ( fdividef(((verts[__cuda_local_var_381614_7_non_const_index]).y) , (((float)Height) - (1.0F))));
+#line 89 "marching.cu"
+__cuda_local_var_381618_19_non_const_w = ( fdividef(((verts[__cuda_local_var_381614_7_non_const_index]).z) , (((float)Depth) - (1.0F))));
+#line 91 "marching.cu"
+__cuda_local_var_381620_25_const_h = (0.004999999888F);
+#line 92 "marching.cu"
+__cuda_local_var_381621_25_non_const_hh = (__cuda_local_var_381620_25_const_h * (0.5F));
+#line 93 "marching.cu"
+__cuda_local_var_381622_25_non_const_ih = ((1.0F) / __cuda_local_var_381620_25_const_h);
+#line 95 "marching.cu"
+__cuda_local_var_381624_19_non_const_dx_p1 = (GetVoxel((__cuda_local_var_381616_19_non_const_u + __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381617_19_non_const_v, __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+#line 96 "marching.cu"
+__cuda_local_var_381625_19_non_const_dy_p1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, (__cuda_local_var_381617_19_non_const_v + __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+#line 97 "marching.cu"
+__cuda_local_var_381626_19_non_const_dz_p1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, __cuda_local_var_381617_19_non_const_v, (__cuda_local_var_381618_19_non_const_w + __cuda_local_var_381621_25_non_const_hh), Width, Height, Depth, Voxels));
+#line 99 "marching.cu"
+__cuda_local_var_381628_19_non_const_dx_m1 = (GetVoxel((__cuda_local_var_381616_19_non_const_u - __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381617_19_non_const_v, __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+#line 100 "marching.cu"
+__cuda_local_var_381629_19_non_const_dy_m1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, (__cuda_local_var_381617_19_non_const_v - __cuda_local_var_381621_25_non_const_hh), __cuda_local_var_381618_19_non_const_w, Width, Height, Depth, Voxels));
+#line 101 "marching.cu"
+__cuda_local_var_381630_19_non_const_dz_m1 = (GetVoxel(__cuda_local_var_381616_19_non_const_u, __cuda_local_var_381617_19_non_const_v, (__cuda_local_var_381618_19_non_const_w - __cuda_local_var_381621_25_non_const_hh), Width, Height, Depth, Voxels));
+#line 103 "marching.cu"
+__cuda_local_var_381632_19_non_const_dx = ((__cuda_local_var_381624_19_non_const_dx_p1 - __cuda_local_var_381628_19_non_const_dx_m1) * __cuda_local_var_381622_25_non_const_ih);
+#line 104 "marching.cu"
+__cuda_local_var_381633_19_non_const_dy = ((__cuda_local_var_381625_19_non_const_dy_p1 - __cuda_local_var_381629_19_non_const_dy_m1) * __cuda_local_var_381622_25_non_const_ih);
+#line 105 "marching.cu"
+__cuda_local_var_381634_19_non_const_dz = ((__cuda_local_var_381626_19_non_const_dz_p1 - __cuda_local_var_381630_19_non_const_dz_m1) * __cuda_local_var_381622_25_non_const_ih);
+#line 106 "marching.cu"
+(__cuda_local_var_381635_21_non_const_out_temp.x) = __cuda_local_var_381632_19_non_const_dx;
+#line 106 "marching.cu"
+(__cuda_local_var_381635_21_non_const_out_temp.y) = __cuda_local_var_381633_19_non_const_dy;
+#line 106 "marching.cu"
+(__cuda_local_var_381635_21_non_const_out_temp.z) = __cuda_local_var_381634_19_non_const_dz;
+#line 107 "marching.cu"
+(output[__cuda_local_var_381614_7_non_const_index]) = (*(normalize_inversed((&__cuda_local_var_381635_21_non_const_out_temp))));
+#line 109 "marching.cu"
+} 
+#line 110 "marching.cu"
+}}
