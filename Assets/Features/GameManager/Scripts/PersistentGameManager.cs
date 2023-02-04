@@ -30,9 +30,13 @@ public class PersistentGameManager : MonoBehaviour
     [SerializeField]
     private Material[] originalPaintings;
 
-    //Player
+    //PlayerMovement
+    [BoxGroup("PlayerMovement")]
     [SerializeField]
     private GameObject playerController;
+    [BoxGroup("PlayerMovement")]
+    [SerializeField]
+    private Lever movementSwitchLever;
 
     //Level
     [SerializeField]
@@ -188,6 +192,16 @@ public class PersistentGameManager : MonoBehaviour
         {
             locomotionTeleport.enabled = false;
             locomotionSmooth.enabled = true;
+        }
+    }
+
+    private void setMovementLever()
+    {
+        //Check if lever exists
+        if (movementSwitchLever)
+        {
+            //When Teleport is enabled, it will use the minium rotation, otherwise the maximum
+            movementSwitchLever.InitialXRotation = teleport ? movementSwitchLever.MinimumXRotation : movementSwitchLever.MaximumXRotation;
         }
     }
 }
