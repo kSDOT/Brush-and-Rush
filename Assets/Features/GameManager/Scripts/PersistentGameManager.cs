@@ -3,11 +3,13 @@ using NaughtyAttributes;
 using TMPro;
 using UnityEditor;
 using MarchingCubesProject;
+using BNG;
 
 public class PersistentGameManager : MonoBehaviour
 {
     //------Serialized Variables------
     public static double score = 0;
+    public static bool teleport = true;
 
     public GameObject canvasFront;
 
@@ -27,6 +29,10 @@ public class PersistentGameManager : MonoBehaviour
     //Pictures
     [SerializeField]
     private Material[] originalPaintings;
+
+    //Player
+    [SerializeField]
+    private GameObject playerController;
 
     //Level
     [SerializeField]
@@ -56,6 +62,8 @@ public class PersistentGameManager : MonoBehaviour
             inMainMenu = false;
             score = 0.0;
         }
+
+        setMovementSystem();
     }
 
     void Update() {
@@ -146,5 +154,40 @@ public class PersistentGameManager : MonoBehaviour
         AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu
         finishToMainMenu();
+    }
+
+    //Movement Switching
+
+    public void toggleMovement()
+    {
+        //Switch teleport
+        teleport = !teleport;
+
+        setMovementSystem();
+    }
+
+    public void toggleMovement(bool shouldTeleport)
+    {
+        teleport = shouldTeleport;
+
+        setMovementSystem();
+    }
+
+    public void setMovementSystem()
+    {
+        PlayerTeleport locomotionTeleport = playerController.GetComponent<PlayerTeleport>();
+        SmoothLocomotion locomotionSmooth = playerController.GetComponent<SmoothLocomotion>();
+
+        //Check which locomotion system to use
+        if (teleport)
+        {
+            locomotionSmooth.enabled = false;
+            locomotionTeleport.enabled = true;
+        }
+        else
+        {
+            locomotionTeleport.enabled = false;
+            locomotionSmooth.enabled = true;
+        }
     }
 }
