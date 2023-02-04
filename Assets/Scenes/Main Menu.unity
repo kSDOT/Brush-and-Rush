@@ -4951,12 +4951,12 @@ PrefabInstance:
     - target: {fileID: 2968649124874760583, guid: 30aa952c946ef1343b3d45e4c7763fb6,
         type: 3}
       propertyPath: m_text
-      value: Smooth
+      value: Teleport
       objectReference: {fileID: 0}
     - target: {fileID: 8981487599542146957, guid: 30aa952c946ef1343b3d45e4c7763fb6,
         type: 3}
       propertyPath: m_text
-      value: Teleport
+      value: Smooth
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30aa952c946ef1343b3d45e4c7763fb6, type: 3}
