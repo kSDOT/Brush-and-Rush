@@ -15,7 +15,8 @@ public class GuardAI : MonoBehaviour
     Coroutine LookRoutine;
     int guardCD = 0;
     public bool allowGameOver = true;
-    float viewDistance = 1000f;
+    bool playerFollow = false;
+    float viewDistance = 2000f;
     float viewAngle = 15f;
     public Transform player;
     // Start is called before the first frame update
@@ -28,7 +29,16 @@ public class GuardAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!Looking){
+        if (playerFollow)
+        {
+            navMeshAgent.SetDestination(player.transform.position);
+            if (Vector3.Distance(transform.position, player.position) < 2f)
+            {
+                // Replace with game over scene
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Main Menu");
+            }
+        }
+        if (!Looking){
             if(Vector3.Distance(transform.position,target)<1)
             {
                 IterateIndex();
@@ -50,11 +60,11 @@ public class GuardAI : MonoBehaviour
         {
             if(allowGameOver)
             {
-                if(GameObject.FindObjectOfType<Flashlight>().IsFlashlightOn && PlayerDetection(player))
+                if (GameObject.FindObjectOfType<Flashlight>().IsFlashlightOn && PlayerDetection(player))
                 {
                     // Implement Game Over
                     Debug.Log("Game Over");
-                    UnityEngine.SceneManagement.SceneManager.LoadScene("Main Menu");
+                    playerFollow = true;
                 }
             }
             if(LookRoutine == null)

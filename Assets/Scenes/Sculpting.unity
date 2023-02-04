@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 23800000, guid: 027cb3a35a103f14f84459ddcdfbfb03, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 32de2387c99127a479de857e370ae567, type: 2}
 --- !u!1001 &13763781
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2482,8 +2482,13 @@ PrefabInstance:
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: navMeshAgent
+      value: 
+      objectReference: {fileID: 384797679}
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
       propertyPath: allowGameOver
@@ -3507,6 +3512,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 471746, guid: ae1644867a2400a4d8cb2486d081859b,
     type: 3}
   m_PrefabInstance: {fileID: 378114504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!195 &384797679 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 5432347329101808198, guid: c3ff1551a988f3245a3ba4e7cc390937,
+    type: 3}
+  m_PrefabInstance: {fileID: 295894908}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &386586570
 PrefabInstance:
