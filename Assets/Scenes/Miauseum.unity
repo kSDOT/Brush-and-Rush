@@ -10100,6 +10100,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1395687249}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1395687251 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4500999597622337257, guid: edb266ccf6d7dda49a3d30bfeb6ec40b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1395687249}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1400388977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15247,9 +15253,24 @@ PrefabInstance:
       objectReference: {fileID: 1077517472}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
+      propertyPath: mainMenuScene
+      value: Main Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: mainLevelScene
+      value: Main Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
       propertyPath: cameraScreenshot
       value: 
       objectReference: {fileID: 46825656}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 1395687251}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
       propertyPath: similarityDetection
