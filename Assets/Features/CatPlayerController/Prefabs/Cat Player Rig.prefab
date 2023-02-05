@@ -4139,7 +4139,7 @@ GameObject:
   - component: {fileID: 7076439948262453754}
   m_Layer: 0
   m_Name: Cat Player Rig
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10915,7 +10915,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1217606014322876964
 Transform:
   m_ObjectHideFlags: 0
@@ -11119,7 +11119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1217606015304074670
 Transform:
   m_ObjectHideFlags: 0
@@ -48531,7 +48531,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5627139524827119365
 Transform:
   m_ObjectHideFlags: 0
@@ -60258,7 +60258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6700738597315326174
 Transform:
   m_ObjectHideFlags: 0
