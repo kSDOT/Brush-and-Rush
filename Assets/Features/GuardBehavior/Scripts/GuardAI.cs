@@ -19,11 +19,14 @@ public class GuardAI : MonoBehaviour
     float viewDistance = 2000f;
     float viewAngle = 15f;
     public Transform player;
+    public Animator guard;
+
     // Start is called before the first frame update
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         Destination();
+        
     }
 
     // Update is called once per frame
@@ -85,6 +88,7 @@ public class GuardAI : MonoBehaviour
             {
                     navMeshAgent.isStopped = true;
                     Looking = true;
+                    guard.SetBool("isLooking", true);
                     nextLook = false;
             }
     }
@@ -152,6 +156,7 @@ public class GuardAI : MonoBehaviour
         }   
         // Debug.Log("Test");
         Looking = false;
+        guard.SetBool("isLooking", false);
         LookRoutine = null;
         navMeshAgent.isStopped = false;
     }
