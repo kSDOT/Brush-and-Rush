@@ -25,10 +25,9 @@ public class SimilarityDetection : MonoBehaviour
     public double Evaluate(string img1, string img2)
     {
         
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures(img1, img2);
         CudaDeviceVariable<Color> output;
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        
         int width; int height;
         var valuesArray = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
 
@@ -39,11 +38,11 @@ public class SimilarityDetection : MonoBehaviour
             score += valuesArray[i];
         }
 
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        
         this.CreateOverlay(output, out errorOverlay, width, height);
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-        SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img-overlay.png");
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //SaveTexture(errorOverlay,"Assets/Resources/Images/Test/img-overlay.png");
+        SaveTexture(errorOverlay, $"{Application.persistentDataPath}/Assets/Resources/Images/Test/img-overlay.png");
+        
         output.Dispose();
 
         score = (Mathf.Clamp(MaxError - score, 0, MaxError) / MaxError) //make sure its in [0, 1] range
@@ -99,10 +98,8 @@ public class SimilarityDetection : MonoBehaviour
     [ContextMenu("Test Images")]
     public double Evaluate()
     {
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         (Texture2D referenceTexture, Texture2D inputTexture) = this.LoadTextures();
         CudaDeviceVariable<Color> output;
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         int width; int height;
         var valuesArray = this.CompareBlur(referenceTexture, inputTexture, out output, out width, out height);
 
@@ -113,11 +110,8 @@ public class SimilarityDetection : MonoBehaviour
             score += valuesArray[i];
         }
 
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         this.CreateOverlay(output, out errorOverlay, width, height);
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         SaveTexture(errorOverlay, "Assets/Resources/Images/Test/img-overlay.png");
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         output.Dispose();
 
         score = (Mathf.Clamp(MaxError - score, 0, MaxError)/MaxError) //make sure its in [0, 1] range
@@ -163,8 +157,17 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public (Texture2D, Texture2D) LoadTextures(string path1, string path2)
     {
-        var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
-        var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
+        var tmpTex1 = new Texture2D(1, 1);
+        var tmpTex2 = new Texture2D(1, 1);
+        byte[] tmp1 = File.ReadAllBytes(path1);
+        byte[] tmp2 = File.ReadAllBytes(path2);
+        tmpTex1.LoadImage(tmp1);
+        tmpTex2.LoadImage(tmp1);
+        var texture1 = ReadableDuplicate(tmpTex1);
+        var texture2 = ReadableDuplicate(tmpTex2);
+        //var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
+        //var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
+
         return (texture1, texture2);
     }
 

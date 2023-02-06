@@ -15438,6 +15438,31 @@ PrefabInstance:
       propertyPath: ReferenceObjectTransform
       value: 
       objectReference: {fileID: 509481253}
+    - target: {fileID: 8083971289260182965, guid: 59ea347b145aba844a0bf9dc533ad822,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.069
+      objectReference: {fileID: 0}
+    - target: {fileID: 8083971289260182965, guid: 59ea347b145aba844a0bf9dc533ad822,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.057
+      objectReference: {fileID: 0}
+    - target: {fileID: 8083971289420315658, guid: 59ea347b145aba844a0bf9dc533ad822,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.06900001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8083971289420315658, guid: 59ea347b145aba844a0bf9dc533ad822,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.05700007
+      objectReference: {fileID: 0}
+    - target: {fileID: 8083971289420315659, guid: 59ea347b145aba844a0bf9dc533ad822,
+        type: 3}
+      propertyPath: LeftHandIsValid
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8083971290473906425, guid: 59ea347b145aba844a0bf9dc533ad822,
         type: 3}
       propertyPath: GrabPhysics
@@ -15665,7 +15690,7 @@ PrefabInstance:
     - target: {fileID: 971203921281316341, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
         type: 3}
       propertyPath: onButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: saveAndEvaluatePicture
+      value: evaluateSculpture
       objectReference: {fileID: 0}
     - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
         type: 3}
@@ -15740,6 +15765,11 @@ PrefabInstance:
         type: 3}
       propertyPath: canvasFront
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: sculptScene
+      value: Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}

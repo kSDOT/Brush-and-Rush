@@ -28,12 +28,16 @@ public class CameraScreenshot : MonoBehaviour
                               System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")); */
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //use this for having only one picture that is overwriting itsself
-        return string.Format("Images/screenshots/cur_", Application.dataPath);
+
+        //Original
+        //return string.Format("Images/screenshots/cur_", Application.dataPath);
+        return $"{Application.persistentDataPath}/Features/SimilarityDetection/Resources/Images/screenshots/cur_";
     }
 
     public static string ScreenShotName(int width, int height)
     {
-        return string.Format("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_", Application.dataPath);
+        //return string.Format("{0}/Features/SimilarityDetection/Resources/Images/screenshots/cur_", Application.dataPath);
+        return $"{Application.persistentDataPath}/Features/SimilarityDetection/Resources/Images/screenshots/cur_";
     }
 
     public void TakeHiResShot()

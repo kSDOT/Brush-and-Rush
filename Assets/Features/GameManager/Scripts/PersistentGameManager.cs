@@ -20,6 +20,9 @@ public class PersistentGameManager : MonoBehaviour
     [SerializeField]
     [Scene]
     private string mainLevelScene;
+    [SerializeField]
+    [Scene]
+    private string sculptScene;
 
     //Main Menu
     [SerializeField]
@@ -55,6 +58,9 @@ public class PersistentGameManager : MonoBehaviour
     //-----Lifecycle Methods-----
     public void Start()
     {
+        System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Features/SimilarityDetection/Resources/Images/screenshots/");
+        System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Assets/Resources/Images/Test/");
+
         //Check if the Game is currently in the Main Menu
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == mainMenuScene)
         {
@@ -110,6 +116,14 @@ public class PersistentGameManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene(mainLevelScene);
         
     }
+
+    public void loadScupltLevel()
+    {
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sculptScene);
+
+    }
+
     public void NewRandomPicture() {
 
         int picSize = originalPaintings.Length;
@@ -127,9 +141,9 @@ public class PersistentGameManager : MonoBehaviour
      
         
 
-        AssetDatabase.CreateAsset(obj, fileName);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        //AssetDatabase.CreateAsset(obj, fileName);
+       // AssetDatabase.SaveAssets();
+        //AssetDatabase.Refresh();
 
       //  Debug.Log("File saved to: "+AssetDatabase.GetAssetPath(obj));
     }
@@ -138,13 +152,13 @@ public class PersistentGameManager : MonoBehaviour
     {
         //take picture
         cameraScreenshot.TakeHiResShot();
-        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         
 
         //run similarity detection
         //TODO
-        score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0,0)+"original", CameraScreenshot.ResourcesPath(0,0)+"duplicate");
-        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0,0)+"original.png", CameraScreenshot.ResourcesPath(0,0)+"duplicate.png");
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu
         finishToMainMenu();
     }
@@ -155,7 +169,7 @@ public class PersistentGameManager : MonoBehaviour
         //TODO
         GameObject parent = new GameObject("Sculpture");
         StartCoroutine(this.sculpture.Compare(parent, returnValue => score = returnValue));
-        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu
         finishToMainMenu();
     }

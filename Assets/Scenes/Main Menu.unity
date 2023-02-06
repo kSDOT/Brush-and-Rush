@@ -1062,6 +1062,7 @@ Transform:
   - {fileID: 1332551037}
   - {fileID: 1099996156}
   - {fileID: 4653406181794516585}
+  - {fileID: 1231919668}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2408,6 +2409,96 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1179314627}
   m_Mesh: {fileID: -512853849759737238, guid: 065280517dfe2fe4bbe2d67f2e660730, type: 3}
+--- !u!1001 &1231919667
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 375631245}
+    m_Modifications:
+    - target: {fileID: 971203921281316341, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: onButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1479067830}
+    - target: {fileID: 971203921281316341, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: onButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: loadScupltLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 5719648960341585164, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_text
+      value: Sculpture
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.8832
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.639
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815983585089632203, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+        type: 3}
+      propertyPath: m_Name
+      value: Button_Sculpture
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a447339e8bbc2da4b981f8eb0f2eef8d, type: 3}
+--- !u!4 &1231919668 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5815983585089632200, guid: a447339e8bbc2da4b981f8eb0f2eef8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1231919667}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1287575537
 GameObject:
   m_ObjectHideFlags: 0
@@ -2917,6 +3008,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2105865060}
     m_Modifications:
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
+      propertyPath: sculptScene
+      value: Sculpting
+      objectReference: {fileID: 0}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
       propertyPath: scoreboardText
