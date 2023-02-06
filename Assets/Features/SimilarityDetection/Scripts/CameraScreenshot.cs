@@ -12,6 +12,7 @@ public class CameraScreenshot : MonoBehaviour
     public GameObject Canvas;
     public Material cur_original;
     public Material default_mat;
+    public GameObject Pens;
 
     [SerializeField]
     private GameObject canvasPaintHolder;
@@ -42,6 +43,7 @@ public class CameraScreenshot : MonoBehaviour
 
     public void TakeHiResShot()
     {
+        Pens.SetActive(false);
         takeHiResShot = true;
         takeHiResShot |= Input.GetKeyDown("k");
         if (takeHiResShot)

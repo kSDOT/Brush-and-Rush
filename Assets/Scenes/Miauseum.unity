@@ -1029,7 +1029,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 46825652}
   m_LocalRotation: {x: 0.06268565, y: 0.70432276, z: -0.06268565, w: 0.70432276}
-  m_LocalPosition: {x: -2.42, y: 0.19999993, z: 0}
+  m_LocalPosition: {x: -2.3869, y: 0.3869, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1054,6 +1054,7 @@ MonoBehaviour:
   Canvas: {fileID: 1281891396}
   cur_original: {fileID: 2100000, guid: 95c6305624f959c4588e65afa384f310, type: 2}
   default_mat: {fileID: 2100000, guid: 9f88b0ebdfac59843a9d90c6f7251acd, type: 2}
+  Pens: {fileID: 980165316}
   canvasPaintHolder: {fileID: 6755953915685852677}
 --- !u!4 &52333300 stripped
 Transform:
@@ -17396,6 +17397,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 972485327}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &980165316 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1757969932, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+    type: 3}
+  m_PrefabInstance: {fileID: 6755953915685852676}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &980478200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30284,7 +30291,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1730451449}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.458}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39149,7 +39156,7 @@ PrefabInstance:
     - target: {fileID: 4077873183794955479, guid: ae6b261d5a8e6374084af03c845620b9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.676
+      value: 0.27
       objectReference: {fileID: 0}
     - target: {fileID: 4077873183794955479, guid: ae6b261d5a8e6374084af03c845620b9,
         type: 3}
@@ -39309,6 +39316,11 @@ PrefabInstance:
       propertyPath: outlineColor.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1762436359018636539, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f88b0ebdfac59843a9d90c6f7251acd, type: 2}
     - target: {fileID: 3315795093164951055, guid: c569b59bab3ee004ebdeafa1e615c7cb,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -39327,6 +39339,11 @@ PrefabInstance:
     - target: {fileID: 3848025226148097079, guid: c569b59bab3ee004ebdeafa1e615c7cb,
         type: 3}
       propertyPath: outlineColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3933163552229630349, guid: c569b59bab3ee004ebdeafa1e615c7cb,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4660204647310426134, guid: c569b59bab3ee004ebdeafa1e615c7cb,
@@ -39451,13 +39468,18 @@ PrefabInstance:
       objectReference: {fileID: 1077517472}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
+      propertyPath: sculptScene
+      value: Sculpting
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
       propertyPath: mainMenuScene
       value: Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
       propertyPath: mainLevelScene
-      value: Main Menu
+      value: Miauseum
       objectReference: {fileID: 0}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}

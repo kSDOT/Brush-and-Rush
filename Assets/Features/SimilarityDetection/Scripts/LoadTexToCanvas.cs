@@ -24,7 +24,7 @@ public class LoadTexToCanvas : MonoBehaviour
         byte[] tmp1 = File.ReadAllBytes(path1);
         byte[] tmp2 = File.ReadAllBytes(path2);
         tmpTex1.LoadImage(tmp1);
-        tmpTex2.LoadImage(tmp1);
+        tmpTex2.LoadImage(tmp2);
         var texture1 = ReadableDuplicate(tmpTex1);
         var texture2 = ReadableDuplicate(tmpTex2);
         //var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));

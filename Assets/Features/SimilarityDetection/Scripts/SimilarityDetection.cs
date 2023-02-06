@@ -157,14 +157,17 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public (Texture2D, Texture2D) LoadTextures(string path1, string path2)
     {
+        //New:
         var tmpTex1 = new Texture2D(1, 1);
         var tmpTex2 = new Texture2D(1, 1);
         byte[] tmp1 = File.ReadAllBytes(path1);
         byte[] tmp2 = File.ReadAllBytes(path2);
         tmpTex1.LoadImage(tmp1);
-        tmpTex2.LoadImage(tmp1);
+        tmpTex2.LoadImage(tmp2);
         var texture1 = ReadableDuplicate(tmpTex1);
         var texture2 = ReadableDuplicate(tmpTex2);
+
+        //Old:
         //var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
         //var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
 
