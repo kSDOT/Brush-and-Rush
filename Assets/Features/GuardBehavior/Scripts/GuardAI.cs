@@ -20,14 +20,20 @@ public class GuardAI : MonoBehaviour
     float viewAngle = 15f;
     public Transform player;
     public Animator guard;
-    public AudioSource m_AudioSourceSteps;
+    public AudioSource m_AudioSource;
     public AudioSource m_AudioSourceVoice;
+    public AudioClip[] m_VoiceTrigger;
+    public AudioClip[] m_VoiceCalm;
+    public AudioClip[] m_VoiceCatch;
+    public AudioClip[] m_VoiceRando;
     public bool m_switch = false;
+    public bool m_playSound = false;
     
     // Start is called before the first frame update
     void Start()
     {
-        m_MyAudioSource = GetComponent<AudioSource>();
+        m_AudioSource = GetComponent<AudioSource>();
+        m_AudioSourceVoice = GetComponent<AudioSource>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Destination();
     }
@@ -49,17 +55,19 @@ public class GuardAI : MonoBehaviour
             {
                 if (waypointIndex == 2 || waypointIndex == 6)
                 {
-                    m_AudioSourceSteps.enabled = false;
+                    m_AudioSource.enabled = false;
                 }
                 else if (waypointIndex == 3 || waypointIndex == 7)
                 {
-                    m_AudioSourceSteps.enabled = true;
+                    m_AudioSource.enabled = true;
                 }
                 IterateIndex();
                 Destination();
                 if(waypoints[waypointIndex].CompareTag("LookPoint"))
                 {
                     nextLook = true;
+                    m_AudioSourceVoice.clip = m_VoiceTrigger[Random.Range(0, m_VoiceTrigger.Length)]; 
+                    m_AudioSourceVoice.PlayOneShot(m_AudioSourceVoice.clip);
                     return;
                 }
             }
@@ -163,6 +171,8 @@ public class GuardAI : MonoBehaviour
         guard.SetBool("isLooking", false);
         LookRoutine = null;
         navMeshAgent.isStopped = false;
+        m_AudioSourceVoice.clip = m_VoiceCalm[Random.Range(0, m_VoiceCalm.Length)]; 
+        m_AudioSourceVoice.PlayOneShot(m_AudioSourceVoice.clip); 
     }
     bool PlayerDetection(Transform player)
     {
