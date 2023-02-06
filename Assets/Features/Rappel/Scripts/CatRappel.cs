@@ -23,7 +23,6 @@ namespace BNG {
             if(ZiplineEnd != null) {
                 transform.LookAt(ZiplineEnd.position);
             }
-
             audioSource = GetComponent<AudioSource>();
         }
 

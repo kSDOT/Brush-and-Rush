@@ -20,13 +20,16 @@ public class GuardAI : MonoBehaviour
     float viewAngle = 15f;
     public Transform player;
     public Animator guard;
-
+    public AudioSource m_AudioSourceSteps;
+    public AudioSource m_AudioSourceVoice;
+    public bool m_switch = false;
+    
     // Start is called before the first frame update
     void Start()
     {
+        m_MyAudioSource = GetComponent<AudioSource>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Destination();
-        
     }
 
     // Update is called once per frame
@@ -44,6 +47,14 @@ public class GuardAI : MonoBehaviour
         if (!Looking){
             if(Vector3.Distance(transform.position,target)<1)
             {
+                if (waypointIndex == 2 || waypointIndex == 6)
+                {
+                    m_AudioSourceSteps.enabled = false;
+                }
+                else if (waypointIndex == 3 || waypointIndex == 7)
+                {
+                    m_AudioSourceSteps.enabled = true;
+                }
                 IterateIndex();
                 Destination();
                 if(waypoints[waypointIndex].CompareTag("LookPoint"))
@@ -53,10 +64,10 @@ public class GuardAI : MonoBehaviour
                 }
             }
         }
-         if(nextLook)
-            {
-                StopToLook();
-            }
+        if(nextLook)
+        {
+            StopToLook();
+        }
         //Debug.Log("nextLook: " + nextLook.ToString());
         //Debug.Log("Looking: " + Looking.ToString());
         if(Looking)
@@ -78,13 +89,11 @@ public class GuardAI : MonoBehaviour
             }
         }
     }
-
     void StopToLook()
     {
         //Debug.Log("remaining: " + navMeshAgent.remainingDistance);
         //Debug.Log("stopping: " + navMeshAgent.stoppingDistance);
-
-           if(navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        if(navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             {
                     navMeshAgent.isStopped = true;
                     Looking = true;
@@ -106,9 +115,7 @@ public class GuardAI : MonoBehaviour
         target = waypoints[waypointIndex].position;
         Debug.Log(target.ToString());
         navMeshAgent.SetDestination(target);
-        
     }
-
     void IterateIndex()
     {
         waypointIndex++;
@@ -116,9 +123,7 @@ public class GuardAI : MonoBehaviour
         {
             waypointIndex = 0;
         }
-
     }
-
     IEnumerator LookAround()
     {
         // Debug.Log("Coroutine Time");
@@ -126,7 +131,6 @@ public class GuardAI : MonoBehaviour
         Quaternion initialRot = transform.rotation;
         Quaternion targetRotLeft = initialRot * Quaternion.Euler(0,-45,0);
         Quaternion targetRotRight = initialRot * Quaternion.Euler(0,90,0);
-
         timeLA = 0;
         while(timeLA < 1.0f){
         // Mid to Left
@@ -145,7 +149,7 @@ public class GuardAI : MonoBehaviour
         // Debug.Log("Right after: " + timeLA);
         yield return new WaitForSeconds(0.01f);
         }
-         timeLA = 0;
+        timeLA = 0;
         while(timeLA < 1){
         // Right to Mid
         // Debug.Log("Mid :" + timeLA);
@@ -160,7 +164,6 @@ public class GuardAI : MonoBehaviour
         LookRoutine = null;
         navMeshAgent.isStopped = false;
     }
-
     bool PlayerDetection(Transform player)
     {
         if(Vector3.Distance(transform.position, player.position) < viewDistance)
