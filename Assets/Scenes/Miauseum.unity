@@ -5027,7 +5027,17 @@ PrefabInstance:
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
       propertyPath: m_VoiceCalm.Array.size
-      value: 3
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceCatch.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.size
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
@@ -5081,6 +5091,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
+      propertyPath: m_AudioSource.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
       propertyPath: m_VoiceCalm.Array.data[0]
       value: 
       objectReference: {fileID: 8300000, guid: b601f4663d648df4e9f409d255c3a5b5, type: 3}
@@ -5096,9 +5111,79 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: c7623fd32c6fc9243ade5e536f6631b5, type: 3}
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
-      propertyPath: m_VoiceTrigger.Array.size
-      value: 3
+      propertyPath: m_VoiceCalm.Array.data[3]
+      value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceTrigger.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceCatch.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 950f754a62262a44dba61f4e954c26c7, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceCatch.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: c6bc1607838b6bc4b884a0dcf4e536a1, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceCatch.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: a224754e1ee818942876276dccd7b3b9, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceCatch.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 837517e12beeb9a48aca1b71e20aabee, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceCatch.Array.data[4]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9bfb7196be2f45a46abaacf37d1cea67, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: b53e4dcbae2dcf541bea88234a7ce8af, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 37f312a25ab3abb49a7a0b70dc5cf150, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: ca23afcfab6abd34c8b5d8299cbdd9cf, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e627bd13d8aa51448c1726294cf2007, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceRando.Array.data[5]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_AudioSource.Array.data[0]
+      value: 
+      objectReference: {fileID: 1616561586}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_AudioSource.Array.data[1]
+      value: 
+      objectReference: {fileID: 1616561593}
     - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
         type: 3}
       propertyPath: m_VoiceTrigger.Array.data[0]
@@ -5114,6 +5199,11 @@ PrefabInstance:
       propertyPath: m_VoiceTrigger.Array.data[2]
       value: 
       objectReference: {fileID: 8300000, guid: 95c19172435b9ba468bd1160df7b869d, type: 3}
+    - target: {fileID: 7934093224527525533, guid: c3ff1551a988f3245a3ba4e7cc390937,
+        type: 3}
+      propertyPath: m_VoiceTrigger.Array.data[3]
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3ff1551a988f3245a3ba4e7cc390937, type: 3}
 --- !u!4 &295894909 stripped
@@ -28301,6 +28391,138 @@ AudioSource:
     - serializedVersion: 3
       time: 0.44135132
       value: 0.1694336
+      inSlope: -0.31262448
+      outSlope: -0.31262448
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8826874
+      value: 0
+      inSlope: -0.12996337
+      outSlope: -0.12996337
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.90498006
+      outWeight: 0.7164013
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.031442083
+      outSlope: -0.031442083
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.49367195
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &1616561593
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616561579}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.165
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 208
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 20
+  Pan2D: 0
+  rolloffMode: 2
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.113911435
+      value: 1
+      inSlope: -20.007967
+      outSlope: -20.007967
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.15263137
+      value: 0.6277771
+      inSlope: -5.0019917
+      outSlope: -5.0019917
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.23383637
+      value: 0.3999939
+      inSlope: -1.2504979
+      outSlope: -1.2504979
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.445105
+      value: 0.18609619
       inSlope: -0.31262448
       outSlope: -0.31262448
       tangentMode: 0

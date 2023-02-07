@@ -20,8 +20,7 @@ public class GuardAI : MonoBehaviour
     float viewAngle = 15f;
     public Transform player;
     public Animator guard;
-    public AudioSource m_AudioSource;
-    public AudioSource m_AudioSourceVoice;
+    public AudioSource[] m_AudioSource;
     public AudioClip[] m_VoiceTrigger;
     public AudioClip[] m_VoiceCalm;
     public AudioClip[] m_VoiceCatch;
@@ -32,8 +31,7 @@ public class GuardAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_AudioSource = GetComponent<AudioSource>();
-        m_AudioSourceVoice = GetComponent<AudioSource>();
+        m_AudioSource = GetComponents<AudioSource>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Destination();
     }
@@ -55,19 +53,21 @@ public class GuardAI : MonoBehaviour
             {
                 if (waypointIndex == 2 || waypointIndex == 6)
                 {
-                    m_AudioSource.enabled = false;
+                    m_AudioSource[0].enabled = false;
                 }
                 else if (waypointIndex == 3 || waypointIndex == 7)
                 {
-                    m_AudioSource.enabled = true;
+                    m_AudioSource[0].enabled = true;
+                    m_AudioSource[1].clip = m_VoiceRando[Random.Range(0, m_VoiceRando.Length)]; 
+                    m_AudioSource[1].PlayOneShot(m_AudioSource[1].clip); 
                 }
                 IterateIndex();
                 Destination();
                 if(waypoints[waypointIndex].CompareTag("LookPoint"))
                 {
                     nextLook = true;
-                    m_AudioSourceVoice.clip = m_VoiceTrigger[Random.Range(0, m_VoiceTrigger.Length)]; 
-                    m_AudioSourceVoice.PlayOneShot(m_AudioSourceVoice.clip);
+                    m_AudioSource[1].clip = m_VoiceTrigger[Random.Range(0, m_VoiceTrigger.Length)]; 
+                    m_AudioSource[1].PlayOneShot(m_AudioSource[1].clip);
                     return;
                 }
             }
@@ -84,6 +84,8 @@ public class GuardAI : MonoBehaviour
             {
                 if (GameObject.FindObjectOfType<Flashlight>().IsFlashlightOn && PlayerDetection(player))
                 {
+                    m_AudioSource[1].clip = m_VoiceCatch[Random.Range(0, m_VoiceCatch.Length)]; 
+                    m_AudioSource[1].PlayOneShot(m_AudioSource[1].clip); 
                     // Implement Game Over
                     Debug.Log("Game Over");
                     playerFollow = true;
@@ -171,8 +173,8 @@ public class GuardAI : MonoBehaviour
         guard.SetBool("isLooking", false);
         LookRoutine = null;
         navMeshAgent.isStopped = false;
-        m_AudioSourceVoice.clip = m_VoiceCalm[Random.Range(0, m_VoiceCalm.Length)]; 
-        m_AudioSourceVoice.PlayOneShot(m_AudioSourceVoice.clip); 
+        m_AudioSource[1].clip = m_VoiceCalm[Random.Range(0, m_VoiceCalm.Length)]; 
+        m_AudioSource[1].PlayOneShot(m_AudioSource[1].clip); 
     }
     bool PlayerDetection(Transform player)
     {
