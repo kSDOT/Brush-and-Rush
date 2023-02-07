@@ -60,6 +60,7 @@ public class PersistentGameManager : MonoBehaviour
     {
         System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Features/SimilarityDetection/Resources/Images/screenshots/");
         System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Assets/Resources/Images/Test/");
+        System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Features/SimilarityDetection/Cuda/");
 
         //Check if the Game is currently in the Main Menu
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == mainMenuScene)
@@ -152,13 +153,15 @@ public class PersistentGameManager : MonoBehaviour
     {
         //take picture
         cameraScreenshot.TakeHiResShot();
-        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-        
-
         //run similarity detection
         //TODO
-        score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0,0)+"original.png", CameraScreenshot.ResourcesPath(0,0)+"duplicate.png");
+        //Old
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0, 0) + "original", CameraScreenshot.ResourcesPath(0, 0) + "duplicate");
+        //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        
+        //New
+        score = this.similarityDetection.Evaluate(CameraScreenshot.ResourcesPath(0, 0) + "original.png", CameraScreenshot.ResourcesPath(0, 0) + "duplicate.png");
         //return to main Menu
         finishToMainMenu();
     }

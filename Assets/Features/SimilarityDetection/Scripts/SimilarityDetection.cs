@@ -13,7 +13,7 @@ public class SimilarityDetection : MonoBehaviour
     int fColumns = 50;
     int lengthWithWeights = 0;
 
-    public int MaxError = 6587986;
+    private int MaxError = 6587986;
 
     /// <summary>
     /// Takes two images and returns the score difference between the two
@@ -37,8 +37,9 @@ public class SimilarityDetection : MonoBehaviour
         {
             score += valuesArray[i];
         }
+        Debug.Log(score);
 
-        
+
         this.CreateOverlay(output, out errorOverlay, width, height);
         //SaveTexture(errorOverlay,"Assets/Resources/Images/Test/img-overlay.png");
         SaveTexture(errorOverlay, $"{Application.persistentDataPath}/Assets/Resources/Images/Test/img-overlay.png");
@@ -47,7 +48,7 @@ public class SimilarityDetection : MonoBehaviour
 
         score = (Mathf.Clamp(MaxError - score, 0, MaxError) / MaxError) //make sure its in [0, 1] range
                                                                 * 100;// expand to [0, 100]
-
+        Debug.Log(score);
         // make sure its in [0, 100] range, using 2 decimal digits
         return Mathf.Clamp(Mathf.Round(score * 10.0f) * 0.1f, 0, 100);
     }
@@ -61,9 +62,9 @@ public class SimilarityDetection : MonoBehaviour
     private void Start()
     {
         this.ctx = new CudaContext();
-        this.CudaConvolution = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "convolution");
-        this.CudaDiff = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "diff");
-        this.CudaOverlay = ctx.LoadKernel(Application.dataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "overlay");
+        this.CudaConvolution = ctx.LoadKernel(Application.persistentDataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "convolution");
+        this.CudaDiff = ctx.LoadKernel(Application.persistentDataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "diff");
+        this.CudaOverlay = ctx.LoadKernel(Application.persistentDataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "overlay");
 
         // Load kernel from file into gpu memory
         #region LoadKernel
@@ -157,6 +158,8 @@ public class SimilarityDetection : MonoBehaviour
     /// <returns></returns>
     public (Texture2D, Texture2D) LoadTextures(string path1, string path2)
     {
+        Debug.Log(path1);
+        Debug.Log(path2);
         //New:
         var tmpTex1 = new Texture2D(1, 1);
         var tmpTex2 = new Texture2D(1, 1);
@@ -167,6 +170,9 @@ public class SimilarityDetection : MonoBehaviour
         var texture1 = ReadableDuplicate(tmpTex1);
         var texture2 = ReadableDuplicate(tmpTex2);
 
+        Debug.Log(texture1 is null);
+        Debug.Log(texture2 is null);
+        
         //Old:
         //var texture1 = ReadableDuplicate(Resources.Load<Texture2D>(path1));
         //var texture2 = ReadableDuplicate(Resources.Load<Texture2D>(path2));
