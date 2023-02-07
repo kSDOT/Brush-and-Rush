@@ -61,6 +61,7 @@ public class PersistentGameManager : MonoBehaviour
         System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Features/SimilarityDetection/Resources/Images/screenshots/");
         System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Assets/Resources/Images/Test/");
         System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Features/SimilarityDetection/Cuda/");
+        System.IO.Directory.CreateDirectory($"{Application.persistentDataPath}/Features/MarchingCube");
 
         //Check if the Game is currently in the Main Menu
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == mainMenuScene)
