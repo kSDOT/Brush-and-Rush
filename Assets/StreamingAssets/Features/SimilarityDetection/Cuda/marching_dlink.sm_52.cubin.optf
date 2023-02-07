@@ -1,0 +1,1 @@
+-m64 --arch=sm_52 --register-link-binaries="marching_dlink.reg.c"    "/LIBPATH:C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.0\bin/../lib/x64" -cpu-arch=X86_64 "marching.obj"  cudadevrt.lib  -o "marching_dlink.sm_52.cubin"

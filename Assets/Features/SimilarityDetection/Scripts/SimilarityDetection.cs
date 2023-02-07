@@ -62,13 +62,13 @@ public class SimilarityDetection : MonoBehaviour
     private void Start()
     {
         this.ctx = new CudaContext();
-        this.CudaConvolution = ctx.LoadKernel(Application.persistentDataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "convolution");
-        this.CudaDiff = ctx.LoadKernel(Application.persistentDataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "diff");
-        this.CudaOverlay = ctx.LoadKernel(Application.persistentDataPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "overlay");
+        this.CudaConvolution = ctx.LoadKernel(Application.streamingAssetsPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "convolution");
+        this.CudaDiff = ctx.LoadKernel(Application.streamingAssetsPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "diff");
+        this.CudaOverlay = ctx.LoadKernel(Application.streamingAssetsPath + "\\Features\\SimilarityDetection\\Cuda\\convolution.ptx", "overlay");
 
         // Load kernel from file into gpu memory
         #region LoadKernel
-        String input = File.ReadAllText(Application.dataPath + "\\Features\\SimilarityDetection\\Filter.txt");
+        String input = File.ReadAllText(Application.streamingAssetsPath + "\\Features\\SimilarityDetection\\Filter.txt");
         int i = 0, j = 0;
         int[,] filter = new int[fRows, fColumns];
         foreach (var row in input.Split('\n'))

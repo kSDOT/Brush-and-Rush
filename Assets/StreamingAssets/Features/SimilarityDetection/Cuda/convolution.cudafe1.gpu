@@ -1,0 +1,429 @@
+typedef char __nv_bool;
+#line 3 "convolution.cu"
+struct Color;
+#line 193 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\vcruntime.h"
+typedef unsigned long long size_t;
+#include "crt/device_runtime.h"
+#line 3 "convolution.cu"
+struct Color {
+#line 5 "convolution.cu"
+float r;
+#line 6 "convolution.cu"
+float g;
+#line 7 "convolution.cu"
+float b;
+#line 8 "convolution.cu"
+float a;};
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#line 476 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt\\corecrt_math.h"
+ __device_builtin__ ___device__(extern  __no_sc__) double fabs(double);
+#endif
+#if !defined(__CUDABE__)
+#line 668 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt\\corecrt_math.h"
+ __device_builtin__ ___device__(extern  __no_sc__) float fabsf(float);
+#endif
+#if !defined(__CUDABE__)
+#line 717 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt\\corecrt_math.h"
+ __device_builtin__ ___device__(extern  __no_sc__) float sqrtf(float);
+#endif
+#line 27 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cstdlib"
+___device__(static  __no_sc__) float _Z3absf(float);
+#line 264 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+___device__(static  __no_sc__) float _Z4sqrtf(float);
+#line 15 "convolution.cu"
+___device__(static  __no_sc__) void add_multiply_color_intcolor(struct Color *, int, struct Color *);
+#line 21 "convolution.cu"
+___device__(static  __no_sc__) void div_color_int(struct Color *, int);
+#line 79 "convolution.cu"
+___device__(static  __no_sc__) void color_abs(struct Color *);
+#line 86 "convolution.cu"
+___device__(static  __no_sc__) void getDistance(struct Color *, float *);
+#line 91 "convolution.cu"
+___device__(static  __no_sc__) float lerp(const float, const float, const float, float *);
+#line 95 "convolution.cu"
+___device__(static  __no_sc__) float lerp_vec(const struct Color *, const struct Color *, const float, struct Color *);
+#line 27 "convolution.cu"
+__global__ __var_used__ extern void convolution(struct Color *, int, int, int *, int, int, int);
+#line 103 "convolution.cu"
+__global__ __var_used__ extern void diff(struct Color *, struct Color *, int, int, float, float *);
+#line 152 "convolution.cu"
+__global__ __var_used__ extern void overlay(struct Color *, int, int, float);
+#include "common_functions.h"
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#if !defined(__CUDABE__)
+#endif
+#line 27 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cstdlib"
+___device__(static  __no_sc__) __inline__ float _Z3absf(
+#line 27 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cstdlib"
+float _Xx){
+#line 27 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cstdlib"
+{
+#line 28 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cstdlib"
+return fabsf(_Xx);
+#line 29 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cstdlib"
+}}
+#line 264 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+___device__(static  __no_sc__) __inline__ float _Z4sqrtf(
+#line 264 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+float _Xx){
+#line 264 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+{
+#line 265 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+return sqrtf(_Xx);
+#line 266 "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.30.30705\\include\\cmath"
+}}
+#line 15 "convolution.cu"
+___device__(static  __no_sc__) void add_multiply_color_intcolor(
+#line 15 "convolution.cu"
+struct Color *result, 
+#line 15 "convolution.cu"
+int int_val, 
+#line 15 "convolution.cu"
+struct Color *color_val){
+#line 15 "convolution.cu"
+{
+#line 16 "convolution.cu"
+(result->r) += ((color_val->r) * ((float)int_val));
+#line 17 "convolution.cu"
+(result->g) += ((color_val->g) * ((float)int_val));
+#line 18 "convolution.cu"
+(result->b) += ((color_val->b) * ((float)int_val)); 
+#line 19 "convolution.cu"
+}}
+#line 21 "convolution.cu"
+___device__(static  __no_sc__) void div_color_int(
+#line 21 "convolution.cu"
+struct Color *result, 
+#line 21 "convolution.cu"
+int int_val){
+#line 21 "convolution.cu"
+{
+#line 22 "convolution.cu"
+(result->r) = ( fdividef((result->r) , ((float)int_val)));
+#line 23 "convolution.cu"
+(result->g) = ( fdividef((result->g) , ((float)int_val)));
+#line 24 "convolution.cu"
+(result->b) = ( fdividef((result->b) , ((float)int_val))); 
+#line 25 "convolution.cu"
+}}
+#line 79 "convolution.cu"
+___device__(static  __no_sc__) void color_abs(
+#line 79 "convolution.cu"
+struct Color *color_val){
+#line 79 "convolution.cu"
+{
+#line 80 "convolution.cu"
+(color_val->r) = (_Z3absf((color_val->r)));
+#line 81 "convolution.cu"
+(color_val->g) = (_Z3absf((color_val->g)));
+#line 82 "convolution.cu"
+(color_val->b) = (_Z3absf((color_val->b)));
+#line 83 "convolution.cu"
+(color_val->a) = (_Z3absf((color_val->a))); 
+#line 84 "convolution.cu"
+}}
+#line 86 "convolution.cu"
+___device__(static  __no_sc__) void getDistance(
+#line 86 "convolution.cu"
+struct Color *color_val, 
+#line 86 "convolution.cu"
+float *output){
+#line 86 "convolution.cu"
+{
+#line 87 "convolution.cu"
+(*output) = (_Z4sqrtf(((((color_val->r) * (color_val->r)) + ((color_val->g) * (color_val->g))) + ((color_val->b) * (color_val->b))))); 
+#line 88 "convolution.cu"
+}}
+#line 91 "convolution.cu"
+___device__(static  __no_sc__) float lerp(
+#line 91 "convolution.cu"
+const float a, 
+#line 91 "convolution.cu"
+const float b, 
+#line 91 "convolution.cu"
+const float w, 
+#line 91 "convolution.cu"
+float *output){
+#line 92 "convolution.cu"
+{
+#line 93 "convolution.cu"
+(*output) = (a + (w * (b - a))); 
+#line 94 "convolution.cu"
+}}
+#line 95 "convolution.cu"
+___device__(static  __no_sc__) float lerp_vec(
+#line 95 "convolution.cu"
+const struct Color *a, 
+#line 95 "convolution.cu"
+const struct Color *b, 
+#line 95 "convolution.cu"
+const float w, 
+#line 95 "convolution.cu"
+struct Color *output){
+#line 96 "convolution.cu"
+{
+#line 97 "convolution.cu"
+lerp((a->r), (b->r), w, (&(output->r)));
+#line 98 "convolution.cu"
+lerp((a->g), (b->g), w, (&(output->g)));
+#line 99 "convolution.cu"
+lerp((a->b), (b->b), w, (&(output->b))); 
+#line 100 "convolution.cu"
+}}
+#line 27 "convolution.cu"
+__global__ __var_used__ void convolution(
+#line 27 "convolution.cu"
+struct Color *pic1Pixels, 
+#line 28 "convolution.cu"
+int columns, 
+#line 28 "convolution.cu"
+int rows, 
+#line 29 "convolution.cu"
+int *filter, 
+#line 29 "convolution.cu"
+int fColumns, 
+#line 29 "convolution.cu"
+int fRows, 
+#line 30 "convolution.cu"
+int lengthWithWeights){
+#line 30 "convolution.cu"
+{
+#line 31 "convolution.cu"
+ int __cuda_local_var_381560_7_non_const_index;
+#line 31 "convolution.cu"
+__cuda_local_var_381560_7_non_const_index = ((int)(((blockDim.x) * (blockIdx.x)) + (threadIdx.x)));
+#line 32 "convolution.cu"
+if (__cuda_local_var_381560_7_non_const_index < (columns * rows))
+#line 32 "convolution.cu"
+{
+#line 33 "convolution.cu"
+ struct Color __cuda_local_var_381562_10_non_const_accum;
+#line 33 "convolution.cu"
+memset((char *)&__cuda_local_var_381562_10_non_const_accum, 0,sizeof(__cuda_local_var_381562_10_non_const_accum));
+#line 33 "convolution.cu"
+__cuda_local_var_381562_10_non_const_accum.r = (0.0F);
+#line 33 "convolution.cu"
+__cuda_local_var_381562_10_non_const_accum.g = (0.0F);
+#line 33 "convolution.cu"
+__cuda_local_var_381562_10_non_const_accum.b = (0.0F);
+#line 33 "convolution.cu"
+__cuda_local_var_381562_10_non_const_accum.a = (0.0F);
+#line 34 "convolution.cu"
+{
+#line 34 "convolution.cu"
+ int fR;
+#line 34 "convolution.cu"
+fR = 0;
+#line 34 "convolution.cu"
+for (; (fR < fRows); ++fR)
+#line 34 "convolution.cu"
+{
+#line 35 "convolution.cu"
+{
+#line 35 "convolution.cu"
+ int fC;
+#line 35 "convolution.cu"
+fC = 0;
+#line 35 "convolution.cu"
+for (; (fC < fColumns); ++fC)
+#line 35 "convolution.cu"
+{
+#line 37 "convolution.cu"
+add_multiply_color_intcolor((&__cuda_local_var_381562_10_non_const_accum), (filter[((fR * fColumns) + fC)]), (pic1Pixels + ((__cuda_local_var_381560_7_non_const_index + (fR * columns)) + fC)));
+#line 39 "convolution.cu"
+} }
+#line 40 "convolution.cu"
+} }
+#line 42 "convolution.cu"
+div_color_int((&__cuda_local_var_381562_10_non_const_accum), lengthWithWeights);
+#line 43 "convolution.cu"
+(pic1Pixels[__cuda_local_var_381560_7_non_const_index]) = __cuda_local_var_381562_10_non_const_accum;
+#line 44 "convolution.cu"
+} 
+#line 45 "convolution.cu"
+}}
+#line 103 "convolution.cu"
+__global__ __var_used__ void diff(
+#line 103 "convolution.cu"
+struct Color *pic1Pixels, 
+#line 103 "convolution.cu"
+struct Color *pic2Pixels, 
+#line 104 "convolution.cu"
+int columns, 
+#line 104 "convolution.cu"
+int rows, 
+#line 104 "convolution.cu"
+float Threshold, 
+#line 104 "convolution.cu"
+float *diffAccumulator){
+#line 104 "convolution.cu"
+{
+#line 105 "convolution.cu"
+ int __cuda_local_var_381634_7_non_const_index;
+#line 105 "convolution.cu"
+__cuda_local_var_381634_7_non_const_index = ((int)(((blockDim.x) * (blockIdx.x)) + (threadIdx.x)));
+#line 107 "convolution.cu"
+if (__cuda_local_var_381634_7_non_const_index < (columns * rows))
+#line 107 "convolution.cu"
+{
+#line 109 "convolution.cu"
+if (((pic1Pixels[__cuda_local_var_381634_7_non_const_index]).a) == (1.0F))
+#line 109 "convolution.cu"
+{  struct Color __T0;
+#line 110 "convolution.cu"
+{ memset((char *)&__T0, 0,sizeof(__T0)); __T0.r = (0.0F); __T0.g = (0.0F); __T0.b = (0.0F); __T0.a = (0.0F);
+#line 110 "convolution.cu"
+(pic1Pixels[__cuda_local_var_381634_7_non_const_index]) = __T0; }
+#line 111 "convolution.cu"
+}
+#line 112 "convolution.cu"
+else 
+#line 112 "convolution.cu"
+{
+#line 114 "convolution.cu"
+ struct Color __cuda_local_var_381643_12_non_const_diff;
+#line 121 "convolution.cu"
+ float __cuda_local_var_381650_24_non_const_diffNumber;
+#line 114 "convolution.cu"
+memset((char *)&__cuda_local_var_381643_12_non_const_diff, 0,sizeof(__cuda_local_var_381643_12_non_const_diff));
+#line 114 "convolution.cu"
+__cuda_local_var_381643_12_non_const_diff.r = (0.0F);
+#line 114 "convolution.cu"
+__cuda_local_var_381643_12_non_const_diff.g = (0.0F);
+#line 114 "convolution.cu"
+__cuda_local_var_381643_12_non_const_diff.b = (0.0F);
+#line 114 "convolution.cu"
+__cuda_local_var_381643_12_non_const_diff.a = (1.0F);
+#line 115 "convolution.cu"
+(__cuda_local_var_381643_12_non_const_diff.r) = (((pic1Pixels[__cuda_local_var_381634_7_non_const_index]).r) - ((pic2Pixels[__cuda_local_var_381634_7_non_const_index]).r));
+#line 116 "convolution.cu"
+(__cuda_local_var_381643_12_non_const_diff.g) = (((pic1Pixels[__cuda_local_var_381634_7_non_const_index]).g) - ((pic2Pixels[__cuda_local_var_381634_7_non_const_index]).g));
+#line 117 "convolution.cu"
+(__cuda_local_var_381643_12_non_const_diff.b) = (((pic1Pixels[__cuda_local_var_381634_7_non_const_index]).b) - ((pic2Pixels[__cuda_local_var_381634_7_non_const_index]).b));
+#line 118 "convolution.cu"
+(__cuda_local_var_381643_12_non_const_diff.a) = (((pic1Pixels[__cuda_local_var_381634_7_non_const_index]).a) - ((pic2Pixels[__cuda_local_var_381634_7_non_const_index]).a));
+#line 119 "convolution.cu"
+color_abs((&__cuda_local_var_381643_12_non_const_diff));
+#line 121 "convolution.cu"
+__cuda_local_var_381650_24_non_const_diffNumber = (0.0F);
+#line 122 "convolution.cu"
+getDistance((&__cuda_local_var_381643_12_non_const_diff), (&__cuda_local_var_381650_24_non_const_diffNumber));
+#line 124 "convolution.cu"
+if (__cuda_local_var_381650_24_non_const_diffNumber < Threshold)
+#line 125 "convolution.cu"
+{  struct Color __T1;
+#line 126 "convolution.cu"
+{ memset((char *)&__T1, 0,sizeof(__T1)); __T1.r = (0.0F); __T1.g = (0.0F); __T1.b = (0.0F); __T1.a = (0.0F);
+#line 126 "convolution.cu"
+__cuda_local_var_381643_12_non_const_diff = __T1; }
+#line 127 "convolution.cu"
+__cuda_local_var_381650_24_non_const_diffNumber = (0.0F);
+#line 128 "convolution.cu"
+}
+#line 129 "convolution.cu"
+else 
+#line 129 "convolution.cu"
+{
+#line 130 "convolution.cu"
+ struct Color __cuda_local_var_381659_28_non_const_temp;
+#line 133 "convolution.cu"
+ float __cuda_local_var_381662_28_non_const_t1;
+#line 136 "convolution.cu"
+ struct Color __cuda_local_var_381665_13_non_const_diff;
+#line 137 "convolution.cu"
+ struct Color __cuda_local_var_381666_13_non_const_black;
+#line 130 "convolution.cu"
+memset((char *)&__cuda_local_var_381659_28_non_const_temp, 0,sizeof(__cuda_local_var_381659_28_non_const_temp));
+#line 130 "convolution.cu"
+__cuda_local_var_381659_28_non_const_temp = __cuda_local_var_381643_12_non_const_diff;
+#line 133 "convolution.cu"
+__cuda_local_var_381662_28_non_const_t1 = (0.0F);
+#line 135 "convolution.cu"
+lerp(((float)Threshold), (1.731999993F), ((float)__cuda_local_var_381650_24_non_const_diffNumber), (&__cuda_local_var_381662_28_non_const_t1));
+#line 136 "convolution.cu"
+memset((char *)&__cuda_local_var_381665_13_non_const_diff, 0,sizeof(__cuda_local_var_381665_13_non_const_diff));
+#line 136 "convolution.cu"
+__cuda_local_var_381665_13_non_const_diff.r = (0.0F);
+#line 136 "convolution.cu"
+__cuda_local_var_381665_13_non_const_diff.g = (0.0F);
+#line 136 "convolution.cu"
+__cuda_local_var_381665_13_non_const_diff.b = (0.0F);
+#line 136 "convolution.cu"
+__cuda_local_var_381665_13_non_const_diff.a = (1.0F);
+#line 137 "convolution.cu"
+memset((char *)&__cuda_local_var_381666_13_non_const_black, 0,sizeof(__cuda_local_var_381666_13_non_const_black));
+#line 137 "convolution.cu"
+__cuda_local_var_381666_13_non_const_black.r = (0.0F);
+#line 137 "convolution.cu"
+__cuda_local_var_381666_13_non_const_black.g = (0.0F);
+#line 137 "convolution.cu"
+__cuda_local_var_381666_13_non_const_black.b = (0.0F);
+#line 137 "convolution.cu"
+__cuda_local_var_381666_13_non_const_black.a = (0.0F);
+#line 140 "convolution.cu"
+lerp_vec(((const struct Color *)(&__cuda_local_var_381666_13_non_const_black)), ((const struct Color *)(&__cuda_local_var_381659_28_non_const_temp)), __cuda_local_var_381662_28_non_const_t1, (&__cuda_local_var_381665_13_non_const_diff));
+#line 141 "convolution.cu"
+}
+#line 142 "convolution.cu"
+(pic1Pixels[__cuda_local_var_381634_7_non_const_index]) = __cuda_local_var_381643_12_non_const_diff;
+#line 144 "convolution.cu"
+getDistance((&__cuda_local_var_381643_12_non_const_diff), (&__cuda_local_var_381650_24_non_const_diffNumber));
+#line 145 "convolution.cu"
+(diffAccumulator[__cuda_local_var_381634_7_non_const_index]) = __cuda_local_var_381650_24_non_const_diffNumber;
+#line 146 "convolution.cu"
+}
+#line 147 "convolution.cu"
+} 
+#line 149 "convolution.cu"
+}}
+#line 152 "convolution.cu"
+__global__ __var_used__ void overlay(
+#line 152 "convolution.cu"
+struct Color *colors, 
+#line 152 "convolution.cu"
+int columns, 
+#line 152 "convolution.cu"
+int rows, 
+#line 152 "convolution.cu"
+float Threshold){
+#line 152 "convolution.cu"
+{
+#line 153 "convolution.cu"
+ int __cuda_local_var_381682_7_non_const_index;
+#line 153 "convolution.cu"
+__cuda_local_var_381682_7_non_const_index = ((int)(((blockDim.x) * (blockIdx.x)) + (threadIdx.x)));
+#line 155 "convolution.cu"
+if (__cuda_local_var_381682_7_non_const_index < (columns * rows))
+#line 155 "convolution.cu"
+{  struct Color __T2;
+#line 157 "convolution.cu"
+ float __cuda_local_var_381686_23_non_const_remappedDistance;
+#line 157 "convolution.cu"
+__cuda_local_var_381686_23_non_const_remappedDistance = (0.0F);
+#line 158 "convolution.cu"
+getDistance((colors + __cuda_local_var_381682_7_non_const_index), (&__cuda_local_var_381686_23_non_const_remappedDistance));
+#line 160 "convolution.cu"
+__cuda_local_var_381686_23_non_const_remappedDistance = ( fdividef((__cuda_local_var_381686_23_non_const_remappedDistance - Threshold) , ((1.0F) - Threshold)));
+#line 161 "convolution.cu"
+{ memset((char *)&__T2, 0,sizeof(__T2)); __T2.r = (1.0F); __T2.g = (0.8999999762F); __T2.b = (0.1000000015F); __T2.a = (0.0F);
+#line 161 "convolution.cu"
+(colors[__cuda_local_var_381682_7_non_const_index]) = (((__T2.a) = __cuda_local_var_381686_23_non_const_remappedDistance) , __T2); }
+#line 162 "convolution.cu"
+} 
+#line 164 "convolution.cu"
+}}
