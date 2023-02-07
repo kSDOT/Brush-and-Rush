@@ -54,6 +54,7 @@ public class PersistentGameManager : MonoBehaviour
     //-----Private Variables-----
     private static bool gameWasCompleted = false;
     private static bool inMainMenu = true;
+    private static GameObject parent;
 
     //-----Lifecycle Methods-----
     public void Start()
@@ -171,7 +172,7 @@ public class PersistentGameManager : MonoBehaviour
     {
         //run similarity detection
         //TODO
-        GameObject parent = new GameObject("Sculpture");
+        parent = new GameObject("Sculpture");
         StartCoroutine(this.sculpture.Compare(parent, returnValue => score = returnValue));
         //AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         //return to main Menu

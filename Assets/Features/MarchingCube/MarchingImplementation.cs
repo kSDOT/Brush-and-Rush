@@ -132,7 +132,7 @@ namespace MarchingCubesProject
             this.referenceVoxels = new(width * height * depth, Allocator.Persistent);
 
 
-            String input = File.ReadAllText(Application.dataPath + "\\" + FileName);
+            String input = File.ReadAllText(Application.streamingAssetsPath + "\\" + FileName);
             int i = 0, j = 0, k = 0;
             this.Marching.verts.Clear();
             this.Marching.indices.Clear();

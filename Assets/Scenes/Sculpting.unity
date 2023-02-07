@@ -1273,8 +1273,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 901167910}
   - {fileID: 699148554}
+  - {fileID: 901167910}
   - {fileID: 1277614862}
   - {fileID: 992811174}
   - {fileID: 1905907514}
@@ -4603,7 +4603,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196812990}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &713361466
 PrefabInstance:
@@ -13099,13 +13099,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
+      propertyPath: sculpture
+      value: 
+      objectReference: {fileID: 22569056}
+    - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
+        type: 3}
       propertyPath: canvasFront
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
       propertyPath: sculptScene
-      value: Main Menu
+      value: Sculpting
       objectReference: {fileID: 0}
     - target: {fileID: 1331971369667403652, guid: e12406b60c36c9f4799998931f7ee5e4,
         type: 3}
